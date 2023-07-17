@@ -509,7 +509,7 @@ class PcaAnalysis(Method):
             ['abundances', 'mean_enrichment']
         ).intersection(dataset.available_datasets)
         for file_name in available_pca_suitable_datatypes:
-            logger.info("Running pca analysis of %,",
+            logger.info("Running pca analysis of %s,",
                         dataset.get_file_for_label(file_name))
             run_pca_analysis(file_name, dataset, cfg,
                              out_table_dir, mode="save_tables")
@@ -778,7 +778,7 @@ class MetabologramIntegration(Method):
                 raise ValueError(
                     f"Unrecognized 'columns_transcripts' parameters "
                     f"{cfg.analysis.columns_transcripts.keys()}. Must be: "
-                    f"{columns_transcripts_config_keys}"
+                    f"{columns_transcripts_config_keys}"   # from constants
                 )
 
             if not all(
