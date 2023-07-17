@@ -1,0 +1,45 @@
+_target_: method.MetabologramIntegrationConfig
+
+label: metabologram
+name: Perform data integration via metabologram visualization
+
+## parameters for the analytical part of Metabologram:
+
+grouping :
+  - condition
+  - timepoint
+
+qualityDistanceOverSpan : -0.3
+correction_method : "bonferroni"
+
+impute_values:
+  abundances: "min"
+  mean_enrichment: "min"
+  isotopologues: "min"
+  isotopologue_proportions: "min"
+
+# only abundances or mean_enrichment accepted, set in user external config
+statistical_test:
+  abundances: none
+  mean_enrichment: none
+
+
+## parameters for the plotting part of Metabologram:
+
+abs_values_scale_color_bar: # if null, automatically set max absolute value
+  transcripts: null # 5
+  metabolites: null # 3
+
+colors_divergent_palette: ['#0070C0', 'white', '#D30000']  # <cold,clear,hot> colors, hex or names accepted
+
+fig_width: 7
+fig_height: 5
+
+edge_color: ['#000000', '#000000'] # colors for <peripheral,central> lines
+line_width: [1, 1.2] #  # widths for  <peripheral,central> lines
+
+font_size: 8
+display_label_and_value : False # if False, display labels of the molecules alone
+
+
+
