@@ -8,7 +8,7 @@ from collections.abc import Iterable
 from functools import reduce
 from typing import Dict, List
 
-from constants import assert_literal, overlap_methods_types
+from dimet.constants import assert_literal, overlap_methods_types
 
 import numpy as np
 

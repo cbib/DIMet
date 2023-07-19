@@ -4,7 +4,7 @@ import numpy as np
 
 import pandas as pd
 
-import processing.pca_analysis as pca_analysis
+import dimet.processing.pca_analysis as pca_analysis
 
 
 class TestPcaAnalysis(TestCase):

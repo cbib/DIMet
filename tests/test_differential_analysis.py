@@ -4,8 +4,8 @@ import numpy as np
 
 import pandas as pd
 
-import processing.differential_analysis as differential_analysis
-import processing.fit_statistical_distribution as fit_statistical_distribution
+from dimet.processing import differential_analysis
+from dimet.processing import fit_statistical_distribution
 
 
 class TestDifferentialAnalysis(TestCase):
