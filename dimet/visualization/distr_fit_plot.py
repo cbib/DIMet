@@ -4,30 +4,20 @@ import os
 from functools import reduce
 from typing import List
 
-from constants import (
-    assert_literal,
-    availtest_methods_type,
-    data_files_keys_type,
-)
-
-from data import Dataset
-
-import helpers
-
 import matplotlib
 import matplotlib.pyplot as plt
-
 import numpy as np
-
+import pandas as pd
+import scipy.stats as stats
 from omegaconf import DictConfig
 
-import pandas as pd
-
-from processing import fit_statistical_distribution
-from processing.differential_analysis import \
+import dimet.helpers as helpers
+from dimet.constants import (assert_literal, availtest_methods_type,
+                             data_files_keys_type)
+from dimet.data import Dataset
+from dimet.processing import fit_statistical_distribution
+from dimet.processing.differential_analysis import \
     select_rows_with_sufficient_non_nan_values
-
-import scipy.stats as stats
 
 logger = logging.getLogger(__name__)
 

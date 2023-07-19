@@ -11,32 +11,20 @@ import os
 import warnings
 from typing import Dict, List
 
-from constants import (
-    assert_literal,
-    availtest_methods_type,
-    data_files_keys_type,
-    molecular_types_for_metabologram
-)
-
-from data import DataIntegration
-
-import helpers
-
 import matplotlib
 import matplotlib.pyplot as plt
-from matplotlib.colors import LinearSegmentedColormap
-from matplotlib.colors import Normalize
-
 import numpy as np
-
+import pandas as pd
+import seaborn as sns
+from matplotlib.colors import LinearSegmentedColormap, Normalize
 from omegaconf import DictConfig
 
-import pandas as pd
-
-from processing import differential_analysis
-
-import seaborn as sns
-
+import dimet.helpers as helpers
+from dimet.constants import (assert_literal, availtest_methods_type,
+                             data_files_keys_type,
+                             molecular_types_for_metabologram)
+from dimet.data import DataIntegration
+from dimet.processing import differential_analysis
 
 logger = logging.getLogger(__name__)
 

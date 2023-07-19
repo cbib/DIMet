@@ -8,8 +8,8 @@ from hydra.core.hydra_config import HydraConfig
 from omegaconf import DictConfig, ListConfig
 from pydantic import BaseModel as PydanticBaseModel
 
-from dimet.helpers import *
 from dimet.constants import molecular_types_for_metabologram
+from dimet.helpers import *
 
 
 class BaseModel(PydanticBaseModel):

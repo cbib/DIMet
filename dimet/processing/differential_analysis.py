@@ -13,12 +13,12 @@ import numpy as np
 import pandas as pd
 import scipy.stats
 from omegaconf import DictConfig
-from dimet.processing import fit_statistical_distribution
 
 from dimet.constants import (assert_literal, availtest_methods_type,
                              data_files_keys_type)
 from dimet.data import Dataset
 from dimet.helpers import *
+from dimet.processing import fit_statistical_distribution
 
 logger = logging.getLogger(__name__)
 

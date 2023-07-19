@@ -3,42 +3,30 @@ import os
 import sys
 from typing import Union
 
-from constants import (
-    assert_literal,
-    availtest_methods,
-    columns_transcripts_config_keys,
-    data_files_keys_type,
-    data_types_suitable_for_metabologram,
-    metabolites_values_for_metabologram,
-)
-
-from data import DataIntegration, Dataset
-
-from helpers import flatten
-
 import hydra
-
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 from omegaconf.errors import ConfigAttributeError
-
-from processing.differential_analysis import (
-    differential_comparison,
-    multi_group_compairson,
-    time_course_analysis
-)
-from processing.pca_analysis import run_pca_analysis
-
 from pydantic import BaseModel as PydanticBaseModel
 
-from visualization.abundance_bars import run_plot_abundance_bars
-from visualization.distr_fit_plot import run_distr_fit_plot
-from visualization.isotopologue_proportions import (
-    run_isotopologue_proportions_plot)
-from visualization.mean_enrichment_line_plot import (
-    run_mean_enrichment_line_plot)
-from visualization.metabologram import run_metabologram
-from visualization.pca_plot import run_pca_plot
-
+from dimet.constants import (assert_literal, availtest_methods,
+                             columns_transcripts_config_keys,
+                             data_files_keys_type,
+                             data_types_suitable_for_metabologram,
+                             metabolites_values_for_metabologram)
+from dimet.data import DataIntegration, Dataset
+from dimet.helpers import flatten
+from dimet.processing.differential_analysis import (differential_comparison,
+                                                    multi_group_compairson,
+                                                    time_course_analysis)
+from dimet.processing.pca_analysis import run_pca_analysis
+from dimet.visualization.abundance_bars import run_plot_abundance_bars
+from dimet.visualization.distr_fit_plot import run_distr_fit_plot
+from dimet.visualization.isotopologue_proportions import \
+    run_isotopologue_proportions_plot
+from dimet.visualization.mean_enrichment_line_plot import \
+    run_mean_enrichment_line_plot
+from dimet.visualization.metabologram import run_metabologram
+from dimet.visualization.pca_plot import run_pca_plot
 
 logger = logging.getLogger(__name__)
 
