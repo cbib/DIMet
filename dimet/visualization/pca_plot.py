@@ -5,20 +5,14 @@ import logging
 import os
 from typing import List, Union
 
-from hydra.core.config_store import ConfigStore
-
 import matplotlib.figure as figure
 import matplotlib.pyplot as plt
-from matplotlib.patches import Ellipse
-
 import numpy as np
-
-from omegaconf import DictConfig
-
 import pandas as pd
-
 import seaborn as sns
-
+from hydra.core.config_store import ConfigStore
+from matplotlib.patches import Ellipse
+from omegaconf import DictConfig
 
 logger = logging.getLogger(__name__)
 

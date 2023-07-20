@@ -9,25 +9,19 @@ import os
 from functools import reduce
 from typing import List
 
-from constants import (
-    assert_literal,
-    availtest_methods_type,
-    data_files_keys_type,
-)
-
-from data import Dataset
-
-import helpers
-
 import numpy as np
-
+import pandas as pd
+import scipy.stats
 from omegaconf import DictConfig
 
-import pandas as pd
-
-from processing import fit_statistical_distribution
-
-import scipy.stats
+from dimet.constants import (assert_literal, availtest_methods_type,
+                             data_files_keys_type)
+from dimet.data import Dataset
+from dimet.helpers import (absolute_geommean_diff, compute_brunnermunzel_allH0,
+                           compute_distance_between_intervals,
+                           compute_ranksums_allH0, compute_wilcoxon_allH0,
+                           first_column_for_column_values)
+from dimet.processing import fit_statistical_distribution
 
 logger = logging.getLogger(__name__)
 
@@ -77,7 +71,7 @@ def distance_or_overlap(df: pd.DataFrame, groups: List) -> pd.DataFrame:
         group2 = df.loc[i, groups[1]].values
         overlap_method = "symmetric"  # Modify as needed,
         # can be "symmetric" or "asymmetric"
-        df.at[i, "distance"] = helpers.compute_distance_between_intervals(
+        df.at[i, "distance"] = compute_distance_between_intervals(
             group1, group2, overlap_method)
 
     return df
@@ -222,17 +216,17 @@ def run_statistical_test(df: pd.DataFrame, comparison: List,
                                                            vBaseline)
 
         elif test == "ranksum":
-            stat_result, pval_result = helpers.compute_ranksums_allH0(
+            stat_result, pval_result = compute_ranksums_allH0(
                 vInterest, vBaseline)
 
         elif test == "Wcox":
             # signed-rank test: one sample (independence),
             # or two paired or related samples
-            stat_result, pval_result = helpers.compute_wilcoxon_allH0(
+            stat_result, pval_result = compute_wilcoxon_allH0(
                 vInterest, vBaseline)
 
         elif test == "BrMu":
-            stat_result, pval_result = helpers.compute_brunnermunzel_allH0(
+            stat_result, pval_result = compute_brunnermunzel_allH0(
                 vInterest, vBaseline)
 
         elif test == "prm-scipy":
@@ -240,7 +234,7 @@ def run_statistical_test(df: pd.DataFrame, comparison: List,
             # so "greater" satisfy
             prm_res = scipy.stats.permutation_test(
                 (vInterest, vBaseline),
-                statistic=helpers.absolute_geommean_diff,
+                statistic=absolute_geommean_diff,
                 permutation_type="independent",
                 vectorized=False,
                 n_resamples=9999,
@@ -356,7 +350,7 @@ def pairwise_comparison(
     in the analysis yaml file
     (in time_course_analysis, comparison list is set by function (not yaml))
     """
-    conditions_list = helpers.first_column_for_column_values(
+    conditions_list = first_column_for_column_values(
         df=dataset.metadata_df, columns=cfg.analysis.method.grouping,
         values=comparison
     )
@@ -369,12 +363,12 @@ def pairwise_comparison(
     df4c = df[columns].copy()
     df4c = df4c[(df4c.T != 0).any()]  # delete rows being zero everywhere
     df4c = df4c.dropna(axis=0, how="all")
-    df4c = helpers.row_wise_nanstd_reduction(df4c)
-    df4c = helpers.countnan_samples(df4c, this_comparison)
+    df4c = row_wise_nanstd_reduction(df4c)
+    df4c = countnan_samples(df4c, this_comparison)
     df4c = distance_or_overlap(df4c, this_comparison)
     df4c = compute_span_incomparison(df4c, this_comparison)
     df4c["distance/span"] = df4c.distance.div(df4c.span_allsamples)
-    df4c = helpers.calculate_gmean(df4c, this_comparison)
+    df4c = calculate_gmean(df4c, this_comparison)
     print(this_comparison)
     df_good, df_bad = select_rows_with_sufficient_non_nan_values(
         df4c, groups=this_comparison)
@@ -390,14 +384,14 @@ def pairwise_comparison(
 
     df_good["log2FC"] = np.log2(df_good["FC"])
 
-    df_good, df_no_padj = helpers.split_rows_by_threshold(
+    df_good, df_no_padj = split_rows_by_threshold(
         df_good, "distance/span", cfg.analysis.method.qualityDistanceOverSpan
     )
-    df_good = helpers.compute_padj(df_good, 0.05,
+    df_good = compute_padj(df_good, 0.05,
                                    cfg.analysis.method.correction_method)
 
     # re-integrate the "bad" sub-dataframes to the full dataframe
-    result = helpers.concatenate_dataframes(df_good, df_bad, df_no_padj)
+    result = concatenate_dataframes(df_good, df_bad, df_no_padj)
     return result
 
 
@@ -419,7 +413,7 @@ def differential_comparison(
             dataset.compartmentalized_dfs[file_name].items():
         df = compartmentalized_df
         df = df[(df.T != 0).any()]
-        val_instead_zero = helpers.arg_repl_zero2value(impute_value, df)
+        val_instead_zero = arg_repl_zero2value(impute_value, df)
         df = df.replace(to_replace=0, value=val_instead_zero)
 
         for comparison in cfg.analysis.comparisons:
@@ -457,10 +451,10 @@ def multi_group_compairson(
             dataset.compartmentalized_dfs[file_name].items():
         df = compartmentalized_df
         df = df[(df.T != 0).any()]
-        val_instead_zero = helpers.arg_repl_zero2value(impute_value, df)
+        val_instead_zero = arg_repl_zero2value(impute_value, df)
         df = df.replace(to_replace=0, value=val_instead_zero)
 
-        conditions_list = helpers.first_column_for_column_values(
+        conditions_list = first_column_for_column_values(
             df=dataset.metadata_df, columns=cfg.analysis.method.grouping,
             values=cfg.analysis.conditions
         )
@@ -472,11 +466,11 @@ def multi_group_compairson(
         df4c = df4c[(df4c.T != 0).any()]  # delete rows being zero everywhere
         df4c = df4c.dropna(axis=0, how="all")
 
-        df4c = helpers.row_wise_nanstd_reduction(df4c)
+        df4c = row_wise_nanstd_reduction(df4c)
         this_comparison = [list(filter(lambda x: x in columns, sublist)) for
                            sublist in conditions_list]
-        df4c = helpers.apply_multi_group_kruskal_wallis(df4c, this_comparison)
-        df4c = helpers.compute_padj(df4c, 0.05,
+        df4c = apply_multi_group_kruskal_wallis(df4c, this_comparison)
+        df4c = compute_padj(df4c, 0.05,
                                     cfg.analysis.method.correction_method)
         base_file_name = dataset.get_file_for_label(file_name)
         base_file_name += f"--{compartment}--multigroup"
@@ -533,7 +527,7 @@ def time_course_analysis(file_name: data_files_keys_type,
             dataset.compartmentalized_dfs[file_name].items():
         df = compartmentalized_df
         df = df[(df.T != 0).any()]
-        val_instead_zero = helpers.arg_repl_zero2value(impute_value, df)
+        val_instead_zero = arg_repl_zero2value(impute_value, df)
         df = df.replace(to_replace=0, value=val_instead_zero)
 
         time_course_comparisons = time_course_auto_list_comparisons(

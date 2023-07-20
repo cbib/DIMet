@@ -4,22 +4,14 @@ import logging
 import os
 from typing import List, Tuple, Union
 
-from constants import (
-    assert_literal,
-    data_files_keys_type,
-)
-
-from data import Dataset
-
-import helpers
-
 import numpy as np
-
-from omegaconf import DictConfig
-
 import pandas as pd
-
+from omegaconf import DictConfig
 from sklearn.decomposition import PCA
+
+from dimet.constants import assert_literal, data_files_keys_type
+from dimet.data import Dataset
+from dimet.helpers import arg_repl_zero2value, row_wise_nanstd_reduction
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +30,7 @@ def reduce_data_df(df: pd.DataFrame) -> pd.DataFrame:
     """
     Row-wise reduction of quantitative dataframe for pca
     """
-    df_red = helpers.row_wise_nanstd_reduction(df)  # reduce rows
+    df_red = row_wise_nanstd_reduction(df)  # reduce rows
     if np.isinf(np.array(df_red)).any():  # avoid Inf error
         return df
     else:
@@ -154,7 +146,7 @@ def run_pca_analysis(file_name: data_files_keys_type,
             dataset.compartmentalized_dfs[file_name].items():
         df = compartmentalized_df
         df = df[(df.T != 0).any()]  # delete rows being zero all values
-        val_instead_zero = helpers.arg_repl_zero2value(impute_value, df)
+        val_instead_zero = arg_repl_zero2value(impute_value, df)
         df = df.replace(to_replace=0, value=val_instead_zero)
 
         metadata_co_df = metadata_df[metadata_df['short_comp'] == compartment]

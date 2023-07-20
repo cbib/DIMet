@@ -1,0 +1,38 @@
+[project]
+name="DIMet"
+version="0.1.0"
+description="revamp DIMet"
+readme="README.md"
+license = {file = "LICENSE"}
+authors = [
+  {name = "Deisy Johanna Galvis Rodriguez", email = "deisy-johanna.galvis-rodriguez@u-bordeaux.fr"},
+  {name = "Slim Karkar", email = "slim.karkar@u-bordeaux.fr"}
+]
+maintainers = [
+  {name = "Benjamin Dartigues", email = "benjamin.dartigues@u-bordeaux.fr"}
+]
+
+dependencies = [
+    "Sphinx",
+    "click",
+    "coverage",
+    "flake8",
+    "matplotlib~=3.7.1",
+    "mypy",
+    "numpy~=1.23.1",
+    "pandas~=1.5.3",
+    "pytest",
+    "pytest-cov",
+    "python-dotenv>=0.5.1",
+    "pyyaml~=6.0",
+    "scikit-learn~=1.1.1",
+    "scipy~=1.9.1",
+    "seaborn~=0.11.2",
+    "statsmodels~=0.13.5",
+    "hydra-core~=1.3.2",
+    "hydra-colorlog~=1.2.0"
+]
+
+
+[project.urls]
+Repository = "https://github.com/cbib/DIMet.git"

@@ -2,19 +2,14 @@ import logging
 import os
 from typing import List
 
-from data import Dataset
-
-from hydra.core.config_store import ConfigStore
-
 import matplotlib
 import matplotlib.pyplot as plt
-
+import pandas as pd
+import seaborn as sns
+from hydra.core.config_store import ConfigStore
 from omegaconf import DictConfig
 
-import pandas as pd
-
-import seaborn as sns
-
+from dimet.data import Dataset
 
 logger = logging.getLogger(__name__)
 

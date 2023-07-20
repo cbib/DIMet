@@ -3,17 +3,16 @@ import os
 from pathlib import Path
 from typing import Dict, Literal, Optional, Set
 
-from constants import molecular_types_for_metabologram
-
-import helpers
-
-from hydra.core.hydra_config import HydraConfig
-
-from omegaconf import DictConfig, ListConfig
-
 import pandas as pd
-
+from hydra.core.hydra_config import HydraConfig
+from omegaconf import DictConfig, ListConfig
 from pydantic import BaseModel as PydanticBaseModel
+
+from dimet.constants import molecular_types_for_metabologram
+from dimet.helpers import (df_to_dict_by_compartment,
+                           drop_all_nan_metabolites_on_comp_frames,
+                           set_samples_names,
+                           verify_metadata_sample_not_duplicated)
 
 
 class BaseModel(PydanticBaseModel):
@@ -145,7 +144,7 @@ class Dataset(BaseModel):
                 f"of the metadata declared conditions"
             )
 
-        helpers.verify_metadata_sample_not_duplicated(self.metadata_df)
+        verify_metadata_sample_not_duplicated(self.metadata_df)
 
     def split_datafiles_by_compartment(self) -> None:
         frames_dict = {}
@@ -153,14 +152,14 @@ class Dataset(BaseModel):
             if 'metadata' in data_file_label:
                 continue
             dataframe_label = data_file_label + "_df"  # TODO: this is fragile!
-            tmp_co_dict = helpers.df_to_dict_by_compartment(
+            tmp_co_dict = df_to_dict_by_compartment(
                 getattr(self, dataframe_label),
                 self.metadata_df)  # split by compartment
             frames_dict[data_file_label] = tmp_co_dict
 
-        frames_dict = helpers.drop_all_nan_metabolites_on_comp_frames(
+        frames_dict = drop_all_nan_metabolites_on_comp_frames(
             frames_dict, self.metadata_df)
-        frames_dict = helpers.set_samples_names(frames_dict, self.metadata_df)
+        frames_dict = set_samples_names(frames_dict, self.metadata_df)
         self.compartmentalized_dfs = frames_dict
 
     def save_datafiles_split_by_compartment(self) -> None:
