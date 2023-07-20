@@ -4,7 +4,14 @@ version="0.1.0"
 description="revamp DIMet"
 readme="README.md"
 license = {file = "LICENSE"}
-author="tigloo123"
+authors = [
+  {name = "Deisy Johanna Galvis Rodriguez", email = "deisy-johanna.galvis-rodriguez@u-bordeaux.fr"},
+  {name = "Slim Karkar", email = "slim.karkar@u-bordeaux.fr"}
+]
+maintainers = [
+  {name = "Benjamin Dartigues", email = "benjamin.dartigues@u-bordeaux.fr"}
+]
+
 dependencies = [
     "Sphinx",
     "click",
