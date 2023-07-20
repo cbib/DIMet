@@ -17,7 +17,10 @@ from omegaconf import DictConfig
 from dimet.constants import (assert_literal, availtest_methods_type,
                              data_files_keys_type)
 from dimet.data import Dataset
-from dimet.helpers import *
+from dimet.helpers import (absolute_geommean_diff, compute_brunnermunzel_allH0,
+                           compute_distance_between_intervals,
+                           compute_ranksums_allH0, compute_wilcoxon_allH0,
+                           first_column_for_column_values)
 from dimet.processing import fit_statistical_distribution
 
 logger = logging.getLogger(__name__)

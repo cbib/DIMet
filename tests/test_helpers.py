@@ -6,7 +6,7 @@
 
 from unittest import TestCase
 
-from dimet.helpers import *
+from dimet.helpers import df_to_dict_by_compartment, first_column_for_column_values, split_rows_by_threshold, row_wise_nanstd_reduction, concatenate_dataframes, compute_gmean_nonan, apply_multi_group_kruskal_wallis, countnan_samples, compute_padj, verify_metadata_sample_not_duplicated
 
 import numpy as np
 

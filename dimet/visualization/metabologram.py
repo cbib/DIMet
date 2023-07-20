@@ -19,11 +19,11 @@ import seaborn as sns
 from matplotlib.colors import LinearSegmentedColormap, Normalize
 from omegaconf import DictConfig
 
-import dimet.helpers as helpers
 from dimet.constants import (assert_literal, availtest_methods_type,
                              data_files_keys_type,
                              molecular_types_for_metabologram)
 from dimet.data import DataIntegration
+from dimet.helpers import arg_repl_zero2value
 from dimet.processing import differential_analysis
 
 logger = logging.getLogger(__name__)
@@ -39,7 +39,7 @@ def get_differential_results_dict(file_name: str,
     df = data_integration.compartmentalized_dfs[file_name][compartment]
 
     df = df[(df.T != 0).any()]
-    val_instead_zero = helpers.arg_repl_zero2value(impute_value, df)
+    val_instead_zero = arg_repl_zero2value(impute_value, df)
     df = df.replace(to_replace=0, value=val_instead_zero)
 
     metabolomics_differential_results_dict = {}  # Dict[int, pd.DataFrame]

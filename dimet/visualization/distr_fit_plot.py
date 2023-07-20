@@ -11,10 +11,12 @@ import pandas as pd
 import scipy.stats as stats
 from omegaconf import DictConfig
 
-import dimet.helpers as helpers
 from dimet.constants import (assert_literal, availtest_methods_type,
                              data_files_keys_type)
 from dimet.data import Dataset
+from dimet.helpers import (arg_repl_zero2value, calculate_gmean,
+                           countnan_samples, first_column_for_column_values,
+                           row_wise_nanstd_reduction)
 from dimet.processing import fit_statistical_distribution
 from dimet.processing.differential_analysis import \
     select_rows_with_sufficient_non_nan_values
@@ -118,7 +120,7 @@ def run_dist_fit_plot_pairwise(
     for plotting only
     """
     assert test == "disfit"
-    conditions_list = helpers.first_column_for_column_values(
+    conditions_list = first_column_for_column_values(
         df=dataset.metadata_df, columns=cfg.analysis.method.grouping,
         values=comparison
     )
@@ -131,10 +133,10 @@ def run_dist_fit_plot_pairwise(
     df4c = df[columns].copy()
     df4c = df4c[(df4c.T != 0).any()]  # delete rows being zero everywhere
     df4c = df4c.dropna(axis=0, how="all")
-    df4c = helpers.row_wise_nanstd_reduction(df4c)
-    df4c = helpers.countnan_samples(df4c, this_comparison)
+    df4c = row_wise_nanstd_reduction(df4c)
+    df4c = countnan_samples(df4c, this_comparison)
 
-    df4c = helpers.calculate_gmean(df4c, this_comparison)
+    df4c = calculate_gmean(df4c, this_comparison)
     df_good, df_bad = select_rows_with_sufficient_non_nan_values(
         df4c, groups=this_comparison)
 
@@ -160,7 +162,7 @@ def run_distr_fit_plot(
             dataset.compartmentalized_dfs[file_name].items():
         df = compartmentalized_df
         df = df[(df.T != 0).any()]
-        val_instead_zero = helpers.arg_repl_zero2value(impute_value,
+        val_instead_zero = arg_repl_zero2value(impute_value,
                                                        df)
         df = df.replace(to_replace=0, value=val_instead_zero)
         if mode == "pairwise":

@@ -9,7 +9,10 @@ from omegaconf import DictConfig, ListConfig
 from pydantic import BaseModel as PydanticBaseModel
 
 from dimet.constants import molecular_types_for_metabologram
-from dimet.helpers import *
+from dimet.helpers import (df_to_dict_by_compartment,
+                           drop_all_nan_metabolites_on_comp_frames,
+                           set_samples_names,
+                           verify_metadata_sample_not_duplicated)
 
 
 class BaseModel(PydanticBaseModel):
