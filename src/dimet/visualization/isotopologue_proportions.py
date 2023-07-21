@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import pandas as pd
 import seaborn as sns
-from data import Dataset
+from dimet.data import Dataset
 from hydra.core.config_store import ConfigStore
 from omegaconf import DictConfig
 

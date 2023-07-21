@@ -1,4 +1,4 @@
-_target_: method.AbundancePlotConfig
+_target_: dimet.method.AbundancePlotConfig
 
 label: abundance plot
 name: Generate abundance plots

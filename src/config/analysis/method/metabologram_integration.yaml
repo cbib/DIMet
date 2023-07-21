@@ -1,4 +1,4 @@
-_target_: method.MetabologramIntegrationConfig
+_target_: dimet.method.MetabologramIntegrationConfig
 
 label: metabologram
 name: Perform data integration via metabologram visualization

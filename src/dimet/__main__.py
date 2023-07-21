@@ -5,17 +5,13 @@
 """
 
 import logging
-import os
-
-from data import Dataset
+import os, sys
 
 import hydra
-
-from method import Method
-
-
+from dimet.method import Method
 from omegaconf import DictConfig, OmegaConf
 
+from dimet.data import Dataset
 
 logger = logging.getLogger(__name__)
 
