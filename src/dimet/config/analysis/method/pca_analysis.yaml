@@ -1,4 +1,4 @@
-_target_: method.PcaAnalysisConfig
+_target_: dimet.method.PcaAnalysisConfig
 
 label: pca-analysis-tables
 name: Generate Principal Component Analysis tables

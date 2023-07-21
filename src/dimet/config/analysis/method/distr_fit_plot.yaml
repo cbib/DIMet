@@ -1,4 +1,4 @@
-_target_: method.DistrFitPlotConfig
+_target_: dimet.method.DistrFitPlotConfig
 
 label: distribution fitting plot
 name: Plot of distribution fitting result(s)
