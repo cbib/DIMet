@@ -1,4 +1,4 @@
-_target_: method.PcaPlotConfig
+_target_: dimet.method.PcaPlotConfig
 
 label: pca-plot
 name: Generate Principal Component Analysis plots

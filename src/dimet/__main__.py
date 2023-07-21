@@ -5,22 +5,18 @@
 """
 
 import logging
-import os
-
-from data import Dataset
+import os, sys
 
 import hydra
-
-from method import Method
-
-
+from dimet.method import Method
 from omegaconf import DictConfig, OmegaConf
 
+from dimet.data import Dataset
 
 logger = logging.getLogger(__name__)
 
 
-@hydra.main(config_path="../config", config_name="config", version_base=None)
+@hydra.main(config_path="./config", config_name="config", version_base=None)
 def main_run_analysis(cfg: DictConfig) -> None:
     logger.info(f"The current working directory is {os.getcwd()}")
     logger.info("Current configuration is %s", OmegaConf.to_yaml(cfg))

@@ -1,4 +1,4 @@
-_target_: method.MultiGroupComparisonConfig
+_target_: dimet.method.MultiGroupComparisonConfig
 
 label: multi group
 name: Multi group statistical comparison using Kruskal-Wallis test

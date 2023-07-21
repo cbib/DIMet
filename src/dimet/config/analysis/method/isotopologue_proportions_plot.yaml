@@ -1,4 +1,4 @@
-_target_: method.IsotopologueProportionsPlotConfig
+_target_: dimet.method.IsotopologueProportionsPlotConfig
 
 label: isotopologues-proportions-plot
 name: Generate isotopologues stack plots

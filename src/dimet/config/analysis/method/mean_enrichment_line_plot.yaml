@@ -1,4 +1,4 @@
-_target_: method.MeanEnrichmentLinePlotConfig
+_target_: dimet.method.MeanEnrichmentLinePlotConfig
 
 label: mean-enrichment-line-plot
 name: Generate Mean Enrichment line plots

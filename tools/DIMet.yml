@@ -9,6 +9,7 @@ dependencies:
   - numpy~=1.23.1
   - pandas~=1.5.3
   - openpyxl
+  - poetry
   - pyyaml~=6.0
   - scikit-learn~=1.1.1
   - scipy~=1.9.1

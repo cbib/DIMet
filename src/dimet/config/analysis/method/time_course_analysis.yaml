@@ -1,4 +1,4 @@
-_target_: method.TimeCourseAnalysisConfig
+_target_: dimet.method.TimeCourseAnalysisConfig
 
 label: time-course analysis
 name: Time wise computation of statistical differences

@@ -1,4 +1,4 @@
-_target_: method.DifferentialAnalysisConfig
+_target_: dimet.method.DifferentialAnalysisConfig
 
 label: differential analysis
 name: Pairwise computation of statistical differences
