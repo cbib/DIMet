@@ -1,14 +1,20 @@
 [tool.poetry]
 name="DIMet"
 version="0.1.0"
-description="revamp DIMet"
+description="A tool for Differential Isotope-labeled targeted Metabolomics"
 readme="README.md"
 license = "MIT"
 authors = [ 
-  "Deisy Johanna Galvis Rodriguez <deisy-johanna.galvis-rodriguez@u-bordeaux.fr>",
-  "Slim Karkar <slim.karkar@u-bordeaux.fr>"
+  "Johanna Galvis Rodriguez <deisy-johanna.galvis-rodriguez@u-bordeaux.fr>",
+  "Joris Guyon <joris.guyon@u-bordeaux.fr>",
+  "Benjamin Dartigues <benjamin.dartigues@u-bordeaux.fr>",
+  "Florian Specque <florian.specque@u-bordeaux.fr>",
+  "Thomas Daubon <thomas.daubon@u-bordeaux.fr>",
+  "Slim Karkar <slim.karkar@u-bordeaux.fr>",
+  "Macha Nikolski <macha.nikolski@u-bordeaux.fr>" 
+  
 ]
-maintainers = [ "Benjamin Dartigues <benjamin.dartigues@u-bordeaux.fr>", ]
+maintainers = [ "Benjamin Dartigues <benjamin.dartigues@u-bordeaux.fr>" ]
 repository = "https://github.com/cbib/DIMet.git"
 
 [tool.poetry.dependencies]
