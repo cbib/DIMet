@@ -11,8 +11,8 @@ Note: DIMet is intended for downstream analysis of tracer metabolomics data that
 
 # Provided datasets
 
-Datasets, configuration and bash commands corresponding to the results presented in the manuscript "DIMet : An open-source tool for Differential analysis of targeted Isotope-labeled Metabolomics data
-" are available on [Zenodo](https://sandbox.zenodo.org/record/1222142).
+Datasets, configuration and bash commands corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of targeted Isotope-labeled Metabolomics data
+" are available on [Zenodo](https://sandbox.zenodo.org/record/1224020).
 Download and uncompress the file `datasets_manuscript_DIMet`.
 
 You can use the files in `data/Cycloserine_data/raw`, `data/LDHAB-Control_data/raw` and
@@ -29,7 +29,7 @@ desiring to work in command line environment.
 # Installing DIMet 
 
 ## System Requirements
-DIMet installation requires an Unix environment with [python 3.8](http://www.python.org/) or [python 3.9](http://www.python.org/). 
+DIMet installation requires an Unix environment with [python 3.9](http://www.python.org/). 
 It was tested under Linux and MacOS environments.
 
 
@@ -37,35 +37,11 @@ It was tested under Linux and MacOS environments.
 
 The full installation process should take less than 15 minutes on a standard computer.
 
-Clone the repository from [github](https://github.com/cbib/DIMet)
+Via pip command:
+`pip install dimet`
 
-
-`git clone https://github.com/cbib/DIMet.git`
-
-Go to the DIMet root folder
-
-`cd DIMet/`
-
-### Install dependencies via CONDA 
-If you have Conda in your system, you can create the DIMet conda environment using DIMet.yml
-First you need to set the prefix of your conda installation (path to envs directory) in DIMet.yml.
-Then to create the environment: 
-
-`conda env create -f tools/envs/DIMet.yml`
-
-Then activate the environment:
-
-`conda activate DIMet`
-
-### Install dependencies via PIP (No conda installation) 
-
-If you don't have Conda installed in your system, you can install python dependencies via pip program:
-
-`pip install -r requirements.txt`
-
-Add the src directory to the Python path:
-
-`export PYTHONPATH=${PYTHONPATH}:/path/to/DIMet/src`
+Or if you are a developer working in a local cloned version, you can install:
+`pip install -e .`
 
 
 ## Code organization
@@ -79,9 +55,8 @@ Add the src directory to the Python path:
 
 ## Running unit tests 
 
-* Place yourself in `DIMet/src`
-* execute `export PYTHONPATH=${PYTHONPATH}:/path/to/DIMet/src` or activate the conda environment `conda activate DIMet`
-* To run the test, execute `python -m unittest`
+* with pytest, by running `pytest` from `DIMet`
+* Place yourself in `DIMet/tests` and execute `python -m unittest` 
 
 
 # Using DIMet 
@@ -94,12 +69,7 @@ DIMet has a Galaxy version. It also runs in a command line environment. The runt
 Make sure you have activated your virtual environment, or DIMet conda environment.
 After downloading the data from Zenodo, you have a folder named `datasets_manuscript_DIMet`.
 You have inside, two .sh files. Each .sh file will run sequentially, different analyses for its respective dataset.
-Open each file with a text editor and fill the variable MYDIMETPARENTDIR="" with the parent folder of your local clone of DIMet, 
-example:
-```
-MYDIMETPARENTDIR="/home/lab/bioinfo/tools"
-```
-then make them executable
+Make them executable
 ```
 chmod a+x *.sh
 ```
@@ -123,7 +93,7 @@ For the *(b)* type of preprocessing we offer our accompanying tool [Tracegroomer
 Only use DIMet when your data has already underwent the complete preprocessing, as it will not be carried out by DIMet.
 
 The following sections will help you to understand the general expected organization of your 
-input data and configuration files. Further minimal examples can also be downloaded from [Zenodo](https://zenodo.org/xxxxxxxxxxx11)
+input data and configuration files. Further minimal examples can also be downloaded from [Zenodo](https://sandbox.zenodo.org/record/1224019)
 
 
 ## General organization of the input data and configuration (when in command line environment)
@@ -186,7 +156,7 @@ Thus, an `analysis configuration` file indicates the name of the `dataset config
 
 The `general configuration` file points to the `analysis configuration` file, and is located in `config`.
 
-Further examples of these configuration files, with their respective minimal datasets are provided on [Zenodo](https://zenodo.org/xxxxxxxxxxx22).
+Further examples of these configuration files, with their respective minimal datasets are provided on [Zenodo](https://sandbox.zenodo.org/record/1224019)
 
 
 # Getting help
@@ -206,6 +176,8 @@ For any information or help running DIMet, you can get in touch with:
     Benjamin Dartigues (1)	(benjamin.dartigues@u-bordeaux.fr)	 
     Florian Specque (3)	  	(florian.specque@u-bordeaux.fr)
     Slim Karkar (1,3)       (slim.karkar@u-bordeaux.fr)
+    Helge Hecht             (helge.hecht@recetox.muni.cz)
+    Bjorn Gruening          (bjoern.gruening@gmail.com)
     Thomas Daubon (3)       (thomas.daubon@u-bordeaux.fr)  
     Macha Nikolski (1,3)    (macha.nikolski@u-bordeaux.fr)
 
@@ -216,6 +188,8 @@ For any information or help running DIMet, you can get in touch with:
 
     (3) CNRS, IBGC - University of Bordeaux,
     1, rue Camille Saint-Saens, 33077 Bordeaux, France
+
+    (4) Galaxy Europe
     
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
