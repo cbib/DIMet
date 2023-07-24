@@ -1,0 +1,66 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: DIMet
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: 'Johanna '
+    family-names: Galvis Rodriguez
+    email: deisy-johanna.galvis-rodriguez@u-bordeaux.fr
+    affiliation: CBIB
+  - given-names: Joris
+    family-names: Guyon
+    email: joris.guyon@u-bordeaux.fr
+    affiliation: CBIB
+  - given-names: Benjamin
+    family-names: Dartigues
+    email: benjamin.dartigues@u-bordeaux.fr
+    affiliation: CBIB
+  - given-names: Florian
+    family-names: Specque
+    email: florian.specque@u-bordeaux.fr
+    affiliation: CBIB
+  - given-names: Thomas
+    family-names: Daubon
+    email: thomas.daubon@u-bordeaux.fr
+    affiliation: CBIB
+  - given-names: Slim
+    family-names: Karkar
+    email: slim.karkar@u-bordeaux.fr
+    affiliation: CBIB
+  - given-names: Macha
+    family-names: Nikolski
+    email: macha.nikolski@u-bordeaux.fr
+    affiliation: CBIB
+identifiers:
+  - type: url
+    value: 'https://github.com/cbib/DIMet'
+    description: GitHub
+repository-code: 'https://github.com/cbib/DIMet'
+abstract: >-
+  DIMet is a bioinformatics pipeline for differential
+  analysis of targeted isotope-labelled data.
+
+
+  DIMet supports the analysis of full metabolite abundances
+  and isotopologue contributions, and allows to perform it
+  either in the differential comparison mode or as a
+  time-series analysis. As input, the DIMet accepts three
+  types of measures: a) isotopologues’ contributions, b)
+  fractional contributions (also known as mean enrichment),
+  c) full metabolites’ abundances. Specific functions
+  process each of the three types of measures separately.
+
+
+  Note: DIMet is intended for downstream analysis of tracer
+  metabolomics data that has been corrected for the presence
+  of natural isotopologues. Make sure you that the
+  metabolomics platform provides you the output of the
+  correction procedure before using this pipeline.
+keywords:
+  - metabolomics
+license: MIT
