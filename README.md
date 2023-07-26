@@ -66,7 +66,7 @@ MYPROJECT
 ```
 
 `DATANAME1` represents an experiment, you should replace it by a meaningful name.
-More than one subfolder in the `data` folder can be added.
+More than one subfolder in the `data` folder can be present.
 
 ### Configuration files
 
