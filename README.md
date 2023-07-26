@@ -9,12 +9,6 @@ DIMet supports the analysis of full metabolite abundances and isotopologue contr
 
 Note: DIMet is intended for downstream analysis of tracer metabolomics data that has been corrected for the presence of natural isotopologues. 
 
-# Provided datasets
-
-Datasets, configuration and bash commands corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of Isotope-labeled targeted Metabolomics data" are available at [Zenodo](https://sandbox.zenodo.org/record/1224020).
-
-Download and uncompress the file `datasets_manuscript_DIMet.zip`. 
-
 -----------------------------------------------------------------------------------------------------
 
 # Installing DIMet 
@@ -119,7 +113,11 @@ MYPROJECT
             └── DATANAME1_metadata.csv
 ```
 
-### Data
+# Provided datasets
+
+Datasets, configuration and bash commands corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of Isotope-labeled targeted Metabolomics data" are available at [Zenodo](https://sandbox.zenodo.org/record/1224020).
+
+Download and uncompress the file `datasets_manuscript_DIMet.zip`. 
 
 Using the aliases shown in the example structure above, the `data` folder contains:
 
