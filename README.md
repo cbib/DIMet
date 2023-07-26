@@ -162,6 +162,19 @@ and finally run:
 ./run_Cycloserine_timeseries.sh
 ```
 
+## Available analyses
+
+- _pca_analysis_ computes the PCA and outputs tables with principal components and explained variances
+- _pca_plot_ generated classical PCA plots
+- _abundance_plot_ plots with bars of total metabolite abundances
+- _enrichment_plot_ generates lineplots of mean enrichment
+- _isotopologues_plot_ generates stacked bars of isotopologue proportions
+- _differential_analysis_ runs differential analysis and computes the corresponding statistics
+- _differential_multigroup_analysis_ same as before, but for > 2 groups
+- _timecourse_analysis_ runs differential analysis for time-course experiments in pairwise fashion for successif time points
+- _metabologram_ network integration between SIRM and trascriptomic data, resulting in metabologram plots
+
+  
 # Getting help
 
 For any information or help running DIMet, you can get in touch with: 
