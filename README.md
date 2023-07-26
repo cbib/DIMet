@@ -55,20 +55,14 @@ MYPROJECT
 ├── config
 │   ├── analysis
 │   │   ├── dataset
-│   │   │   └── DATANAME1_data.yaml
-│   │   ├── differential_analysis_DATANAME1.yaml
-│   │   ├── ... # ---> other 'analysis configuration' yml files
-│   │   └── pca_analysis_DATANAME1.yaml
-│   ├── general_config_differential_analysis_DATANAME1.yaml
-│   ├──  ... # ---> other 'general configuration' yml files
-│   └── general_config_pca_analysis_DATANAME1.yaml
+│   │   │   └── # --->'dataset configuration' yml files
+│   │   ├── # --->'analysis configuration' yml files
+│   ├── # ---> 'general configuration' yml files
 └── data
     └── DATANAME1_data
         └── raw
-            ├── AbundanceCorrected.csv
-            ├── Isotopologues_proportions.csv
-            ├── MeanEnrichment.csv
-            └── DATANAME1_metadata.csv
+            ├── # ---> raw .csv files
+
 ```
 
 `DATANAME1` represents an experiment, you should replace it by a meaningful name.
@@ -76,7 +70,7 @@ More than one subfolder in the `data` folder can be added.
 
 ### Configuration files
 
-There are three types of configuration files, all of them in yaml format: 
+As it is shown in the folder structure above, there are three types of configuration files, all of them in yaml format: 
 
 1. `dataset configuration` files:  provide the quantifications and metadata file names that are themselves present in the `data` directory.
 
