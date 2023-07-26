@@ -85,12 +85,60 @@ Examples of these configuration files, with their respective minimal datasets ar
 Datasets, configuration and bash commands corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of Isotope-labeled targeted Metabolomics data" by J. Galvis et al. are available at [Zenodo](https://sandbox.zenodo.org/record/1224340). 
 
 Download and uncompress the file `datasets_manuscript_DIMet.zip`.
-Following the folder structure above, the `data` folder contains:
-
-* `datasets_manuscript_DIMet` for example `Cycloserine_data` or `LDHAB-Control_data` or `example1_data`). In turn this `DATANAME1_data`, contains:                           
-    -  One `raw` subfolder where your quantifications and metadata are located.
-  Note that for practical reasons we used the name "raw", but as explained above, this data has been already preprocessed before using DIMet.
-    -  After running any analysis, one `processed` subfolder is generated, which contains the tables split by cellular compartment, cleaned from rows containing only NaN, and also cleaned from rows containing only 0. 
+<details>
+<summary>Following the folder structure above, the `data` folder contains</summary>
+ ```
+ ├── config
+│   ├── analysis
+│   │   ├── abundance_plot_Cycloserine.yaml
+│   │   ├── abundance_plot_LDHAB-Control.yaml
+│   │   ├── dataset
+│   │   │   ├── Cycloserine_data.yaml
+│   │   │   ├── LDHAB-Control_data_integrate.yaml
+│   │   │   └── LDHAB-Control_data.yaml
+│   │   ├── differential_analysis_pairwise_LDHAB-Control.yaml
+│   │   ├── enrichment_lineplot_Cycloserine.yaml
+│   │   ├── isotopologues_plot_Cycloserine.yaml
+│   │   ├── isotopologues_plot_LDHAB-Control.yaml
+│   │   ├── metabologram_abundance_LDHAB-Control.yaml
+│   │   ├── metabologram_enrichment_LDHAB-Control.yaml
+│   │   ├── pca_plot_LDHAB-Control.yaml
+│   │   ├── pca_tables_Cycloserine.yaml
+│   │   └── timecourse_analysis_Cycloserine.yaml
+│   ├── general_config_abundance_plot_Cycloserine.yaml
+│   ├── general_config_abundance_plot_LDHAB-Control.yaml
+│   ├── general_config_differential_analysis_LDHAB-Control.yaml
+│   ├── general_config_enrichment_lineplot_Cycloserine.yaml
+│   ├── general_config_isotopologues_plot_Cycloserine.yaml
+│   ├── general_config_isotopologues_plot_LDHAB-Control.yaml
+│   ├── general_config_metabologram_abundance_LDHAB-Control.yaml
+│   ├── general_config_metabologram_enrichment_LDHAB-Control.yaml
+│   ├── general_config_pca_plot_LDHAB-Control.yaml
+│   ├── general_config_pca_tables_Cycloserine.yaml
+│   └── general_config_timecourse_analysis_Cycloserine.yaml
+├── data
+│   ├── Cycloserine_data
+│   │   └── raw
+│   │       ├── CorrectedIsotopologues.csv
+│   │       ├── FracContribution_C.csv
+│   │       ├── metadata_cycloser.csv
+│   │       └── rawAbundances.csv
+│   └── LDHAB-Control_data
+│       ├── integration_files
+│       │   ├── DEG_Control_LDHAB.csv
+│       │   ├── pathways_kegg_metabolites.csv
+│       │   ├── pathways_kegg_transcripts.csv
+│       │   └── readme.txt
+│       └── raw
+│           ├── AbundanceCorrected.csv
+│           ├── IsotopologuesAbs.csv
+│           ├── IsotopologuesProp.csv
+│           ├── MeanEnrichment13C.csv
+│           └── metadata_endo_ldh.csv
+├── run_Cycloserine_timeseries.sh
+└── run_LDHAB-Control.sh
+ ```
+</details>
 
 -----------------------------------------------------------------------------------------------------
 
