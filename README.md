@@ -162,27 +162,6 @@ and finally run:
 ./run_Cycloserine_timeseries.sh
 ```
 
-## Running analyses on your data
-
-To run any analysis on your own data, first your files have to be preprocessed.
-Preprocessing includes, in this order: 
-
--  *(a)* The correction by the abundance of naturally occurring isotopologues by external tools such IsoCor, ElMaven, AccuCor, etc). 
-
--  *(b)* The normalization by internal standard and/or the normalization by amount of material and/or the formatting of the quantification tables.
-
-For the *(b)* type of preprocessing we offer our accompanying tool [Tracegroomer](https://github.com/johaGL/Tracegroomer). 
-Only use DIMet when your data has already underwent the complete preprocessing, as it will not be carried out by DIMet.
-
-The following sections will help you to understand the general expected organization of your 
-input data and configuration files. Further minimal examples can also be downloaded from [Zenodo](https://sandbox.zenodo.org/record/1224019)
-
-
-## General organization of the input data and configuration (when in command line environment)
-
-Input data and configuration files that were used to generate the figures in the DIMet paper are provided as examples of how the DIMet pipeline can be used. 
-
-
 # Getting help
 
 For any information or help running DIMet, you can get in touch with: 
