@@ -163,35 +163,36 @@ Further examples of these configuration files, with their respective minimal dat
 
 For any information or help running DIMet, you can get in touch with: 
 
+* [Johanna Galvis](mailto:deisy-johanna.galvis-rodriguez[AT]u-bordeaux.fr)
 * [Macha Nikolski](mailto:macha.nikolski[AT]u-bordeaux.fr)
 * [Benjamin Dartigues](mailto:benjamin.dartigues[AT]u-bordeaux.fr)
-* [Johanna Galvis](mailto:deisy-johanna.galvis-rodriguez[AT]u-bordeaux.fr)
 
 # LICENSE MIT
 
     Copyright (c) 2023 
     
-    Johanna Galvis (1,3)    (deisy-johanna.galvis-rodriguez@u-bordeaux.fr)
-    Joris Guyon (2)         (joris.guyon@u-bordeaux.fr)
-    Benjamin Dartigues (1)	(benjamin.dartigues@u-bordeaux.fr)	 
-    Florian Specque (3)	  	(florian.specque@u-bordeaux.fr)
-    Slim Karkar (1,3)       (slim.karkar@u-bordeaux.fr)
-    Helge Hecht             (helge.hecht@recetox.muni.cz)
-    Bjorn Gruening          (bjoern.gruening@gmail.com)
-    Thomas Daubon (3)       (thomas.daubon@u-bordeaux.fr)  
-    Macha Nikolski (1,3)    (macha.nikolski@u-bordeaux.fr)
-
-    (1) CBiB - University of Bordeaux,
-    146, rue Leo Saignat, 33076 Bordeaux, France
+    Johanna Galvis (1,2)    deisy-johanna.galvis-rodriguez@u-bordeaux.fr
+    Benjamin Dartigues (2)	 benjamin.dartigues@u-bordeaux.fr
+    Florian Specque (1,2)	  florian.specque@u-bordeaux.fr
+    Helge Hecht (3,5)       helge.hecht@recetox.muni.cz
+    Bjorn Gruening (4,5)    bjoern.gruening@gmail.com
+    Hayssam Soueidan (2)    massyah@gmail.com
+    Macha Nikolski (1,2)    macha.nikolski@u-bordeaux.fr
     
-    (2) University of Bordeaux, INSERM, BPH U1219, Bordeaux, France
+    (2) CNRS, IBGC - University of Bordeaux,
+    1, rue Camille Saint-Saens, Bordeaux, France
 
-    (3) CNRS, IBGC - University of Bordeaux,
-    1, rue Camille Saint-Saens, 33077 Bordeaux, France
+    (2) CBiB - University of Bordeaux,
+    146, rue Leo Saignat, Bordeaux, France
 
-    (4) Galaxy Europe
+    (3) Spectrometric Data Processing and Analysis,
+    Masaryk University, Brno, Czech Republic
     
-
+    (4) University of Freiburg, 
+    Freiburg, Germany
+    
+    (5) Galaxy Europe
+    
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
