@@ -87,7 +87,7 @@ Datasets, configuration and bash commands corresponding to the results presented
 Download and uncompress the file `datasets_manuscript_DIMet.zip`.
 <details>
 <summary>Following the folder structure above, the `data` folder contains</summary>
- ```
+```
 ├── config
 │   ├── analysis
 │   │   ├── abundance_plot_Cycloserine.yaml
@@ -137,7 +137,7 @@ Download and uncompress the file `datasets_manuscript_DIMet.zip`.
 │           └── metadata_endo_ldh.csv
 ├── run_Cycloserine_timeseries.sh
 └── run_LDHAB-Control.sh
- ```
+```
 </details>
 
 -----------------------------------------------------------------------------------------------------
