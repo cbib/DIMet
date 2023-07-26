@@ -88,7 +88,7 @@ Download and uncompress the file `datasets_manuscript_DIMet.zip`.
 <details>
 <summary>Following the folder structure above, the `data` folder contains</summary>
  ```
- ├── config
+├── config
 │   ├── analysis
 │   │   ├── abundance_plot_Cycloserine.yaml
 │   │   ├── abundance_plot_LDHAB-Control.yaml
