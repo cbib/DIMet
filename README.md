@@ -1,30 +1,21 @@
-DIMet: Differential Isotope-labeled targeted Metabolomics
+DIMet: Differential analysis Isotope-labeled targeted Metabolomics data
 ===
 
 # Introduction
 
-DIMet is a bioinformatics pipeline for differential analysis of targeted isotope-labelled data.
+DIMet is a bioinformatics pipeline for differential and time-course analysis of targeted isotope-labelled data.
 
 DIMet supports the analysis of full metabolite abundances and isotopologue contributions, and allows to perform it either in the differential comparison mode or as a time-series analysis. As input, the DIMet accepts three types of measures: a) isotopologues’ contributions, b) fractional contributions (also known as mean enrichment), c) full metabolites’ abundances. Specific functions process each of the three types of measures separately.
 
-Note: DIMet is intended for downstream analysis of tracer metabolomics data that has been corrected for the presence of natural isotopologues. Make sure you that the metabolomics platform provides you the output of the correction procedure before using this pipeline.
+Note: DIMet is intended for downstream analysis of tracer metabolomics data that has been corrected for the presence of natural isotopologues. 
 
 # Provided datasets
 
-Datasets, configuration and bash commands corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of targeted Isotope-labeled Metabolomics data
-" are available on [Zenodo](https://sandbox.zenodo.org/record/1224020).
-Download and uncompress the file `datasets_manuscript_DIMet`.
+Datasets, configuration and bash commands corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of Isotope-labeled targeted Metabolomics data" are available at [Zenodo](https://sandbox.zenodo.org/record/1224020).
 
-You can use the files in `data/Cycloserine_data/raw`, `data/LDHAB-Control_data/raw` and
-`data/LDHAB-Control_data/integration_files` and perform the analyses through the Galaxy version of DIMet, which contains the general instructions to do so.
-
-Otherwise, after downloading and uncompressing the datasets folder, place it inside any directory NOT being the `DIMet` directory. Perform the analyses in a command line environment, by placing yourself inside `datasets_manuscript_DIMet` and running the `.sh` executable files to reproduce the analyses. 
-The rest of the present document is therefore addressed to users 
-desiring to work in command line environment. 
-
+Download and uncompress the file `datasets_manuscript_DIMet.zip`. 
 
 -----------------------------------------------------------------------------------------------------
-
 
 # Installing DIMet 
 
