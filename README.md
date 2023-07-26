@@ -85,8 +85,11 @@ Examples of these configuration files, with their respective minimal datasets ar
 Datasets, configuration and bash commands corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of Isotope-labeled targeted Metabolomics data" by J. Galvis et al. are available at [Zenodo](https://sandbox.zenodo.org/record/1224340). 
 
 Download and uncompress the file `datasets_manuscript_DIMet.zip`.
+
 <details>
+ 
 <summary>Following the folder structure above, the `data` folder contains</summary>
+
 ```
 ├── config
 │   ├── analysis
@@ -138,6 +141,7 @@ Download and uncompress the file `datasets_manuscript_DIMet.zip`.
 ├── run_Cycloserine_timeseries.sh
 └── run_LDHAB-Control.sh
 ```
+
 </details>
 
 -----------------------------------------------------------------------------------------------------
