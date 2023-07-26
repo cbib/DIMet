@@ -93,7 +93,7 @@ Datasets, configuration and bash commands corresponding to the results presented
 Download and uncompress the file `datasets_manuscript_DIMet.zip`.
 Following the folder structure above, the `data` folder contains:
 
-* `DATANAME1_data` that is a folder named accordingly with the experiment  (for example `Cycloserine_data` or `LDHAB-Control_data` or `example1_data`). In turn this `DATANAME1_data`, contains:                           
+* `datasets_manuscript_DIMet` for example `Cycloserine_data` or `LDHAB-Control_data` or `example1_data`). In turn this `DATANAME1_data`, contains:                           
     -  One `raw` subfolder where your quantifications and metadata are located.
   Note that for practical reasons we used the name "raw", but as explained above, this data has been already preprocessed before using DIMet.
     -  After running any analysis, one `processed` subfolder is generated, which contains the tables split by cellular compartment, cleaned from rows containing only NaN, and also cleaned from rows containing only 0. 
@@ -104,16 +104,13 @@ Following the folder structure above, the `data` folder contains:
 
 DIMet runs in the command line environment. 
 
-## Running analyses on the manuscript data
+## Running analyses on the provided datasets
 
-Make sure you have activated your virtual environment.
-After downloading the data from Zenodo, you have a folder named `datasets_manuscript_DIMet`.
-You have inside, two .sh files. Each .sh file will run sequentially, different analyses for its respective dataset.
-Make them executable
+Make sure you have activated your virtual environment. In the `datasets_manuscript_DIMet` folder you have two `.sh` files: `run_LDHAB-Control.sh` and `run_Cycloserine_timeseries.sh`; Make them executable:
 ```
 chmod a+x *.sh
 ```
-and finally:
+and finally run:
 ```
 ./run_LDHAB-Control.sh
 ./run_Cycloserine_timeseries.sh
