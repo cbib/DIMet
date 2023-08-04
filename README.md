@@ -1,4 +1,4 @@
-DIMet: Differential analysis Isotope-labeled targeted Metabolomics data
+DIMet: Differential analysis of Isotope-labeled targeted Metabolomics data
 ===
 
 # Introduction
