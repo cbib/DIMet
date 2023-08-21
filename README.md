@@ -85,7 +85,7 @@ Further examples of configuration files, with their respective minimal datasets 
 
 ## Provided datasets
 
-Datasets, configuration and bash commands corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of Isotope-labeled targeted Metabolomics data" by J. Galvis *et al*. are available at [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/1224020). 
+Datasets, configuration and bash scripts corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of Isotope-labeled targeted Metabolomics data" by J. Galvis *et al*. are available at [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/1224020). 
 
 Download and uncompress the file `datasets_manuscript_DIMet.zip`.
 
