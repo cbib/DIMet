@@ -27,7 +27,7 @@ class TestAbundanceBars(TestCase):
             'name_to_plot': ['beta-1', 'beta-2', 'ctrl-1', 'ctrl-2'],
             'condition': ['beta-glu', 'beta-glu', 'control', 'control'],
             'timepoint': ['t0', 't0', 't0', 't0'],
-            'short_comp': ['ex', 'ex', 'ex', 'ex']
+            'compartment': ['ex', 'ex', 'ex', 'ex']
         })
         result = abundance_bars.pile_up_abundance(df, metadata_df)
         self.assertTrue(result.shape == (12, 4))
@@ -46,7 +46,7 @@ class TestAbundanceBars(TestCase):
             'timepoint': ['t0', 't0'],
             'condition': ['beta', 'alpha'],
             'metabolite': ['m1', 'm1'],
-            'abundance' : [200, 700]
+            'abundance': [200, 700]
         })
         fig_this_metabolite, axs_k = plt.subplots(
             nrows=1, ncols=1,
@@ -67,7 +67,7 @@ class TestAbundanceBars(TestCase):
             'timepoint': ['t0', 't0'],
             'condition': ['beta', 'alpha'],
             'metabolite': ['m1', 'm1'],
-            'abundance' : [200, 700]
+            'abundance': [200, 700]
         })
         try:
             os.makedirs("../__pycache__/")
@@ -84,4 +84,3 @@ class TestAbundanceBars(TestCase):
             height_each_subfig=2.4,
             cfg=cfg_m)
         self.assertTrue(result is None)
-

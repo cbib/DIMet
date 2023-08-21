@@ -205,7 +205,7 @@ class AbundancePlot(Method):
                 "No selected metabolites provided, plotting for all")
             with open_dict(cfg):
                 cfg.analysis["metabolites"] = {}
-                for c in set(dataset.metadata_df["short_comp"]):
+                for c in set(dataset.metadata_df['compartment']):
                     metabolites_compartment = \
                         dataset.compartmentalized_dfs[
                             'abundances'][c].index.to_list()
@@ -220,7 +220,7 @@ class AbundancePlot(Method):
         # check that necessary information is provided in the analysis config
         try:
             if not set(cfg.analysis.metabolites.keys()).issubset(
-                    dataset.metadata_df["short_comp"]):
+                    dataset.metadata_df['compartment']):
                 raise ValueError(
                     "[Analysis > Metabolites > compartments] are missing "
                     "from [Metadata > Compartments]"
@@ -378,7 +378,7 @@ class IsotopologueProportionsPlot(Method):
             logger.warning(
                 "No selected metabolites provided, plotting for all")
             with open_dict(cfg):
-                compartments = list(set(dataset.metadata_df["short_comp"]))
+                compartments = list(set(dataset.metadata_df['compartment']))
                 cfg.analysis["metabolites"] = dict()
                 for c in compartments:
                     isotopologues_names = \
@@ -440,7 +440,7 @@ class MeanEnrichmentLinePlot(Method):
                 "No selected metabolites provided, plotting for all")
             with open_dict(cfg):
                 cfg.analysis["metabolites"] = {}
-                for c in set(dataset.metadata_df["short_comp"]):
+                for c in set(dataset.metadata_df['compartment']):
                     cfg.analysis["metabolites"][c] = \
                         dataset.compartmentalized_dfs[
                             'mean_enrichment'][c].index.to_list()

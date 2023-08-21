@@ -459,7 +459,7 @@ def run_isotopologue_proportions_plot(dataset: Dataset,
 
     for compartment in compartments:
         metadata_compartment_df: pd.DataFrame = \
-            metadata_df.loc[metadata_df["short_comp"] == compartment, :]
+            metadata_df.loc[metadata_df['compartment'] == compartment, :]
         compartment_df = dataset.compartmentalized_dfs[
             "isotopologue_proportions"][compartment]
 
