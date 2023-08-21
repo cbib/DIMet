@@ -68,6 +68,29 @@ MYPROJECT
 `DATANAME1` represents an experiment, you should replace it by a meaningful name.
 More than one subfolder in the `data` folder can be present.
 
+### Data files
+
+The user has to provide his data files within the data folder. Original data files temselves have to be placed in the <code>raw</code> subfolder along with a metadata file that contains the the experimental setup corresponding to the data. 
+
+The structure of the <bf>metadata file</bf> has to contain 6 columns named <code>name_to_plot</code>, <code>timepoint</code>, <code>timenum</code>, <code>condition</code>, <code>compartment</code>, <code>original_name<code>. Here is the semantics of the columns:
+
+- <code>name_to_plot</code> is the string that will appear on the figurs produced by DIMet
+- <code>timepoint</code> is the sampling time as it is provided in the quantification files (it is an arbitary string that can contain non numerical characters)
+- <code>timenum</code> is the numerical encoding of the <code>timepoint</code>
+- <code>condition</code> is the experimental condition
+- <code>compartment</code> is the name of the cellulaur compartment for which the measuring has been done (e.g. "endo", "endocellular", "cyto", etc)
+- <code>original_name<code> contains the column names that is provided in the quantification files
+
+<br>Example:</bf>
+
+| name_to_plot | timepoint | timenum | condition | compartment | original_name |
+|--------------|-----------|---------|-----------|-------------|---------------|
+| Cond1 T0     | T0        | 0       | Cond1     | comp_name   | T0_Cond_1     |
+| Cond1 T24    | T24       | 24      | Cond1     | comp_name   | T24_Cond_1    |
+| Cond2 T0     | T0        | 0       | Cond2     | comp_name   | T0_Cond_2     |
+| Cond1 T24    | T24       | 24      | Cond2     | comp_name   | T24_Cond_2    |
+
+
 ### Configuration files
 
 As it is shown in the folder structure above, there are three types of configuration files, all of them in yaml format: 
@@ -85,7 +108,7 @@ Further examples of configuration files, with their respective minimal datasets 
 
 ## Provided datasets
 
-Datasets, configuration and bash commands corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of Isotope-labeled targeted Metabolomics data" by J. Galvis *et al*. are available at [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/1224020). 
+Datasets, configuration and bash scripts corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of Isotope-labeled targeted Metabolomics data" by J. Galvis *et al*. are available at [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/1224020). 
 
 Download and uncompress the file `datasets_manuscript_DIMet.zip`.
 
