@@ -3,7 +3,7 @@ DIMet: Differential analysis of Isotope-labeled targeted Metabolomics data
 
 # Introduction
 
-DIMet is a bioinformatics pipeline for differential and time-course analysis of targeted isotope-labelled data.
+DIMet is a bioinformatics pipeline for differential and time-course analysis of targeted isotope-labeled data.
 
 DIMet supports the analysis of full metabolite abundances and isotopologue contributions, and allows to perform it either in the differential comparison mode or as a time-series analysis. As input, the DIMet accepts three types of measures: a) isotopologues’ contributions, b) fractional contributions (also known as mean enrichment), c) full metabolites’ abundances. Specific functions process each of the three types of measures separately.
 
@@ -70,30 +70,201 @@ More than one subfolder in the `data` folder can be present.
 
 ### Data files
 
-The user has to provide his data files within the data folder. Original data files temselves have to be placed in the <code>raw</code> subfolder along with a metadata file that contains the the experimental setup corresponding to the data. 
+The user has to provide his data files within the data folder. Original data files themselves
+have to be placed in the `raw` subfolder along with a metadata file that contains 
+the experimental setup corresponding to the data. 
 
-The structure of the <bf>metadata file</bf> has to contain 6 columns named <code>name_to_plot</code>, <code>timepoint</code>, <code>timenum</code>, <code>condition</code>, <code>compartment</code>, <code>original_name<code>. Here is the semantics of the columns:
+#### - Metadata file
+The structure of the **metadata file** has to contain 6 columns named 
+<code>name_to_plot</code>, <code>timepoint</code>, 
+<code>timenum</code>, <code>condition</code>, 
+<code>compartment</code>, <code>original_name</code>. 
+Here is the semantics of the columns:
 
-- <code>name_to_plot</code> is the string that will appear on the figurs produced by DIMet
-- <code>timepoint</code> is the sampling time as it is provided in the quantification files (it is an arbitary string that can contain non numerical characters)
-- <code>timenum</code> is the numerical encoding of the <code>timepoint</code>
+- <code>name_to_plot</code> is the string that will appear on the figures produced by DIMet
 - <code>condition</code> is the experimental condition
-- <code>compartment</code> is the name of the cellulaur compartment for which the measuring has been done (e.g. "endo", "endocellular", "cyto", etc)
-- <code>original_name<code> contains the column names that is provided in the quantification files
+- <code>timepoint</code> is the sampling time as it is defined in your experimental setup
+(it is an arbitary string that can contain non numerical characters)
+- <code>timenum</code> is the numerical encoding of the <code>timepoint</code>
+- <code>compartment</code> is the name of the cellular compartment for which the measuring
+has been done (e.g. "endo", "endocellular", "cyto", etc)
+- <code>original_name</code> contains the column names that are provided in the quantification files
 
-<br>Example:</bf>
+Example:
 
-| name_to_plot | timepoint | timenum | condition | compartment | original_name |
-|--------------|-----------|---------|-----------|-------------|---------------|
-| Cond1 T0     | T0        | 0       | Cond1     | comp_name   | T0_Cond_1     |
-| Cond1 T24    | T24       | 24      | Cond1     | comp_name   | T24_Cond_1    |
-| Cond2 T0     | T0        | 0       | Cond2     | comp_name   | T0_Cond_2     |
-| Cond1 T24    | T24       | 24      | Cond2     | comp_name   | T24_Cond_2    |
+| name_to_plot | condition | timepoint | timenum | compartment | original_name |
+|--------------|-----------|-----------|---------|-------------|---------------|
+| Cond1 T0     | cond1     | T0        | 0       | comp_name   | T0_cond_1     |
+| Cond1 T24    | cond1     | T24       | 24      | comp_name   | T24_cond_1    |
+| Cond2 T0     | cond2     | T0        | 0       | comp_name   | T0_cond_2     |
+| Cond3 T24    | cond2     | T24       | 24      | comp_name   | T24_cond_2    |
+
+
+
+#### - Quantification files
+
+The original data that the user provides is a set of the quantification files. 
+Each quantification file is expected to correspond to one type of measure:
+
+1. Isotopologue absolute values
+2. total metabolites' Abundances
+3. Mean enrichment (also called Fractional contribution) 
+4. Isotopologue proportions
+
+The user must organize his quantification files, in such a way that
+the rows represent the molecules, whereas the columns (except the first one) represent the samples:
+        
+- The first column, named `ID`, contains the isotopologues or the metabolites identifiers.
+- The second column and beyond, whose names must match with the column `original_name` in the **metadata**,
+  contain the measures in numeric format (no letters or symbols allowed in the cells, only numbers).
+- The isotopologues' `ID` must follow the convention: `MetaboliteID_m+X` (for example: `AMP_m+4`, `cit_m+0`, `cit_m+1`)
+
+
+<details><!--format quantification-->
+
+ <summary>Examples of the expected format of the quantification files
+ <sub><sup>(click to show/hide)</sup></sub>
+ </summary>
+  
+  The total metabolites' Abundances file:
+    
+| ID       | T0_cond_1  | T24_cond_1  | T0_cond_2  | T24_cond_2 |
+|----------|------------|-------------|------------|------------|
+| PEP      | 3364610.46 | 10250098.25 | 1124772.29 | 1035932.25 |
+| citrate  | 5783654.51 | 5934305.65  | 3546334.99 | 3460334.88 |
+| fumarate | 354387.74  | 360087.74   | 334287.74  | 350387.74  |
+| OA       | 9435186.33 | 9435186.33  | 9435186.33 | 9435186.33 |
+    
+    
+The Mean enrichment (also called Fractional contribution) file:
+
+
+| ID       | T0_cond_1 | T24_cond_1 | T0_cond_2 | T24_cond_2 |
+|----------|-----------|------------|-----------|------------|
+| PEP      | 0.5603    | 0.6391     | 0.9591    | 0.9553     |
+| citrate  | 0.8057    | 0.8870     | 0.7809    | 0.6918     |
+| fumarate | 0.001     | 0          | 0.1508    | 0.1511     |
+| OA       | 0.7030    | 0.7006     | 0.001     | 0          |
+    
+  
+The Isotopologue absolute values file:
+
+| ID      | T0_cond_1  | T24_cond_1 | T0_cond_2 | T24_cond_2 |
+|---------|------------|------------|-----------|------------|
+| PEP_m+0 | 357354.66  | 387054.66  | 0         | 0          |
+| PEP_m+1 | 965435.68  | 975030.68  | 668.91    | 568.87     |
+| PEP_m+2 | 1435050.95 | 7987654.66 | 136749.05 | 137709.05  |
+| PEP_m+3 | 606769.17  | 900358.25  | 987354.33 | 897654.33  |
+
+
+The Isotopologue proportions file :
+
+
+| ID      | T0_cond_1 | T24_cond_1 | T0_cond_2 | T24_cond_2 |
+|---------|-----------|------------|-----------|------------|
+| PEP_m+0 | 0.106     | 0.038      | 0.000     | 0.000      |
+| PEP_m+1 | 0.287     | 0.095      | 0.001     | 0.001      |
+| PEP_m+2 | 0.427     | 0.779      | 0.122     | 0.133      |
+| PEP_m+3 | 0.180     | 0.088      | 0.878     | 0.867      |
+
+
+</details>
+
+
+Both quantification and metadata files must be given as in .csv 'tab' delimited format.
+Note that if you provide at least one type of measure, you can still 
+run some of the analyses, by making sure that the data you provide is suitable for the analysis that you choose.
+
+
+#### -  Data files for the omics integration (optional)
+
+If the user has acquired both the metabolome and the transcriptome under the same
+experimental conditions, she/he can perform the integration of both omics. DIMet performs
+such integration at the metabolic pathway level, taking as input the differential metrics
+and the pathways files, to generate the **Metabologram(s)**. 
+
+<details>
+  <summary>Details about the required data files for the omics integration<sup><sub> (click to show/hide)</sub></sup>
+  </summary>
+  The differential metrics for the omics integration are of two types:
+
+   1. the results of the differential analysis of the metabolomics data, performed by DIMet automatically when the integration job is launched
+   2. the results, provided by the user, of the differential analysis of the transcriptome data. External tools such as DESeq2, EdgeR, Limma, exist for this purpose. 
+    
+  The <code>raw</code> folder previously seen provides the necessary for (1). 
+  For (2), another new folder  named <code>integration_files</code>
+  must be created at the same level:
+  
+  ```
+  MYPROJECT
+    ├── config
+    │   ├── analysis
+    │   │   ├── dataset
+    │   │   │   └── # --->'dataset configuration' yml files
+    │   │   ├── # --->'analysis configuration' yml files
+    │   ├── # ---> 'general configuration' yml files
+    └── data
+        └── DATANAME1_data
+            ├── integration_files  # ---> NEW FOLDER
+            │   ├── # ---> .csv files required for omics integration
+            └── raw
+                ├── # ---> raw .csv files
+
+  ```
+
+  This new folder will contain the
+  differential transcriptomics or DEGs file(s), as well as the pathways files:
+   
+  * The *DEGs* (Differentially Expressed Genes) file must be given in tab delimited .csv format.
+   The user can provide >1 DEGs files if available, with clear informative
+   filenames to specify a coherent integration.
+
+    
+| ensembl          | name                           | FC        | log2FoldChange    | padj     | gene_symbol |
+|------------------|--------------------------------|-----------|-------------------|----------|-------------|
+| ENSG00000105220  | glucose-6-phosphate isomerase  | 0.0000136 | -16.1660338229612 | 1.00E-10 | GPI         |
+| ENSG00000156515  | hexokinase 1                   | 10        | 3.32192809488736  | 1.00E-03 | HK1         |
+| ENSG00000153574  | ribose 5-phosphate isomerase A | 5         | 2.32192809488736  | 0.001    | RPIA        |
+| ENSG00000141959  | phosphofructokinase, liver     | 1.75      | 0.807354922057604 | 0.05     | PFKL        |
+
+    
+   
+  * The *metabolites per pathway* file: the column names must be the names of the pathways. The values below each column name correspond to the
+   metabolites present in each pathway. It is allowed that a same metabolite appears in several pathways.
+   The metabolites' names or identifiers must match with those appearing in the metabolite total
+   abundances -or the mean enrichment-  file.  Only one file of this type is accepted.
+
+| GLYCOLYSIS | PENTOSE_PHOSPHATE | ... |
+|------------|-------------------|-----|
+| Glucose_6P | Ribose_5P         | ... |
+| Pyruvate   | Xylulose_5P       | ... |
+| PEP        | Glucose_6P        | ... |
+| ...        | ...               | ... |
+
+
+  * The *genes or transcripts per pathway* file: the column names must be the names of the pathways. The values below each column correspond to the gene
+   symbols present in each pathway. It is allowed that a same gene symbol appears in several pathways. The
+   gene symbols must match with those appearing in the DEGs file.    Only one file of this type is accepted
+
+    
+    
+| GLYCOLYSIS | PENTOSE_PHOSPHATE | ... |
+|------------|-------------------|-----|
+| GPI        | RPIA              | ... |
+| HK1        | PGD               | ... |
+| PKFL       | RBKS              | ... |
+| ...        | ...               | ... |
+
+  
+</details>
+
+
 
 
 ### Configuration files
 
-As it is shown in the folder structure above, there are three types of configuration files, all of them in yaml format: 
+As it is shown in the folder structure above, there are three types of configuration files, 
+all of them in `.yaml` format: 
 
 1. `dataset configuration` files:  provide the quantifications and metadata file names that are themselves present in the `data` directory.
 
@@ -101,14 +272,250 @@ As it is shown in the folder structure above, there are three types of configura
 
 3. `general configuration` files: configures the analysis to be run by both pointing to the `analysis configuration` and providing general information such as e.g. output folder names etc.
 
-**Deeper explanations about the configuration files** will be given through the datasets used in our manuscript -datasets available at [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/1224020)-, in the section [Provided datasets](#provided-datasets), subsection 
-<a href="#config_folder">The <code>config</code> folder</a>. 
 
-Further examples of configuration files, with their respective minimal datasets are provided on [Zenodo (minimal_examples)](https://sandbox.zenodo.org/record/1224340).
+<details><!-- section organize the configuration files -->
+
+<summary><b> How to organize the configuration files</b> <sub><sup>(click to show/hide)</sup></sub></summary>
+
+  The user must place the configuration files in the `config` folder, as follows: 
+* the *dataset configuration* files, inside the `config/analysis/dataset/` subfolder
+* the *analysis configuration* files,  inside the `config/analysis/` subfolder
+* the *general configuration* files, directly inside the `config` folder
+*   <details>
+    <summary>Example of a structure of the  <code>config</code>  folder  
+     <sub><sup>(click to show/hide)</sup></sub>
+    </summary>
+    
+      ```
+      config
+      ├── analysis
+      │   ├── dataset
+      │   │   ├── dataname1_data.yaml
+      │   │   └── dataname1_data_integrate.yaml  # <-- if suitable
+      │   ├── differential_analysis_pairwise_dataname1.yaml
+      │   ├── enrichment_lineplot_dataname1.yaml
+      │   ├── isotopologues_plot_dataname1.yaml
+      │   ├── metabologram_abundance_dataname1.yaml
+      │   ├── pca_plot_dataname1.yaml
+      │   └── timecourse_analysis_dataname1.yaml
+      ├── general_config_abundance_plot_dataname1.yaml
+      ├── general_config_differential_analysis_dataname1.yaml
+      ├── general_config_enrichment_lineplot_dataname1.yaml
+      ├── general_config_isotopologues_plot_dataname1.yaml
+      ├── general_config_metabologram_abundance_dataname1.yaml
+      ├── general_config_pca_plot_dataname1.yaml
+      └── general_config_timecourse_analysis_dataname1.yaml
+    
+      ```
+     </details> 
+   
+
+
+The next sections explain each type of these files. Furthermore, when analyzing your own data, you can
+use these configuration examples as templates and fill them coherently.
+
+The `# <-` comment inside the examples indicates the parts that the user must fill. 
+
+ <details><!--section dataset config -->
+ <summary><b>The dataset configuration </b></summary>  
+  
+   For each given dataset, there must exist a corresponding *dataset configuration* file, which is located inside the `config/analysis/dataset/` folder.
+   This file must specify:
+  - the name of the metadata file
+  - the names of the quantification files
+  - the "order" of the conditions, where the *control* is the first to be listed 
+(note that the name assigned to the control condition can be different than the one
+we used in our data).
+
+  - Note that the parameter `_target_` must **not** be changed.
+  - If you do not have all the four types of quantification that are shown below, just delete
+    the entire line making reference to the type of quantification that is absent.
+  
+  ```
+  _target_: dimet.data.DatasetConfig
+
+  label:  # <- name of your dataset, fill after the colon
+  name:  # <- short description of your dataset, fill after the colon
+  subfolder:  DATANAME1_data  # <- subfolder name in the data folder, change after the colon
+    
+  # ALWAYS WITHIN THE RAW SUBFOLDER
+  metadata:    # <- file name, fill after the colon
+  abundances:    # <- file name, fill after the colon
+  mean_enrichment:    # <- file name, fill after the colon
+  isotopologue_proportions:    # <- file name, fill after the colon
+  isotopologues:    # <- file name, fill after the colon
+    
+  conditions :
+   - cond1 # <- first must be control, fill
+   - cond2 # <- the rest of the conditions vertically listed
+  ```
+  This dataset configuration will be used by all the types of analysis we offer except the omics integration, see the section *The integration dataset configuration* for that purpose.
+
+
+
+   <details><!-- section integration dataset config-->
+   <summary>The integration dataset configuration (for <b>omics integration</b>)</summary>
+  
+   When performing the **omics integration** , 
+   there must also exist a *dataset configuration* file specific for the integration, 
+   that will point to `integration_files` and `raw` subfolders.
+       
+   Note that the parameter `_target_` must **not** be changed.
+       
+    ```
+    _target_: dimet.data.DataIntegrationConfig  
+
+    label: integrate_DATANAME1   # <- change after the colon
+    name:     # <- short description of your dataset
+    subfolder: DATANAME1_data  # <- subfolder name in the data folder, change after the colon
+    
+    conditions :
+     - cond1 # <- first must be control
+     - cond2 # <- the rest of the conditions vertically listed
+    
+    # ALWAYS WITHIN THE RAW SUBFOLDER
+    metadata:    # <- file name, fill after the colon
+    abundances:    # <- file name, fill after the colon
+    mean_enrichment:    # <- file name, fill after the colon
+    
+    # WITHIN THE INTEGRATION_FILES SUBFOLDER
+    transcripts:  
+      - myDEG_1   # <- file name
+    
+    pathways: 
+      metabolites:   # <- file name, change fill the colon
+      transcripts:    # <- file name, change fill the colon
+
+    ```
+
+   </details><!--closes  section integration dataset config-->
+
+ 
+  </details><!--closes section dataset config-->
+
+
+
+  <details><!--section analysis config-->
+  <summary><b>The analysis configuration </b></summary>   
+   
+   The *analysis configuration* is located inside the `config/analysis/` folder. 
+   For each analysis to be performed, one analysis configuration file must exist. 
+   It indicates which is the type of analysis we want to run, 
+   on which dataset this analysis will be applied, and the parameters that are 
+   specific to that analysis.
+
+   
+     ```
+     label: differential-analysis-DATANAME1   # <- change after the colon
+
+     defaults:
+       - dataset:      # <- name of the dataset cofiguration file
+       - method: differential_analysis
+     
+     comparisons :
+       - [[cond2, T24], [cond1, T24]]   # <-      
+     
+     statistical_test:
+       abundances:    # <- see statistic test options, fill after the colon
+       mean_enrichment: prm-scipy    # <- see options, fill after the colon
+       isotopologues: disfit    # <- see options, fill after the colon
+       isotopologue_proportions: ranksum    # <- see options, fill after the colon
+
+     ```
+   
+   Currently, the **statistic test options** are:
+
+   `MW` (Mann-Whitney test), `KW` (Kruskall-Wallis test), 
+   `ranksum` (Wilcoxon's rank sum test), `Wcox` (Wilcoxon's signed rank test),
+    `BrMu` (Brunner-Munzel test) , `prm-scipy` (permutation testing),
+    `Tt` (t-test) and
+   `disfit` (Fitting of the distribution of the z-scores).
+   
+   Note that the parameters in the *analysis configuration* must be coherent with our dataset.
+ 
+        
+   <details><!-- section analysis config for integration-->
+   <summary> The analysis configuration for the <b>omics integration</b> </summary> 
+
+   The integration performed by DIMet displays the 'differential omics' in the form of Metabologram(s). 
+   The analysis configuration file:
+    
+       ```
+       label: metabologram-using-abundance-DATANAME1  # <- change after the colon
+   
+       defaults:
+         - dataset:   # <- integration dataset config
+         - method: metabologram_integration
+       
+       comparisons :
+         - [[cond2, T24], [cond1, T24]]   # <-  see note (**) 
+       
+       # running for total abundances
+       statistical_test:
+         abundances:    # <-  can be abundances OR mean_enrichment
+       
+       columns_metabolites:
+         ID : metabolite
+         values :    # <- log2FC or FC, fill after the colon
+         
+       columns_transcripts:
+         ID:   # <- the gene symbols column name, fill after the colon
+         values:   # <- the numeric column name,  fillafter the colon
+         
+       compartment:
+         en    
+        ```
+   (`**`) each metabolomics comparison must match with a DEG file.
+   
+   If you need to run the integration using the differential mean enrichment, 
+   a separate analysis configuration file must be created.
+
+   </details><!--closes  section analysis config for the integration-->  
+   
+  </details><!--closes  section analysis config-->
+
+
+  <details><!--section general config-->
+  <summary><b> The general configuration </b></summary>    
+   
+   The *general configuration* file is located directly inside the `config` folder. It must declare the name of its corrresponding *analysis configuration* file. Place yourself in `defaults:` then `- analysis:`, see below:
+     
+     ```
+     hydra:
+       job:
+         chdir: true
+       run:
+         dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}/${analysis.dataset.label}-${analysis.method.label}
+
+     defaults:
+       - analysis:   # <--  the 'analysis configuration' name, fill after the colon
+
+     figure_path: figures
+     table_path: tables    
+     ```
+
+   
+   This *general configuration* file also provides the parameters for generating the output folder names; keep these 
+   output parameters unmodified, so DIMet will generate the full output folders and files names
+   automatically.
+     
+   </details><!--closes section general config--> 
+   
+   Note that across all the types of configuration files, any referenced file name must be written without the extension.
+     
+</details><!--closes  2. section -->
+
+
+
+ Examples of configuration files, with their respective datasets are provided 
+in  [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/todo:updaate). 
+Also complementary minimal datasets with their configuration files are provided in
+[Zenodo (minimal_examples)](https://sandbox.zenodo.org/record/todo:update). **todo:update**  
 
 ## Provided datasets
 
-Datasets, configuration and bash scripts corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of Isotope-labeled targeted Metabolomics data" by J. Galvis *et al*. are available at [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/1224020). 
+Datasets, configuration and bash scripts corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of Isotope-labeled targeted Metabolomics data" by J. Galvis *et al*. 
+are available at [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/todo:update). 
 
 Download and uncompress the file `datasets_manuscript_DIMet.zip`.
 
@@ -322,244 +729,6 @@ By zooming into the content of the `integration_files` subfolder in the `LDHAB-C
 </details><!--closes 1. section-->
 
 -----------------------------------------------
-
-
-<details><!--2. section-->
- 
-<summary id="config_folder"><b>2. The <code>config</code> folder</b> <sub><sup>(click to show/hide)</sup></sub></summary>
-
-  <details>
-  <summary>The structure of the  <code>config</code>  folder is:  
-   <sub><sup>(click to show/hide)</sup></sub>
-  </summary>
-
-```
-config
-├── analysis
-│   ├── abundance_plot_Cycloserine.yaml
-│   ├── abundance_plot_LDHAB-Control.yaml
-│   ├── dataset
-│   │   ├── Cycloserine_data.yaml
-│   │   ├── LDHAB-Control_data_integrate.yaml
-│   │   └── LDHAB-Control_data.yaml
-│   ├── differential_analysis_pairwise_LDHAB-Control.yaml
-│   ├── enrichment_lineplot_Cycloserine.yaml
-│   ├── isotopologues_plot_Cycloserine.yaml
-│   ├── isotopologues_plot_LDHAB-Control.yaml
-│   ├── metabologram_abundance_LDHAB-Control.yaml
-│   ├── metabologram_enrichment_LDHAB-Control.yaml
-│   ├── pca_plot_LDHAB-Control.yaml
-│   ├── pca_tables_Cycloserine.yaml
-│   └── timecourse_analysis_Cycloserine.yaml
-├── general_config_abundance_plot_Cycloserine.yaml
-├── general_config_abundance_plot_LDHAB-Control.yaml
-├── general_config_differential_analysis_LDHAB-Control.yaml
-├── general_config_enrichment_lineplot_Cycloserine.yaml
-├── general_config_isotopologues_plot_Cycloserine.yaml
-├── general_config_isotopologues_plot_LDHAB-Control.yaml
-├── general_config_metabologram_abundance_LDHAB-Control.yaml
-├── general_config_metabologram_enrichment_LDHAB-Control.yaml
-├── general_config_pca_plot_LDHAB-Control.yaml
-├── general_config_pca_tables_Cycloserine.yaml
-└── general_config_timecourse_analysis_Cycloserine.yaml
-
-```
-   </details> 
-   
-We can appreciate that there are 3 different configuration files: 
-* the *dataset configuration* files (such as `Cycloserine_data.yaml`), located inside the `config/analysis/dataset/` folder
-* the *analysis configuration* files (such as `abundance_plot_Cycloserine.yaml`), located inside the `config/analysis/` folder
-* the *general configuration* files (such as `general_config_pca_tables_Cycloserine.yaml`), located directly inside the `config` folder
-
-
-The next sections explain each type of these files. Furthermore, when analyzing your own data, you can use these configuration files as templates and modify them coherently, for this purpose we will guide you across the next sections, to make it easier for you.
-
- <details><!--2.1. section -->
- <summary id="dataset-config"><b>2.1. The dataset configuration </b></summary>  
-  
-   For each given dataset, there must exist a corresponding *dataset configuration* file, which is located inside the `config/analysis/dataset/` folder.
-   This file must specify:
-  - the name of the metadata file
-  - the names of the quantification files
-  - the "order" of the conditions, where the *control* is the first to be listed (note that the name assigned to the control condition can be different than the one we used in our data).
-
-    Below there is the `LDHAB-Control_data.yaml` file,  where the `# <-` comment indicates the
-    parts that you can modify as needed when preparing your own analysis.
-    
-    Note that the parameter `_target_` must **not** be changed.
-
-    If you do not have all the four types of quantification that are shown below, just delete
-    the entire line making reference to the type of quantification that is absent.
-  
-  ```
-  _target_: dimet.data.DatasetConfig
-
-  label: LDHAB-Control  # <- change after the colon
-  name: experiment in hypoxia, LDHAB vs Control  # <- change after the colon
-  subfolder: LDHAB-Control_data  # <- subfolder name in the data folder, change after the colon
-    
-  # ALWAYS WITHIN THE RAW SUBFOLDER
-  metadata: metadata_endo_ldh   # <- change after the colon
-  abundances: AbundanceCorrected   # <- change after the colon
-  mean_enrichment: MeanEnrichment13C   # <- change after the colon
-  isotopologue_proportions: IsotopologuesProp   # <- change after the colon
-  isotopologues: IsotopologuesAbs   # <- change after the colon
-    
-  conditions :
-   - Control # <- first must be control
-   - sgLDHAB # <- the rest of the conditions vertically listed
-  ```
-  This dataset configuration will be used by all the types of analysis we offer except the omics integration, see the section *The integration dataset configuration* for that purpose.
-
-   <details><!--2.1.1. section-->
-   <summary>2.1.1.The integration dataset configuration (for <b>omics integration</b>)</summary>
-  
-   When a data folder for performing the **omics integration** exists, there must also exist a *dataset configuration* file.
-   
-   Below there is the `LDHAB-Control_data_integrate.yaml` file,  where the `# <-` comment indicates the
-   parts that you can modify as needed when preparing your own analysis. 
-    
-   Note that the parameter `_target_` must **not** be changed.
-    
-    
-    ```
-    _target_: dimet.data.DataIntegrationConfig  
-
-    label: integrate_DAM_DEG_LDHAB-Control   # <- change after the colon
-    name: Integration of two omics LDHAB vs Control   # <- change after the colon
-    subfolder: LDHAB-Control_data  # <- subfolder name in the data folder, change after the colon
-    
-    conditions :
-     - Control # <- first must be control
-     - sgLDHAB # <- the rest of the conditions vertically listed
-    
-    # ALWAYS WITHIN THE RAW SUBFOLDER
-    metadata: metadata_endo_ldh   # <- change after the colon
-    abundances: AbundanceCorrected   # <- change after the colon
-    mean_enrichment: MeanEnrichment13C   # <- change after the colon
-    
-    # WITHIN THE INTEGRATION_FILES SUBFOLDER
-    transcripts:  
-      - DEG_Control_LDHAB   # <- file name
-    
-    pathways: 
-      metabolites: pathways_kegg_metabolites  # <- file name, change after the colon
-      transcripts: pathways_kegg_transcripts   # <- file name, change after the colon
-
-    ```
-
-   </details><!--closes 2.1.1. section-->
-
-  End of the dataset configuration section.
-
-
- 
-  </details><!--closes 2.1 section-->
-
-  <details><!--2.2. section-->
-  <summary><b>2.2. The analysis configuration </b></summary>   
-   
-   The *analysis configuration* is located inside the `config/analysis/` folder. For each analysis to be performed, one analysis configuration file must exist. It indicates which is the type of analysis we want to run, on which dataset this analysis will be applied, and the parameters that are specific to that analysis.
-
-   Below the file `differential_analysis_pairwise_LDHAB-Control.yaml` illustrates a pairwise differential analysis configuration. The `# <-` comment indicates the parts that you can modify as needed when preparing your own analysis.
-   
-     ```
-     label: differential-analysis-LDHAB-Control   # <- change after the colon
-
-     defaults:
-       - dataset: LDHAB-Control_data     # <- change after the colon
-       - method: differential_analysis
-     
-     comparisons :
-       - [[sgLDHAB, T48], [Control, T48]]   # <-      
-     
-     statistical_test:
-       abundances: prm-scipy   # <- see statistic test options, change after the colon
-       mean_enrichment: prm-scipy    # <- see options, change after the colon
-       isotopologues: disfit    # <- see options, change after the colon
-       isotopologue_proportions: ranksum    # <- see options, change after the colon
-
-     ```
-   
-   <!-- COMPLETE: Currently the statistic test options are: etc etc -->
-   
-   
-   Note that the parameters in the *analysis configuration* must be also coherent with our dataset.
-   Feel free to reuse all our analysis configuration files, most of them are really short, simple and easy to understand and modify.
-  
-        
-   <details><!--2.2.1. section-->
-   <summary>2.1.1. The analysis configuration for the <b>omics integration</b> </summary> 
-
-   The integration performed by DIMet displays the 'differential omics' in the form of Metabologram(s). The analysis configuration file `metabologram_abundance_LDHAB-Control.yaml` uses the differential metabolites' abundances (the `# <-` comment indicates the parts that you can modify as needed when preparing your own analysis):
-    
-       ```
-       label: metabologram-using-abundance-LDHAB-Control  # <- change after the colon
-   
-       defaults:
-         - dataset: LDHAB-Control_data_integrate  # <- integration dataset config
-         - method: metabologram_integration
-       
-       comparisons :
-         - [[sgLDHAB, T48], [Control, T48]]   # <-  see note (**) 
-       
-       # running for total abundances
-       statistical_test:
-         abundances: prm-scipy   # <- change after the colon
-       
-       columns_metabolites:
-         ID : metabolite
-         values : log2FC   # <- or FC, change after the colon
-         
-       columns_transcripts:
-         ID: external_gene_name  # <- the gene symbols column, change after the colon
-         values: log2FoldChange  # <- change after the colon
-         
-       compartment:
-         en    
-        ```
-   (`**`) each metabolomics comparison must match with a DEG file. In this `metabologram_abundance_LDHAB-Control.yaml` there is only 1 comparison. When > 1 comparisons, they must be listed the same strict order as the DEG files listed in the *integration dataset configuration* (check inside section <a href="#dataset-config">dataset configuration</a>). 
-   
-   If you need to run the integration using the differential mean enrichment, a separate analysis configuration file must be created, we provide `metabologram_enrichment_LDHAB-Control.yaml` that you can use as template.    
-        
-   </details><!--closes 2.2.1. section-->  
-   
-  </details><!--closes 2.2. section-->
-
-
-  <details><!--2.3. section-->
-  <summary><b>2.3. The general configuration </b></summary>    
-   
-   The *general configuration* file is located directly inside the `config` folder. It must declare the name of its corrresponding *analysis configuration* file. Place yourself in `defaults:` then `- analysis:`, see below:
-     
-     ```
-     hydra:
-       job:
-         chdir: true
-       run:
-         dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}/${analysis.dataset.label}-${analysis.method.label}
-
-     defaults:
-       - analysis: differential_analysis_example2  # <-- HERE the 'analysis configuration' name
-
-     figure_path: figures
-     table_path: tables    
-     ```
-   When preparing your own analysis, use the above as template and simply replace `differential_analysis_example2` by the name of your analysis.
-   
-   This *general configuration* file also provides the parameters for generating the output folder names; keep these 
-   output parameters unmodified, so DIMet will generate the full output folders and files names
-   automatically.
-     
-   </details><!--closes 2.3. section--> 
-   
-   Note that across all the types of configuration files, any referenced file name must be written without the extension.
-     
-</details><!--closes  2. section -->
-
-
-
------------------------------------------------------------------------------------------------------
 
 # Using DIMet 
 
