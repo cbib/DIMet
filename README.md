@@ -9,6 +9,8 @@ DIMet supports the analysis of full metabolite abundances and isotopologue contr
 
 _Note_: DIMet is intended for downstream analysis of tracer metabolomics data that has been corrected for the presence of natural isotopologues. 
 
+_Formatting and normalisation helper_: xxx
+
 # Installing DIMet 
 
 ## System Requirements
