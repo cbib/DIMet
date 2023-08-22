@@ -673,7 +673,7 @@ By zooming into the content of any of the **`raw`** subfolders we can understand
    
    <details>
    <summary>
-    These is the content of the file <code>metadata_endo_ldh.csv</code>file:
+    This is the content of the file <code>metadata_endo_ldh.csv</code>file:
    </summary> 
    
    
@@ -706,14 +706,6 @@ By zooming into the content of the `integration_files` subfolder, we see the fil
    │       │   ├── DEG_Control_LDHAB.csv
    │       │   ├── pathways_kegg_metabolites.csv
    │       │   └── pathways_kegg_transcripts.csv
-   │       └── raw
-   │           ├── AbundanceCorrected.csv
-   │           ├── IsotopologuesAbs.csv
-   │           ├── IsotopologuesProp.csv
-   │           ├── MeanEnrichment13C.csv
-   │           └── metadata_endo_ldh.csv
-
-
    ```
   
    </details><!--closes 1.3.section-->
