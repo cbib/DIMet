@@ -9,7 +9,7 @@ DIMet supports the analysis of full metabolite abundances and isotopologue contr
 
 _Note_: DIMet is intended for downstream analysis of tracer metabolomics data that has been corrected for the presence of natural isotopologues. 
 
-_Formatting and normalisation helper_: xxx
+_Formatting and normalisation helper_: scripts for formatting and normalization are provided in [Tracegroomer](experimentaltracegroomerxxxxx)
 
 # Installing DIMet 
 
@@ -43,6 +43,111 @@ Or if you are a developer working in a local cloned version, you can install:
 
 * with pytest, by running `pytest` from `DIMet`
 * Place yourself in `DIMet/tests` and execute `python -m unittest` 
+
+-----------------------------------------------------------------------------------------------
+
+# Using DIMet 
+
+DIMet runs in the command line environment. 
+
+To **test the use of DIMet**, we provide datasets, configuration and bash scripts corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of Isotope-labeled targeted Metabolomics data" by J. Galvis *et al*. 
+are available at [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/todo:updatexxx):
+
+ - Download and uncompress the file `datasets_manuscript_DIMet.zip`.    
+    
+    <details>
+     
+    <summary>Whole structure of the downloaded folder <sub><sup>(click to show/hide)</sup></sub>
+    </summary>
+    
+    ```
+    datasets_manuscript_DIMet
+    ├── config
+    │   ├── analysis
+    │   │   ├── abundance_plot_Cycloserine.yaml
+    │   │   ├── abundance_plot_LDHAB-Control.yaml
+    │   │   ├── dataset
+    │   │   │   ├── Cycloserine_data.yaml
+    │   │   │   ├── LDHAB-Control_data_integrate.yaml
+    │   │   │   └── LDHAB-Control_data.yaml
+    │   │   ├── differential_analysis_pairwise_LDHAB-Control.yaml
+    │   │   ├── enrichment_lineplot_Cycloserine.yaml
+    │   │   ├── isotopologues_plot_Cycloserine.yaml
+    │   │   ├── isotopologues_plot_LDHAB-Control.yaml
+    │   │   ├── metabologram_abundance_LDHAB-Control.yaml
+    │   │   ├── metabologram_enrichment_LDHAB-Control.yaml
+    │   │   ├── pca_plot_LDHAB-Control.yaml
+    │   │   ├── pca_tables_Cycloserine.yaml
+    │   │   └── timecourse_analysis_Cycloserine.yaml
+    │   ├── general_config_abundance_plot_Cycloserine.yaml
+    │   ├── general_config_abundance_plot_LDHAB-Control.yaml
+    │   ├── general_config_differential_analysis_LDHAB-Control.yaml
+    │   ├── general_config_enrichment_lineplot_Cycloserine.yaml
+    │   ├── general_config_isotopologues_plot_Cycloserine.yaml
+    │   ├── general_config_isotopologues_plot_LDHAB-Control.yaml
+    │   ├── general_config_metabologram_abundance_LDHAB-Control.yaml
+    │   ├── general_config_metabologram_enrichment_LDHAB-Control.yaml
+    │   ├── general_config_pca_plot_LDHAB-Control.yaml
+    │   ├── general_config_pca_tables_Cycloserine.yaml
+    │   └── general_config_timecourse_analysis_Cycloserine.yaml
+    ├── data
+    │   ├── Cycloserine_data
+    │   │   └── raw
+    │   │       ├── CorrectedIsotopologues.csv
+    │   │       ├── FracContribution_C.csv
+    │   │       ├── metadata_cycloser.csv
+    │   │       └── rawAbundances.csv
+    │   └── LDHAB-Control_data
+    │       ├── integration_files
+    │       │   ├── DEG_Control_LDHAB.csv
+    │       │   ├── pathways_kegg_metabolites.csv
+    │       │   ├── pathways_kegg_transcripts.csv
+    │       │   └── readme.txt
+    │       └── raw
+    │           ├── AbundanceCorrected.csv
+    │           ├── IsotopologuesAbs.csv
+    │           ├── IsotopologuesProp.csv
+    │           ├── MeanEnrichment13C.csv
+    │           └── metadata_endo_ldh.csv
+    ├── run_Cycloserine_timeseries.sh
+    └── run_LDHAB-Control.sh
+    ```
+    
+    </details>
+    
+* Make sure you have activated your virtual environment. In the `datasets_manuscript_DIMet` folder you have two `.sh` files: `run_LDHAB-Control.sh` and `run_Cycloserine_timeseries.sh`; Make them executable:
+  ```
+  chmod a+x *.sh
+  ```
+* and finally run the test:
+  ```
+  ./run_LDHAB-Control.sh
+  ./run_Cycloserine_timeseries.sh
+  ```
+
+
+
+## Available analyses
+
+- _pca_analysis_ computes the PCA and outputs tables with principal components and explained variances
+- _pca_plot_ generates classical PCA plots
+- _abundance_plot_ plots with bars of total metabolite abundances
+- _mean_enrichment_line_plot_ generates lineplots of mean enrichment
+- _isotopologue_proportions_plot_ generates stacked bars of isotopologue proportions
+- _differential_analysis_ runs differential analysis and computes the corresponding statistics
+- _multi_group_comparison_ same as differential analysis before, but for > 2 groups
+- _time_course_analysis_ runs differential analysis for time-course experiments in pairwise fashion for consecutive time points
+- _metabologram_integration_ pathway-based integration between *labeled targeted metabolomic* and *trascriptomic* data, resulting in metabologram plots
+
+To run each analysis it is necessary that the user provides 
+his data and configuration files, structured as explained in the section [Organising your data for the analysis](#organising-your-data-for-the-analysis).
+
+After the files' organization step, the generic command for running one analysis is:
+
+```commandline
+python -m dimet -cd config -cn GENERAL_CONFIGURATION_FILENAME
+```
+
 
 -----------------------------------------------------------------------------------------------------
 # Organising your data for the analysis
@@ -212,16 +317,22 @@ DIMet offers the possitibilty of pathway-based integration of the metabolome and
 
   ```
    
-  * Files for differentially expressed genes (DEGs) must be provided in the tab delimited .csv format.
+  * Files for differentially expressed genes (DEGs)
 
-Formatting example of differentially expressed genes files
+Files for differentially expressed genes (DEGs) must be provided in the tab delimited .csv format. For each file:
+1. The rows represent the genes (except the first one, which is the header having the names of the columns)
+2. The columns provide the information to be integrated, two columns are compulsory:
+   1. the gene names, given as strings
+   2. the Fold-Changes (or the log2 Fold-Changes) in numeric format (no letters or symbols, only numbers)
+
+Formatting example of differentially expressed genes files:
     
-| ensembl          | name                           | FC        | log2FoldChange    | padj     | gene_symbol |
-|------------------|--------------------------------|-----------|-------------------|----------|-------------|
-| ENSG00000105220  | glucose-6-phosphate isomerase  | 0.0000136 | -16.1660338229612 | 1.00E-10 | GPI         |
-| ENSG00000156515  | hexokinase 1                   | 10        | 3.32192809488736  | 1.00E-03 | HK1         |
-| ENSG00000153574  | ribose 5-phosphate isomerase A | 5         | 2.32192809488736  | 0.001    | RPIA        |
-| ENSG00000141959  | phosphofructokinase, liver     | 1.75      | 0.807354922057604 | 0.05     | PFKL        |
+| log2FoldChange    | gene_symbol  |
+|-------------------|--------------|
+| -16.1660338229612 | GPI          |
+| 3.32192809488736  | HK1          |
+| 2.32192809488736  | RPIA         |
+| 0.807354922057604 | PFKL         |
 
    
   * The *metabolites per pathway* and *genes or transcripts per pathway* files
@@ -248,7 +359,8 @@ _Example_ for genes per pathway:
 | PKFL       | RBKS              | ... |
 | ...        | ...               | ... |
 
-  
+All these files must be provided in the tab delimited .csv format.
+
 </details>
 
 
@@ -401,7 +513,7 @@ we used in our data).
 
      defaults:
        - dataset:      # <- name of the dataset cofiguration file
-       - method: differential_analysis
+       - method: differential_analysis  # <- see 'Available analyses'
      
      comparisons :
        - [[cond2, T24], [cond1, T24]]   # <-      
@@ -451,7 +563,7 @@ we used in our data).
          
        columns_transcripts:
          ID:   # <- the gene symbols column name, fill after the colon
-         values:   # <- the numeric column name,  fillafter the colon
+         values:   # <- the numeric column name,  fill after the colon
          
        compartment:
          en    
@@ -494,246 +606,19 @@ we used in our data).
    
    Note that across all the types of configuration files, any referenced file name must be written without the extension.
      
-</details><!--closes  2. section -->
 
+</details><!--closes section  organize the configuration files--> 
 
 
  Examples of configuration files, with their respective datasets are provided 
-in  [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/todo:updaate). 
+in  [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/todo:updaatexx). 
 Also complementary minimal datasets with their configuration files are provided in
-[Zenodo (minimal_examples)](https://sandbox.zenodo.org/record/todo:update). **todo:update**  
+[Zenodo (minimal_examples)](https://sandbox.zenodo.org/record/todo:updatexxxx). **todo:update xxxx**  
 
-## Provided datasets
-
-Datasets, configuration and bash scripts corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of Isotope-labeled targeted Metabolomics data" by J. Galvis *et al*. 
-are available at [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/todo:update). 
-
-Download and uncompress the file `datasets_manuscript_DIMet.zip`.
-
-<details>
- 
-<summary>Whole structure of the downloaded folder <sub><sup>(click to show/hide)</sup></sub>
-</summary>
-
-```
-datasets_manuscript_DIMet
-├── config
-│   ├── analysis
-│   │   ├── abundance_plot_Cycloserine.yaml
-│   │   ├── abundance_plot_LDHAB-Control.yaml
-│   │   ├── dataset
-│   │   │   ├── Cycloserine_data.yaml
-│   │   │   ├── LDHAB-Control_data_integrate.yaml
-│   │   │   └── LDHAB-Control_data.yaml
-│   │   ├── differential_analysis_pairwise_LDHAB-Control.yaml
-│   │   ├── enrichment_lineplot_Cycloserine.yaml
-│   │   ├── isotopologues_plot_Cycloserine.yaml
-│   │   ├── isotopologues_plot_LDHAB-Control.yaml
-│   │   ├── metabologram_abundance_LDHAB-Control.yaml
-│   │   ├── metabologram_enrichment_LDHAB-Control.yaml
-│   │   ├── pca_plot_LDHAB-Control.yaml
-│   │   ├── pca_tables_Cycloserine.yaml
-│   │   └── timecourse_analysis_Cycloserine.yaml
-│   ├── general_config_abundance_plot_Cycloserine.yaml
-│   ├── general_config_abundance_plot_LDHAB-Control.yaml
-│   ├── general_config_differential_analysis_LDHAB-Control.yaml
-│   ├── general_config_enrichment_lineplot_Cycloserine.yaml
-│   ├── general_config_isotopologues_plot_Cycloserine.yaml
-│   ├── general_config_isotopologues_plot_LDHAB-Control.yaml
-│   ├── general_config_metabologram_abundance_LDHAB-Control.yaml
-│   ├── general_config_metabologram_enrichment_LDHAB-Control.yaml
-│   ├── general_config_pca_plot_LDHAB-Control.yaml
-│   ├── general_config_pca_tables_Cycloserine.yaml
-│   └── general_config_timecourse_analysis_Cycloserine.yaml
-├── data
-│   ├── Cycloserine_data
-│   │   └── raw
-│   │       ├── CorrectedIsotopologues.csv
-│   │       ├── FracContribution_C.csv
-│   │       ├── metadata_cycloser.csv
-│   │       └── rawAbundances.csv
-│   └── LDHAB-Control_data
-│       ├── integration_files
-│       │   ├── DEG_Control_LDHAB.csv
-│       │   ├── pathways_kegg_metabolites.csv
-│       │   ├── pathways_kegg_transcripts.csv
-│       │   └── readme.txt
-│       └── raw
-│           ├── AbundanceCorrected.csv
-│           ├── IsotopologuesAbs.csv
-│           ├── IsotopologuesProp.csv
-│           ├── MeanEnrichment13C.csv
-│           └── metadata_endo_ldh.csv
-├── run_Cycloserine_timeseries.sh
-└── run_LDHAB-Control.sh
-```
-
-</details>
-
-------------------------------------------------------------
-
-<details><!--1.section-->
-
-<summary><b>1. The <code>data</code> folder </b> <sub><sup>(click to show/hide)</sup></sub></summary>
-
-  <details>
-  <summary>The structure of the <code>data</code> folder is: <sub><sup>(click to show/hide)</sup></sub> </summary>
-
-```
-data
-├── Cycloserine_data
-│   └── raw
-│       ├── CorrectedIsotopologues.csv
-│       ├── FracContribution_C.csv
-│       ├── metadata_cycloser.csv
-│       └── rawAbundances.csv
-└── LDHAB-Control_data
-    ├── integration_files
-    │   ├── DEG_Control_LDHAB.csv
-    │   ├── pathways_kegg_metabolites.csv
-    │   ├── pathways_kegg_transcripts.csv
-    │   └── readme.txt
-    └── raw
-        ├── AbundanceCorrected.csv
-        ├── IsotopologuesAbs.csv
-        ├── IsotopologuesProp.csv
-        ├── MeanEnrichment13C.csv
-        └── metadata_endo_ldh.csv
-```
-   </details>
-
-By zooming into the content of any of the **`raw`** subfolders we can understand the file formatting that is required for using DIMet, both for **quantification** file(s) and the **metadata** file:
-
-   <details><!--1.1 section-->
-   <summary><b>1.1. Quantification files</b></summary>
-   
-   <details><!--the section showing the first lines of the quantification tables-->
-    
-   <summary>See here the first lines of the quantification files <sub><sup>(click to show/hide)</sup></sub></summary>
-
-   The first lines  of the Isotopologue absolute values file (`IsotopologuesAbs.csv`) which is inside the `raw` subfolder of `LDHAB-Control_data`:
-      
-| ID          | T48_AB_1    | T48_AB_2    | T48_AB_3    | T48_Cont_1  | T48_Cont_2  | T48_Cont_3  |
-|-------------|-------------|-------------|-------------|-------------|-------------|-------------|
-| 2_3-PG_m+0  | 703151.9167 | 856725.4533 | 961394.0385 | 42043.98974 | 56438.37354 | 37427.49772 |
-| 2_3-PG_m+1  | 9099.30813  | 0           | 0           | 0           | 0           | 0           |
-| 2_3-PG_m+2  | 35196.39397 | 34163.9901  | 37498.28763 | 20998.75488 | 22388.47005 | 21257.21399 |
-| 2_3-PG_m+3  | 1808396.988 | 2237113.191 | 2446548.943 | 1641241.102 | 1488116.365 | 1673205.23  |
-| 2-OHGLu_m+0 | 2464867.606 | 2190608.337 | 2650274.946 | 7496654.147 | 6077978.087 | 6881666.103 |     
-     
- The first lines of the total metabolite abundances (`AbundanceCorrected.csv`) in the same subfolder:
-      
-  
-| ID      | T48_AB_1       | T48_AB_2       | T48_AB_3       | T48_Cont_1     | T48_Cont_2     | T48_Cont_3     |
-|---------|----------------|----------------|----------------|----------------|----------------|----------------|
-| 2_3-PG  | 2555844.6068   | 3128002.6344   | 3445441.26913  | 1704283.84662  | 1566943.20859  | 1731889.94171  |
-| 2-OHGLu | 3373345.61683  | 3426388.69792  | 3988439.5147   | 26362483.1589  | 19664735.89344 | 22660528.8544  |
-| 6-PG    | 1272239.434813 | 1390994.801623 | 1477360.701829 | 4835294.623232 | 2975614.11154  | 4462008.850759 |
-| a-KG    | 15141020.4483  | 20989621.8864  | 24554966.1982  | 1280021.24849  | 1087730.89083  | 1605672.06536  |
-     
-
-  The first lines  of the MeanEnrichment13C (`MeanEnrichment13C.csv`) in the same subfolder:
-      
-| ID          | T48_AB_1    | T48_AB_2    | T48_AB_3    | T48_Cont_1  | T48_Cont_2  | T48_Cont_3  |
-|-------------|-------------|-------------|-------------|-------------|-------------|-------------|
-| 2-OHGLu     | 0.206825196 | 0.276522548 | 0.262837217 | 0.49518099  | 0.477725447 | 0.481746398 |
-| 2_3-PG      | 0.717920936 | 0.722470358 | 0.717338538 | 0.971223353 | 0.9592192   | 0.974297884 |
-| 6-PG        | 0.86699873  | 0.852246374 | 0.86035646  | 0.944487954 | 0.957595706 | 0.957011737 |
-| ADP         | 0.389205628 | 0.392401693 | 0.39551035  | 0.234449886 | 0.232809563 | 0.240030529 |
-
-
-  The first lines  of the Isotopologue proportions file (`IsotopologuesAbs.csv`) in the same subfolder:
-
-| ID          | T48_AB_1    | T48_AB_2    | T48_AB_3    | T48_Cont_1  | T48_Cont_2  | T48_Cont_3  |
-|-------------|-------------|-------------|-------------|-------------|-------------|-------------|
-| 2_3-PG_m+0  | 0.275115285 | 0.273888981 | 0.279033646 | 0.024669594 | 0.036018136 | 0.021610783 |
-| 2_3-PG_m+1  | 0.003560196 | 0           | 0           | 0           | 0           | 0           |
-| 2_3-PG_m+2  | 0.013770944 | 0.010921983 | 0.01088345  | 0.012321161 | 0.014287991 | 0.012273998 |
-| 2_3-PG_m+3  | 0.707553575 | 0.715189037 | 0.710082904 | 0.963009246 | 0.949693873 | 0.966115219 |
-| 2-OHGLu_m+0 | 0.730689317 | 0.639334451 | 0.664489191 | 0.284368286 | 0.309080077 | 0.30368515  | 
-     
-  </details><!--closes the section showing the first lines of the quantification tables-->
-
-  
-  </details><!--closes the 1.1 section-->
-
-
-  <details><!--1.2.section-->
-   
-  <summary><b>1.2. The metadata file</b></summary>   
-   
-   <details>
-   <summary>
-    This is the content of the file <code>metadata_endo_ldh.csv</code>file:
-   </summary> 
-   
-   
-   | name_to_plot  | condition | timepoint | timenum | short_comp | original_name |
-   |---------------|-----------|-----------|---------|------------|---------------|
-   | sgLDHAB_T48-1 | sgLDHAB   | T48       | 48      | en         | T48_AB_1      |
-   | sgLDHAB_T48-2 | sgLDHAB   | T48       | 48      | en         | T48_AB_2      |
-   | sgLDHAB_T48-3 | sgLDHAB   | T48       | 48      | en         | T48_AB_3      |
-   | Cont_T48-1    | Control   | T48       | 48      | en         | T48_Cont_1    |
-   | Cont_T48-2    | Control   | T48       | 48      | en         | T48_Cont_2    |
-   | Cont_T48-3    | Control   | T48       | 48      | en         | T48_Cont_3    |
-   
-   </details>
-  
-  
-  </details><!--closes 1.2. section-->  
-
-
-   <details><!--1.3.section-->
-   <summary>
-   <b>1.3. The files for performing the omics integration </b><sup><sub>(click to show/hide)</sub></sup>
-   </summary> 
-
-By zooming into the content of the `integration_files` subfolder, we see the files for performing the pathway-based **omics integration** of the labeled targeted metabolomics data and transcriptomics data:
-   
-   ```
-   ├── data
-   │   └── LDHAB-Control_data
-   │       ├── integration_files  # <--- this is the subfolder with the integration files
-   │       │   ├── DEG_Control_LDHAB.csv
-   │       │   ├── pathways_kegg_metabolites.csv
-   │       │   └── pathways_kegg_transcripts.csv
-   ```
-  
-   </details><!--closes 1.3.section-->
-  
-
-    
-</details><!--closes 1. section-->
 
 -----------------------------------------------
 
-# Using DIMet 
 
-DIMet runs in the command line environment. 
-
-## Running analyses on the provided datasets
-
-Make sure you have activated your virtual environment. In the `datasets_manuscript_DIMet` folder you have two `.sh` files: `run_LDHAB-Control.sh` and `run_Cycloserine_timeseries.sh`; Make them executable:
-```
-chmod a+x *.sh
-```
-and finally run:
-```
-./run_LDHAB-Control.sh
-./run_Cycloserine_timeseries.sh
-```
-
-## Available analyses
-
-- _pca_analysis_ computes the PCA and outputs tables with principal components and explained variances
-- _pca_plot_ generated classical PCA plots
-- _abundance_plot_ plots with bars of total metabolite abundances
-- _enrichment_plot_ generates lineplots of mean enrichment
-- _isotopologues_plot_ generates stacked bars of isotopologue proportions
-- _differential_analysis_ runs differential analysis and computes the corresponding statistics
-- _differential_multigroup_analysis_ same as before, but for > 2 groups
-- _timecourse_analysis_ runs differential analysis for time-course experiments in pairwise fashion for consecutive time points
-- _metabologram_ network integration between SIRM and trascriptomic data, resulting in metabologram plots
 
   
 # Getting help
