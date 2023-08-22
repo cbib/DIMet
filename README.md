@@ -187,11 +187,11 @@ DIMet offers the possitibilty of pathway-based integration of the metabolome and
   Two data types are required:
 
    1. Metabolite quantification files in the <code>raw</code> directory.
-   2. results, provided by the user, of the differential analysis of the transcriptome data placed in the folder <code>integration_files</code>
+   2. Results, provided by the user, of the differential analysis of the transcriptome data placed in the folder <code>integration_files</code>
 
  <code>integration_files</code> folder contains files with differentially expressed genes provided by the user as well as the pathways files.
  
- Thus the expected projectdata structure becomes:
+ Thus the expected project data structure becomes:
   
   ```
   MYPROJECT
