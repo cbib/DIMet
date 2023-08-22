@@ -120,8 +120,8 @@ Each quantification file is expected to correspond to one type of measure. Suppo
 3. Mean enrichment (also called Fractional contribution) 
 4. Isotopologue proportions
 
-<details><!--quantifications' format-->
- <summary>Examples of the expected format of the quantification files
+<details><!--Quantifications format-->
+ <summary>Expected format of the quantification files with examples
  <sub><sup>(click to show/hide)</sup></sub>
  </summary>
 
@@ -129,10 +129,9 @@ Each row in the quantification files contains measurements for a given metabolit
 - <code>ID</code> contains the molecule identifiers
 - All the other columns contain measures in numeric format (no letters or symbols, only numbers).
 
-<i>Note 1</i>: quantification columns' names have to match with the column <code>original_name</code> in the **metadata** file.
-<i>Note 2</i>: For the isotopologues, the </code>ID</code> must follow the convention: `metaboliteID_m+X` (for example: `AMP_m+4`, `cit_m+0`, `cit_m+1`)
+_Note 1_: quantification columns' names have to match with the column <code>original_name</code> in the **metadata** file.
+_Note 2_: For the isotopologues, the </code>ID</code> must follow the convention: `metaboliteID_m+X` (for example: `AMP_m+4`, `cit_m+0`, `cit_m+1`)
 
-  
 The total metabolites' Abundances file:
     
 | ID       | T0_cond_1  | T24_cond_1  | T0_cond_2  | T24_cond_2 |
