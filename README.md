@@ -354,7 +354,7 @@ we used in our data).
 
 
    <details><!-- section integration dataset config-->
-   <summary>The integration dataset configuration (for <b>omics integration</b>)</summary>
+   <summary>Special case of dataset configuration: the integration dataset configuration (for <b>omics integration</b>)</summary>
   
    When performing the **omics integration** , 
    there must also exist a *dataset configuration* file specific for the integration, 
@@ -616,41 +616,50 @@ By zooming into the content of any of the **`raw`** subfolders we can understand
    <details><!--1.1 section-->
    <summary><b>1.1. Quantification files</b></summary>
    
-   Each quantification .csv file must have a first column named `ID` (containing the isotopologues or the metabolites identifiers), being the names of the rest of the columns the original names of the samples. 
-   
-   Importantly, the isotopologue identifier must follow the convention: `MetaboliteID_m+X` (for example: `AMP_m+4`, `cit_m+0`, `cit_m+1`)
-   
    <details><!--the section showing the first lines of the quantification tables-->
     
-   <summary>As an illustration, see here the first lines of the quantification files <sub><sup>(click to show/hide)</sup></sub></summary>
+   <summary>See here the first lines of the quantification files <sub><sup>(click to show/hide)</sup></sub></summary>
 
-   The first lines and columns of the Isotopologue absolute values file (`IsotopologuesAbs.csv`) which is inside the `raw` subfolder of `LDHAB-Control_data`:
+   The first lines  of the Isotopologue absolute values file (`IsotopologuesAbs.csv`) which is inside the `raw` subfolder of `LDHAB-Control_data`:
       
-     ```
-     TAB
-     LE
-     ```
+| ID          | T48_AB_1    | T48_AB_2    | T48_AB_3    | T48_Cont_1  | T48_Cont_2  | T48_Cont_3  |
+|-------------|-------------|-------------|-------------|-------------|-------------|-------------|
+| 2_3-PG_m+0  | 703151.9167 | 856725.4533 | 961394.0385 | 42043.98974 | 56438.37354 | 37427.49772 |
+| 2_3-PG_m+1  | 9099.30813  | 0           | 0           | 0           | 0           | 0           |
+| 2_3-PG_m+2  | 35196.39397 | 34163.9901  | 37498.28763 | 20998.75488 | 22388.47005 | 21257.21399 |
+| 2_3-PG_m+3  | 1808396.988 | 2237113.191 | 2446548.943 | 1641241.102 | 1488116.365 | 1673205.23  |
+| 2-OHGLu_m+0 | 2464867.606 | 2190608.337 | 2650274.946 | 7496654.147 | 6077978.087 | 6881666.103 |     
      
- The first lines and columns of the total metabolite abundances (`AbundanceCorrected.csv`) in the same subfolder:
+ The first lines of the total metabolite abundances (`AbundanceCorrected.csv`) in the same subfolder:
       
-     ```
-     TAB
-     LE
-     ```
+  
+| ID      | T48_AB_1       | T48_AB_2       | T48_AB_3       | T48_Cont_1     | T48_Cont_2     | T48_Cont_3     |
+|---------|----------------|----------------|----------------|----------------|----------------|----------------|
+| 2_3-PG  | 2555844.6068   | 3128002.6344   | 3445441.26913  | 1704283.84662  | 1566943.20859  | 1731889.94171  |
+| 2-OHGLu | 3373345.61683  | 3426388.69792  | 3988439.5147   | 26362483.1589  | 19664735.89344 | 22660528.8544  |
+| 6-PG    | 1272239.434813 | 1390994.801623 | 1477360.701829 | 4835294.623232 | 2975614.11154  | 4462008.850759 |
+| a-KG    | 15141020.4483  | 20989621.8864  | 24554966.1982  | 1280021.24849  | 1087730.89083  | 1605672.06536  |
+     
 
-  The first lines and columns of the MeanEnrichment13C (`MeanEnrichment13C.csv`) in the same subfolder:
+  The first lines  of the MeanEnrichment13C (`MeanEnrichment13C.csv`) in the same subfolder:
       
-     ```
-     TAB
-     LE
-     ```
+| ID          | T48_AB_1    | T48_AB_2    | T48_AB_3    | T48_Cont_1  | T48_Cont_2  | T48_Cont_3  |
+|-------------|-------------|-------------|-------------|-------------|-------------|-------------|
+| 2-OHGLu     | 0.206825196 | 0.276522548 | 0.262837217 | 0.49518099  | 0.477725447 | 0.481746398 |
+| 2_3-PG      | 0.717920936 | 0.722470358 | 0.717338538 | 0.971223353 | 0.9592192   | 0.974297884 |
+| 6-PG        | 0.86699873  | 0.852246374 | 0.86035646  | 0.944487954 | 0.957595706 | 0.957011737 |
+| ADP         | 0.389205628 | 0.392401693 | 0.39551035  | 0.234449886 | 0.232809563 | 0.240030529 |
 
-  The first lines and columns of the Isotopologue proportions file (`IsotopologuesAbs.csv`) in the same subfolder:
-      
-     ```
-     TAB
-     LE
-     ```
+
+  The first lines  of the Isotopologue proportions file (`IsotopologuesAbs.csv`) in the same subfolder:
+
+| ID          | T48_AB_1    | T48_AB_2    | T48_AB_3    | T48_Cont_1  | T48_Cont_2  | T48_Cont_3  |
+|-------------|-------------|-------------|-------------|-------------|-------------|-------------|
+| 2_3-PG_m+0  | 0.275115285 | 0.273888981 | 0.279033646 | 0.024669594 | 0.036018136 | 0.021610783 |
+| 2_3-PG_m+1  | 0.003560196 | 0           | 0           | 0           | 0           | 0           |
+| 2_3-PG_m+2  | 0.013770944 | 0.010921983 | 0.01088345  | 0.012321161 | 0.014287991 | 0.012273998 |
+| 2_3-PG_m+3  | 0.707553575 | 0.715189037 | 0.710082904 | 0.963009246 | 0.949693873 | 0.966115219 |
+| 2-OHGLu_m+0 | 0.730689317 | 0.639334451 | 0.664489191 | 0.284368286 | 0.309080077 | 0.30368515  | 
      
   </details><!--closes the section showing the first lines of the quantification tables-->
 
@@ -660,33 +669,27 @@ By zooming into the content of any of the **`raw`** subfolders we can understand
 
   <details><!--1.2.section-->
    
-  <summary><b>1.2. The metadata file</b></summary>
-
-  For describing the samples that are present in the quantification file(s), you must provide a unique metadata file with the columns:
-   - dd
-   - h
-   - i
-   - c
-   - e
-   - f
-   - h
-   
+  <summary><b>1.2. The metadata file</b></summary>   
    
    <details>
    <summary>
-    As an illustration, these are the first lines of the <code>metadata_endo_ldh.csv</code>file:
+    These is the content of the file <code>metadata_endo_ldh.csv</code>file:
    </summary> 
    
-   ```
-   TABLEEEE
-   METADATAAAAA
-   ```
+   
+   | name_to_plot  | condition | timepoint | timenum | short_comp | original_name |
+   |---------------|-----------|-----------|---------|------------|---------------|
+   | sgLDHAB_T48-1 | sgLDHAB   | T48       | 48      | en         | T48_AB_1      |
+   | sgLDHAB_T48-2 | sgLDHAB   | T48       | 48      | en         | T48_AB_2      |
+   | sgLDHAB_T48-3 | sgLDHAB   | T48       | 48      | en         | T48_AB_3      |
+   | Cont_T48-1    | Control   | T48       | 48      | en         | T48_Cont_1    |
+   | Cont_T48-2    | Control   | T48       | 48      | en         | T48_Cont_2    |
+   | Cont_T48-3    | Control   | T48       | 48      | en         | T48_Cont_3    |
+   
    </details>
   
   
   </details><!--closes 1.2. section-->  
-
-By zooming into the content of the `integration_files` subfolder in the `LDHAB-Control_data` folder, we see the requirements for performing the pathway-based **omics integration** of the labeled targeted metabolomics data and transcriptomics data (note that if you aquired the metabolomes but not the transcriptomes, you can omit this part, and just provide the `raw` subfolders):
 
 
    <details><!--1.3.section-->
@@ -694,34 +697,25 @@ By zooming into the content of the `integration_files` subfolder in the `LDHAB-C
    <b>1.3. The files for performing the omics integration </b><sup><sub>(click to show/hide)</sub></sup>
    </summary> 
 
-   * The file(s) of *DEGs* (Differentially Expressed Genes):
-     
-     The LDHAB vs Control (but not Cycloserine) experiment had the two types of omics acquired
-     under the same experimental conditions. The transcriptome differential analysis 
-     (using DESeq2), produced the file `DEG_Control_LDHAB.csv`:
-     ```
- 
-     ```
-     For your data and analysis, you can add more DEGs files if available, with clear informative
-     filenames to specify coherent integrations.
+By zooming into the content of the `integration_files` subfolder, we see the files for performing the pathway-based **omics integration** of the labeled targeted metabolomics data and transcriptomics data:
    
-   * The file of *metabolites per pathway* (`pathways_kegg_metabolites.csv`):
-     
-     It has as column names the names of the pathways. The values below each column name correspond to the
-     metabolites present in each pathway. It is allowed that a same metabolite appears in several pathways.
-     The metabolites' names or identifiers must match with those appearing in the metabolite total
-     abundances -or the mean enrichment- file.
+   ```
+   ├── data
+   │   └── LDHAB-Control_data
+   │       ├── integration_files  # <--- this is the subfolder with the integration files
+   │       │   ├── DEG_Control_LDHAB.csv
+   │       │   ├── pathways_kegg_metabolites.csv
+   │       │   └── pathways_kegg_transcripts.csv
+   │       └── raw
+   │           ├── AbundanceCorrected.csv
+   │           ├── IsotopologuesAbs.csv
+   │           ├── IsotopologuesProp.csv
+   │           ├── MeanEnrichment13C.csv
+   │           └── metadata_endo_ldh.csv
 
-     Only one file of this type is accepted.
 
-   * The file of *genes or transcripts per pathway* (`pathways_kegg_transcripts.csv`):
-
-     It has as column names the names of the pathways. The values below each column correspond to the gene
-     symbols present in each pathway. It is allowed that a same gene symbol appears in several pathways. The
-     gene symbols must match with those appearing in the DEGs file.
-   
-     Only one file of this type is accepted.
-
+   ```
+  
    </details><!--closes 1.3.section-->
   
 
