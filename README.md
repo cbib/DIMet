@@ -75,7 +75,7 @@ have to be placed in the `raw` subfolder along with a metadata file that contain
 
 Both quantification and metadata files must be provided as in .csv 'tab' delimited format.
 
-<i>Note:</i>  if you provide at least one type of measure, you can still run some of the analyses, by making sure that the data you provide is suitable for the analysis that you choose.
+_Note_:  if you provide at least one type of measure, you can still run some of the analyses, by making sure that the data you provide is suitable for the analysis that you choose.
 
 #### a. Metadata file
 The structure of the **metadata file** has to contain 6 columns named 
@@ -83,7 +83,12 @@ The structure of the **metadata file** has to contain 6 columns named
 <code>timenum</code>, <code>condition</code>, 
 <code>compartment</code>, <code>original_name</code>. 
 
-<details><!--Metadata format>
+<details><!--Metadata format-->
+
+ <summary>Explanation of the metadata format
+ <sub><sup>(click to show/hide)</sup></sub>
+ </summary>
+  
 Here is the semantics of the columns:
 
 - <code>name_to_plot</code> is the string that will appear on the figures produced by DIMet
