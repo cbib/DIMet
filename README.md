@@ -71,14 +71,19 @@ More than one subfolder in the `data` folder can be present.
 ### Data files
 
 The user has to provide his data files within the data folder. Original data files themselves
-have to be placed in the `raw` subfolder along with a metadata file that contains 
-the experimental setup corresponding to the data. 
+have to be placed in the `raw` subfolder along with a metadata file that contains the experimental setup corresponding to the data. 
 
-#### - Metadata file
+Both quantification and metadata files must be provided as in .csv 'tab' delimited format.
+
+<i>Note:</i>  if you provide at least one type of measure, you can still run some of the analyses, by making sure that the data you provide is suitable for the analysis that you choose.
+
+#### a. Metadata file
 The structure of the **metadata file** has to contain 6 columns named 
 <code>name_to_plot</code>, <code>timepoint</code>, 
 <code>timenum</code>, <code>condition</code>, 
 <code>compartment</code>, <code>original_name</code>. 
+
+<details><!--Metadata format>
 Here is the semantics of the columns:
 
 - <code>name_to_plot</code> is the string that will appear on the figures produced by DIMet
@@ -99,34 +104,32 @@ Example:
 | Cond2 T0     | cond2     | T0        | 0       | comp_name   | T0_cond_2     |
 | Cond3 T24    | cond2     | T24       | 24      | comp_name   | T24_cond_2    |
 
+</details>
 
+#### b. Quantification files
 
-#### - Quantification files
-
-The original data that the user provides is a set of the quantification files. 
-Each quantification file is expected to correspond to one type of measure:
+Each quantification file is expected to correspond to one type of measure. Supported measure types are:
 
 1. Isotopologue absolute values
-2. total metabolites' Abundances
+2. Total metabolite abundances
 3. Mean enrichment (also called Fractional contribution) 
 4. Isotopologue proportions
 
-The user must organize his quantification files, in such a way that
-the rows represent the molecules, whereas the columns (except the first one) represent the samples:
-        
-- The first column, named `ID`, contains the isotopologues or the metabolites identifiers.
-- The second column and beyond, whose names must match with the column `original_name` in the **metadata**,
-  contain the measures in numeric format (no letters or symbols allowed in the cells, only numbers).
-- The isotopologues' `ID` must follow the convention: `MetaboliteID_m+X` (for example: `AMP_m+4`, `cit_m+0`, `cit_m+1`)
+Each row in the quantification files contains measurements for a given metabolite. Expected columns are the following:
+- <code>ID</code> contains the molecule identifiers
+- All the other columns contain measures in numeric format (no letters or symbols, only numbers).
+
+<i>Note 1</i>: quantification columns' names have to match with the column <code>original_name</code> in the **metadata** file.
+<i>Note 2</i>: For the isotopologues, the </code>ID</code> must follow the convention: `metaboliteID_m+X` (for example: `AMP_m+4`, `cit_m+0`, `cit_m+1`)
 
 
-<details><!--format quantification-->
+<details><!--quantifications' format>
 
  <summary>Examples of the expected format of the quantification files
  <sub><sup>(click to show/hide)</sup></sub>
  </summary>
   
-  The total metabolites' Abundances file:
+The total metabolites' Abundances file:
     
 | ID       | T0_cond_1  | T24_cond_1  | T0_cond_2  | T24_cond_2 |
 |----------|------------|-------------|------------|------------|
@@ -169,11 +172,6 @@ The Isotopologue proportions file :
 
 
 </details>
-
-
-Both quantification and metadata files must be given as in .csv 'tab' delimited format.
-Note that if you provide at least one type of measure, you can still 
-run some of the analyses, by making sure that the data you provide is suitable for the analysis that you choose.
 
 
 #### -  Data files for the omics integration (optional)
