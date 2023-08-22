@@ -177,24 +177,21 @@ The Isotopologue proportions file :
 </details>
 
 
-#### -  Data files for the omics integration (optional)
+#### c. Data files for the omics integration (optional)
 
-If the user has acquired both the metabolome and the transcriptome under the same
-experimental conditions, she/he can perform the integration of both omics. DIMet performs
-such integration at the metabolic pathway level, taking as input the differential metrics
-and the pathways files, to generate the **Metabologram(s)**. 
+DIMet offers the possitibilty of pathway-based integration of the metabolome and the transcriptome though **metabolograms**. 
 
 <details>
-  <summary>Details about the required data files for the omics integration<sup><sub> (click to show/hide)</sub></sup>
+  <summary>Data files required for omics integration<sup><sub> (click to show/hide)</sub></sup>
   </summary>
-  The differential metrics for the omics integration are of two types:
+  Two data types are required:
 
-   1. the results of the differential analysis of the metabolomics data, performed by DIMet automatically when the integration job is launched
-   2. the results, provided by the user, of the differential analysis of the transcriptome data. External tools such as DESeq2, EdgeR, Limma, exist for this purpose. 
-    
-  The <code>raw</code> folder previously seen provides the necessary for (1). 
-  For (2), another new folder  named <code>integration_files</code>
-  must be created at the same level:
+   1. Metabolite quantification files in the <code>raw</code> directory.
+   2. results, provided by the user, of the differential analysis of the transcriptome data placed in the folder <code>integration_files</code>
+
+ <code>integration_files</code> folder contains files with differentially expressed genes provided by the user as well as the pathways files.
+ 
+ Thus the expected projectdata structure becomes:
   
   ```
   MYPROJECT
@@ -212,14 +209,10 @@ and the pathways files, to generate the **Metabologram(s)**.
                 ├── # ---> raw .csv files
 
   ```
-
-  This new folder will contain the
-  differential transcriptomics or DEGs file(s), as well as the pathways files:
    
-  * The *DEGs* (Differentially Expressed Genes) file must be given in tab delimited .csv format.
-   The user can provide >1 DEGs files if available, with clear informative
-   filenames to specify a coherent integration.
+  * Files for differentially expressed genes (DEGs) must be provided in the tab delimited .csv format.
 
+Formatting example of differentially expressed genes files
     
 | ensembl          | name                           | FC        | log2FoldChange    | padj     | gene_symbol |
 |------------------|--------------------------------|-----------|-------------------|----------|-------------|
@@ -228,12 +221,13 @@ and the pathways files, to generate the **Metabologram(s)**.
 | ENSG00000153574  | ribose 5-phosphate isomerase A | 5         | 2.32192809488736  | 0.001    | RPIA        |
 | ENSG00000141959  | phosphofructokinase, liver     | 1.75      | 0.807354922057604 | 0.05     | PFKL        |
 
-    
    
-  * The *metabolites per pathway* file: the column names must be the names of the pathways. The values below each column name correspond to the
-   metabolites present in each pathway. It is allowed that a same metabolite appears in several pathways.
-   The metabolites' names or identifiers must match with those appearing in the metabolite total
-   abundances -or the mean enrichment-  file.  Only one file of this type is accepted.
+  * The *metabolites per pathway* and *genes or transcripts per pathway* files
+
+ These files contain the user-provided metabolites and genes for each pathway. It is allowed for a metabolite or gene to appear in several pathways.
+ Identifiers must match with those appearing in the quantification files in the <code>raw</code> folder. Gene names must match with those appearing in the DEGs file 
+
+Examples:
 
 | GLYCOLYSIS | PENTOSE_PHOSPHATE | ... |
 |------------|-------------------|-----|
@@ -242,12 +236,6 @@ and the pathways files, to generate the **Metabologram(s)**.
 | PEP        | Glucose_6P        | ... |
 | ...        | ...               | ... |
 
-
-  * The *genes or transcripts per pathway* file: the column names must be the names of the pathways. The values below each column correspond to the gene
-   symbols present in each pathway. It is allowed that a same gene symbol appears in several pathways. The
-   gene symbols must match with those appearing in the DEGs file.    Only one file of this type is accepted
-
-    
     
 | GLYCOLYSIS | PENTOSE_PHOSPHATE | ... |
 |------------|-------------------|-----|
@@ -258,8 +246,6 @@ and the pathways files, to generate the **Metabologram(s)**.
 
   
 </details>
-
-
 
 
 ### Configuration files
