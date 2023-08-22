@@ -100,7 +100,7 @@ Here is the semantics of the columns:
 has been done (e.g. "endo", "endocellular", "cyto", etc)
 - <code>original_name</code> contains the column names that are provided in the quantification files
 
-Example:
+_Example_:
 
 | name_to_plot | condition | timepoint | timenum | compartment | original_name |
 |--------------|-----------|-----------|---------|-------------|---------------|
@@ -227,7 +227,7 @@ Formatting example of differentially expressed genes files
  These files contain the user-provided metabolites and genes for each pathway. It is allowed for a metabolite or gene to appear in several pathways.
  Identifiers must match with those appearing in the quantification files in the <code>raw</code> folder. Gene names must match with those appearing in the DEGs file 
 
-Examples:
+_Example_ for metabolites per pathway:
 
 | GLYCOLYSIS | PENTOSE_PHOSPHATE | ... |
 |------------|-------------------|-----|
@@ -236,7 +236,9 @@ Examples:
 | PEP        | Glucose_6P        | ... |
 | ...        | ...               | ... |
 
-    
+
+_Example_ for genes per pathway:
+
 | GLYCOLYSIS | PENTOSE_PHOSPHATE | ... |
 |------------|-------------------|-----|
 | GPI        | RPIA              | ... |
