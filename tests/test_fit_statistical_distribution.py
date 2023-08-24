@@ -15,8 +15,8 @@ from dimet.processing import fit_statistical_distribution
 class TestFitStatisticalDistribution(TestCase):
     def test_compute_z_score(self):
         data = {
-            "gmean_1" : [15, 6, 3.8, 18.6, 16, 12],
-            "gmean_2" : [1, 20, 16, 12, 2, 1.6],
+            "gmean_1": [15, 6, 3.8, 18.6, 16, 12],
+            "gmean_2": [1, 20, 16, 12, 2, 1.6],
             "ratio": [15, 0.3, 0.23, 1.55, 8, 7.5],
         }
         df = pd.DataFrame(data)
@@ -37,8 +37,8 @@ class TestFitStatisticalDistribution(TestCase):
     def test_find_best_distribution(self):
         data = {'zscore': np.random.laplace(loc=0.0, scale=1.6, size=500)}
         df = pd.DataFrame(data)
-        best_distribution, args_param = \
-             fit_statistical_distribution.find_best_distribution(df)
+        best_distribution, args_param = (fit_statistical_distribution.
+                                         find_best_distribution(df))
         #  unexpected distribution: 'gennorm' or dgamma or loglaplace or ?
         #  impossible to set assert :
         #  self.assertTrue(best_distribution.name == "laplace" |
@@ -57,12 +57,3 @@ class TestFitStatisticalDistribution(TestCase):
             fit_statistical_distribution.get_best_fit(dist)
         self.assertIsInstance(best_dist_name, str)
         self.assertIsInstance(best_fit_params, str)
-
-
-
-
-
-
-
-
-

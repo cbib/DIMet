@@ -7,7 +7,7 @@ grouping :
   - condition
   - timepoint
 
-correction_method : "bonferroni"
+correction_method : "fdr_bh"
 
 datatypes:
   - abundances

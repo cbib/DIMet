@@ -50,9 +50,7 @@ class TestDifferentialAnalysis(TestCase):
         groups = [["c1", "c2", "c3"], ["c4", "c5", "c6"]]
         df = countnan_samples(df, groups)
         result_good, result_bad = differential_analysis. \
-            select_rows_with_sufficient_non_nan_values(
-            df, groups
-        )
+            select_rows_with_sufficient_non_nan_values(df, groups)
         self.assertEqual(result_good.shape, (2, 8))
         self.assertEqual(result_bad.shape, (2, 8))
         self.assertTrue(np.any(np.array(result_good.loc[0, :]) ==
@@ -141,5 +139,3 @@ class TestDifferentialAnalysis(TestCase):
         self.assertListEqual(result[1], [['cond1', '3h'], ['cond1', '2.7h']])
         self.assertListEqual(result[2], [['cond2', '3h'], ['cond2', '2.7h']])
         self.assertListEqual(result[3], [['cond1', '2.7h'], ['cond1', '1h']])
-
-

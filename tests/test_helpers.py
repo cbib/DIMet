@@ -6,7 +6,15 @@
 
 from unittest import TestCase
 
-from dimet.helpers import df_to_dict_by_compartment, first_column_for_column_values, split_rows_by_threshold, row_wise_nanstd_reduction, concatenate_dataframes, compute_gmean_nonan, apply_multi_group_kruskal_wallis, countnan_samples, compute_padj, verify_metadata_sample_not_duplicated
+from dimet.helpers import (df_to_dict_by_compartment,
+                           first_column_for_column_values,
+                           split_rows_by_threshold,
+                           row_wise_nanstd_reduction,
+                           concatenate_dataframes,
+                           compute_gmean_nonan,
+                           apply_multi_group_kruskal_wallis,
+                           countnan_samples, compute_padj,
+                           verify_metadata_sample_not_duplicated)
 
 import numpy as np
 
@@ -21,7 +29,7 @@ class TestHelpers(TestCase):
             "condition": ["Control", "Control", "control"],
             "timepoint": ["T0", "T1", "T2"],
             "timenum": [0, 1, 2],
-            "short_comp": ["cell", "medium", "cell"],
+            "compartment": ["cell", "medium", "cell"],
             "original_name": ["MCF001089_TD01", "MCF001089_TD02",
                               "MCF001089_TD03"],
         }
@@ -37,7 +45,7 @@ class TestHelpers(TestCase):
         abundances_df = pd.DataFrame(abundances_dict)
         abundances_df = abundances_df.set_index(['myindex'])
         d = df_to_dict_by_compartment(df=abundances_df,
-                                              metadata=metadata_df)
+                                      metadata=metadata_df)
         self.assertEqual(list(d.keys()), ["cell", "medium"])
         self.assertEqual(d["cell"].shape, (2, 2))
         self.assertAlmostEqual(
@@ -173,7 +181,7 @@ class TestHelpers(TestCase):
         correction_alpha = 0.05
         correction_method = 'fdr_bh'
         df = compute_padj(df, correction_alpha,
-                                  correction_method)
+                          correction_method)
         self.assertAlmostEqual(df['padj'][1], 0.05, 3)
         self.assertTrue(np.isnan(df['padj'][2]))
 

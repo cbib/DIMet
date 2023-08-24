@@ -8,7 +8,7 @@ grouping:
   - timepoint
 
 qualityDistanceOverSpan : -0.3
-correction_method : "bonferroni"
+correction_method : "fdr_bh"
 
 impute_values:
   abundances: "min"
