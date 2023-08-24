@@ -244,8 +244,8 @@ def df_to_dict_by_compartment(df: pd.DataFrame,
     splits df into a dictionary of dataframes, each for one compartment
     """
     output_dict = dict()
-    for compartment in metadata["short_comp"].unique():
-        sample_names = metadata[metadata["short_comp"] == compartment][
+    for compartment in metadata['compartment'].unique():
+        sample_names = metadata[metadata['compartment'] == compartment][
             "original_name"]
         compartment_df = df[list(sample_names)]
         output_dict[compartment] = compartment_df
@@ -435,7 +435,7 @@ def absolute_geommean_diff(b_values: np.array, a_values: np.array):
 def drop_all_nan_metabolites_on_comp_frames(frames_dict: Dict,
                                             metadata: pd.DataFrame) -> Dict:
     """ metabolites must be in rows """
-    compartments = metadata["short_comp"].unique().tolist()
+    compartments = metadata['compartment'].unique().tolist()
     for dataset in frames_dict.keys():
         for compartment in compartments:
             tmp = frames_dict[dataset][compartment]
@@ -454,9 +454,9 @@ def set_samples_names(frames_dict: Dict, metadata: pd.DataFrame) -> Dict:
     """
     for dataset, compartments_dict in frames_dict.items():
         for compartment, df in compartments_dict.items():
-            original_names = metadata[metadata["short_comp"] == compartment][
+            original_names = metadata[metadata['compartment'] == compartment][
                 "original_name"]
-            new_names = metadata[metadata["short_comp"] == compartment][
+            new_names = metadata[metadata['compartment'] == compartment][
                 "name_to_plot"]
             renamed_columns = {old: new for old, new in
                                zip(original_names, new_names)

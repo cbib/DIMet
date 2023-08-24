@@ -163,7 +163,7 @@ def run_distr_fit_plot(
         df = compartmentalized_df
         df = df[(df.T != 0).any()]
         val_instead_zero = arg_repl_zero2value(impute_value,
-                                                       df)
+                                               df)
         df = df.replace(to_replace=0, value=val_instead_zero)
         if mode == "pairwise":
             for comparison in cfg.analysis.comparisons:

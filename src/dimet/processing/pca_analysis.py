@@ -73,7 +73,7 @@ def pca_on_split_dataset(compartment_df: pd.DataFrame,
     and computes PCA on each subset.
     The results are added to the dictionary of results.
     """
-    assert len(metadata_co_df['short_comp'].unique()) == 1
+    assert len(metadata_co_df['compartment'].unique()) == 1
     assert chosen_column in ["condition", "timepoint"]
     unique_nominal_values = metadata_co_df[chosen_column].unique().tolist()
     pca_tables_dict = {}
@@ -149,7 +149,7 @@ def run_pca_analysis(file_name: data_files_keys_type,
         val_instead_zero = arg_repl_zero2value(impute_value, df)
         df = df.replace(to_replace=0, value=val_instead_zero)
 
-        metadata_co_df = metadata_df[metadata_df['short_comp'] == compartment]
+        metadata_co_df = metadata_df[metadata_df['compartment'] == compartment]
 
         pca_compartment_dict = pca_global_compartment_dataset(
             df, metadata_co_df, description=[file_name, compartment]

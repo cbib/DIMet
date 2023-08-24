@@ -392,7 +392,7 @@ def pairwise_comparison(
         df_good, "distance/span", cfg.analysis.method.qualityDistanceOverSpan
     )
     df_good = compute_padj(df_good, 0.05,
-                                   cfg.analysis.method.correction_method)
+                           cfg.analysis.method.correction_method)
 
     # re-integrate the "bad" sub-dataframes to the full dataframe
     result = concatenate_dataframes(df_good, df_bad, df_no_padj)
@@ -475,7 +475,7 @@ def multi_group_compairson(
                            sublist in conditions_list]
         df4c = apply_multi_group_kruskal_wallis(df4c, this_comparison)
         df4c = compute_padj(df4c, 0.05,
-                                    cfg.analysis.method.correction_method)
+                            cfg.analysis.method.correction_method)
         base_file_name = dataset.get_file_for_label(file_name)
         base_file_name += f"--{compartment}--multigroup"
         output_file_name = os.path.join(out_table_dir,

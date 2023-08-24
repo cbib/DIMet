@@ -214,10 +214,10 @@ def run_plot_abundance_bars(dataset: Dataset, out_plot_dir,
     width_each_subfig = cfg.analysis.width_each_subfig
     height_each_subfig = cfg.analysis.method.height_each_subfig
 
-    compartments = set(metadata_df["short_comp"])
+    compartments = set(metadata_df['compartment'])
     for compartment in compartments:
         metadata_compartment_df: pd.DataFrame = \
-            metadata_df.loc[metadata_df["short_comp"] == compartment, :]
+            metadata_df.loc[metadata_df['compartment'] == compartment, :]
         compartment_df = dataset.compartmentalized_dfs[
             "abundances"][compartment]
         # metadata and abundances time of interest

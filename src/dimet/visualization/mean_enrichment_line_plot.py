@@ -30,7 +30,7 @@ def melt_data_metadata_2df(compartment_df: pd.DataFrame,
                               on='name_to_plot')
     compartment_df = compartment_df.drop(columns=['name_to_plot',
                                                   'timepoint',
-                                                  'short_comp',
+                                                  'compartment',
                                                   'original_name'])
     melted_df = pd.melt(compartment_df,
                         id_vars=['timenum', 'condition'],
@@ -346,7 +346,7 @@ def line_plot_by_compartment(dataset: Dataset,
                              cfg: DictConfig) -> None:
     """ calls function to construct and save plot """
     metadata_df = dataset.metadata_df
-    compartments = list(metadata_df['short_comp'].unique())
+    compartments = list(metadata_df['compartment'].unique())
     width_subplot = cfg.analysis.width_subplot
     height_subplot = cfg.analysis.method.height_subplot
     xaxis_title = cfg.analysis.method.xaxis_title
@@ -355,7 +355,7 @@ def line_plot_by_compartment(dataset: Dataset,
     alpha_conf = cfg.analysis.method.alpha
 
     for co in compartments:
-        metadata_co_df = metadata_df.loc[metadata_df['short_comp'] == co, :]
+        metadata_co_df = metadata_df.loc[metadata_df['compartment'] == co, :]
         compartment_df = dataset.compartmentalized_dfs["mean_enrichment"][co]
 
         melted_co_df = melt_data_metadata_2df(compartment_df, metadata_co_df)

@@ -22,7 +22,7 @@ class TestIsotopologueProportionsPlot(TestCase):
             'condition': ['b', 'b', 'ctl', 'ctl'],
             'timepoint': ['t0', 't0', 't0', 't0'],
             'timenum': [0, 0, 0, 0],
-            'short_comp': ['ex', 'ex', 'ex', 'ex'],
+            'compartment': ['ex', 'ex', 'ex', 'ex'],
             'original_name': ['', '', '', '']
         })
         result = isotopologue_proportions.isotopologue_proportions_2piled_df(
@@ -93,7 +93,7 @@ class TestIsotopologueProportionsPlot(TestCase):
                           'ctl',  'b',  'ctl'],
             'isotopologue_name': ['cit_m+0', 'cit_m+0',
                                   'cit_m+1', 'cit_m+1',
-                                   'cit_m+2', 'cit_m+2'],
+                                  'cit_m+2', 'cit_m+2'],
             'Isotopologue Contribution (%)':   [15.0, 60.0, 25.0,
                                                 45.0, 15.0, 40.0],
             'metabolite': ['cit' for i in range(6)],
@@ -122,12 +122,12 @@ class TestIsotopologueProportionsPlot(TestCase):
 
     def test_add_categorical_time(self):
         df = pd.DataFrame({
-            'timenum': ['2','3','1','3','2','1'],
+            'timenum': ['2', '3', '1', '3', '2', '1'],
             'condition': ['b', 'ctl', 'b',
                           'ctl',  'b',  'ctl'],
             'isotopologue_name': ['cit_m+0', 'cit_m+0',
                                   'cit_m+1', 'cit_m+1',
-                                   'cit_m+2', 'cit_m+2'],
+                                  'cit_m+2', 'cit_m+2'],
             'Isotopologue Contribution (%)':   [15.0, 60.0, 25.0,
                                                 45.0, 15.0, 40.0],
             'metabolite': ['cit' for i in range(6)],
@@ -158,6 +158,3 @@ class TestIsotopologueProportionsPlot(TestCase):
              '2 : b', '2 : ctl', '2xemptyspace',
              '3 : b', '3 : ctl', '3xemptyspace',
              '4 : b', '4 : ctl', '4xemptyspace'])
-
-
-

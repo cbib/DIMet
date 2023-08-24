@@ -3,6 +3,9 @@ _target_: dimet.method.PcaPlotConfig
 label: pca-plot
 name: Generate Principal Component Analysis plots
 
+color: condition   # color dots using this variable
+style: timepoint   # style of the dots' shapes, using this variable
+
 pca_split_further:
   - timepoint
   # - condition

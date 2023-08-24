@@ -19,7 +19,3 @@ class TestPcaPlot(TestCase):
         self.assertAlmostEqual(vecs[0][1],  0.099, 2)
         self.assertAlmostEqual(vecs[1][0], -0.099, 2)
         self.assertAlmostEqual(vecs[1][1], -0.995, 2)
-
-
-
-

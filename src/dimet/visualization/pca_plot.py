@@ -145,15 +145,19 @@ def run_pca_plot(pca_results_dict: dict,  cfg: DictConfig,
         name_plot_var = f"{'--'.join(tup)}_var.pdf"
         figure_var.savefig(os.path.join(out_plot_dir, name_plot_var))
         plt.close()
+
+        color_dot = cfg.analysis.method.color
+        style_dot = cfg.analysis.method.style
         options_labels = {'label-y': "name_to_plot",
                           'label-n': ""}  # when empty string, no dot labels
+
         # scatter: save both versions, labeled dots and unlabeled dots:
         for choice in options_labels.keys():
             labels_column = options_labels[choice]
             name_elements = list(tup) + [choice]
             scatter_fig: figure.Figure = pca_scatter_plot(
-                pc_df,  var_explained_df, "condition",
-                "condition", labels_column,
+                pc_df,  var_explained_df, color_dot,
+                style_dot, labels_column,
                 ellipses_column=cfg.analysis.method.draw_ellipses)
             pca_scatter_2_pdf(scatter_fig, name_elements, out_plot_dir)
             plt.close()

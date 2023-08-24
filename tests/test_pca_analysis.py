@@ -99,7 +99,7 @@ class TestPcaAnalysis(TestCase):
             'name_to_plot': ['beta-1', 'beta-2', 'ctrl-1', 'ctrl-2'],
             'condition': ['beta-glu', 'beta-glu', 'control', 'control'],
             'timepoint': ['t0', 't0', 't0', 't0'],
-            'short_comp': ['ex', 'ex', 'ex', 'ex']
+            'compartment': ['ex', 'ex', 'ex', 'ex']
         })
         description = ["my_file_name", "ex"]
         result_dict = pca_analysis.pca_on_split_dataset(
@@ -142,7 +142,7 @@ class TestPcaAnalysis(TestCase):
             'name_to_plot': ['beta-1', 'beta-2', 'ctrl-1', 'ctrl-2'],
             'condition': ['beta-glu', 'beta-glu', 'control', 'control'],
             'timepoint': ['t0', 't0', 't0', 't0'],
-            'short_comp': ['ex', 'ex', 'ex', 'ex']
+            'compartment': ['ex', 'ex', 'ex', 'ex']
         })
         description = ["my_file_name", "ex"]
         result_dict = pca_analysis.pca_global_compartment_dataset(

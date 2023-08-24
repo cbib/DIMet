@@ -45,7 +45,7 @@ def isotopologue_proportions_2piled_df(
         combined_isos_metadata_df, metada_df, on='name_to_plot')
 
     combined_isos_metadata_df = combined_isos_metadata_df.drop(
-        columns=['short_comp', 'original_name', 'name_to_plot', 'timepoint'])
+        columns=['compartment', 'original_name', 'name_to_plot', 'timepoint'])
     piled_df = pd.melt(combined_isos_metadata_df,
                        id_vars=['timenum', 'condition'],
                        var_name="isotopologue_name",
@@ -455,11 +455,11 @@ def run_isotopologue_proportions_plot(dataset: Dataset,
     time_levels_list: List[str] = [
         str(i) for i in sorted(metadata_df['timenum'].unique())]
 
-    compartments = list(metadata_df['short_comp'].unique())
+    compartments = list(metadata_df['compartment'].unique())
 
     for compartment in compartments:
         metadata_compartment_df: pd.DataFrame = \
-            metadata_df.loc[metadata_df["short_comp"] == compartment, :]
+            metadata_df.loc[metadata_df['compartment'] == compartment, :]
         compartment_df = dataset.compartmentalized_dfs[
             "isotopologue_proportions"][compartment]
 
