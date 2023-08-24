@@ -36,7 +36,7 @@ Or if you are a developer working in a local cloned version, you can install:
 * `src/data` directory contains the python classes for data initialization  
 * `src/method` directory contains the python classes for configuration handling
 * `src/tests` directory contains unit tests
-* `tools` directory contains venv setup scripts. Alternatively, the yml file is also provided in this directory, to perform the installation via conda.
+* `tools` directory contains venv setup scripts.
 
 
 ## Running unit tests 
@@ -50,8 +50,10 @@ Or if you are a developer working in a local cloned version, you can install:
 
 DIMet runs in the command line environment. 
 
+### Using DIMet with provided datasets
+
 To **test the use of DIMet**, we provide datasets, configuration and bash scripts corresponding to the results presented in the manuscript "DIMet: An open-source tool for Differential analysis of Isotope-labeled targeted Metabolomics data" by J. Galvis *et al*. 
-are available at [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/todo:updatexxx):
+are available at [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/1234735):
 
  - Download and uncompress the file `datasets_manuscript_DIMet.zip`.    
     
@@ -119,12 +121,11 @@ are available at [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/to
   ```
   chmod a+x *.sh
   ```
-* and finally run the test:
+* and finally run:
   ```
   ./run_LDHAB-Control.sh
   ./run_Cycloserine_timeseries.sh
   ```
-
 
 
 ## Available analyses
@@ -139,10 +140,8 @@ are available at [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/to
 - _time_course_analysis_ runs differential analysis for time-course experiments in pairwise fashion for consecutive time points
 - _metabologram_integration_ pathway-based integration between *labeled targeted metabolomic* and *trascriptomic* data, resulting in metabologram plots
 
-To run each analysis it is necessary that the user provides 
-his data and configuration files, structured as explained in the section [Organising your data for the analysis](#organising-your-data-for-the-analysis).
-
-After the files' organization step, the generic command for running one analysis is:
+All the analyses must be in a structure that is explained in the section [Organising your data for the analysis](#organising-your-data-for-the-analysis).
+Once the structure is ready, the generic command for running each analysis is:
 
 ```commandline
 python -m dimet -cd config -cn GENERAL_CONFIGURATION_FILENAME
@@ -611,9 +610,9 @@ we used in our data).
 
 
  Examples of configuration files, with their respective datasets are provided 
-in  [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/todo:updaatexx). 
+in  [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/1234735). 
 Also complementary minimal datasets with their configuration files are provided in
-[Zenodo (minimal_examples)](https://sandbox.zenodo.org/record/todo:updatexxxx). **todo:update xxxx**  
+[Zenodo (minimal_examples)](https://sandbox.zenodo.org/record/1234736). 
 
 
 -----------------------------------------------
@@ -634,14 +633,15 @@ For any information or help running DIMet, you can get in touch with:
     Copyright (c) 2023 
     
     Johanna Galvis (1,2)    deisy-johanna.galvis-rodriguez@u-bordeaux.fr
-    Benjamin Dartigues (2)	 benjamin.dartigues@u-bordeaux.fr
-    Florian Specque (1,2)	  florian.specque@u-bordeaux.fr
+    Benjamin Dartigues (2)	benjamin.dartigues@u-bordeaux.fr
+    Florian Specque (1,2)   florian.specque@u-bordeaux.fr
+    Slim Karkar (1,2)       slim.karkar@u-bordeaux.fr
     Helge Hecht (3,5)       helge.hecht@recetox.muni.cz
     Bjorn Gruening (4,5)    bjoern.gruening@gmail.com
     Hayssam Soueidan (2)    massyah@gmail.com
     Macha Nikolski (1,2)    macha.nikolski@u-bordeaux.fr
     
-    (2) CNRS, IBGC - University of Bordeaux,
+    (1) CNRS, IBGC - University of Bordeaux,
     1, rue Camille Saint-Saens, Bordeaux, France
 
     (2) CBiB - University of Bordeaux,
