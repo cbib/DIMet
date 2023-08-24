@@ -127,6 +127,8 @@ class PcaAnalysisConfig(MethodConfig):
 
 
 class PcaPlotConfig(MethodConfig):
+    color: Union[str, None] = "condition"
+    style: Union[str, None] = "timepoint"
     pca_split_further: Union[ListConfig, None] = ["timepoint"]
     draw_ellipses: Union[str, None] = "condition"
     run_iris_demo: bool = False
