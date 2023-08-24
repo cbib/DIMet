@@ -681,7 +681,7 @@ class MetabologramIntegration(Method):
 
     def run(self, cfg: DictConfig, dataset: Dataset) -> None:
         logger.info(f"The current working directory is {os.getcwd()}")
-        logger.info("Current configugration is %s", OmegaConf.to_yaml(cfg))
+        logger.info("Current configuration is %s", OmegaConf.to_yaml(cfg))
         logger.info("Will perform metabologram, "
                     "with the following config: %s", self.config)
         # 'data_integration' (data for integration) inherits from dataset
