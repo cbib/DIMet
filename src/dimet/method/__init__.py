@@ -53,7 +53,9 @@ class AbundancePlotConfig(MethodConfig):
     axisx: str = "condition"
     axisx_labeltilt: int = 20  # 0 is no tilt
     height_each_subfig: float = 5.4
+    palette: str = "pastel"
     as_grid: Union[bool, None] = False
+    do_stripplot: bool = False
 
     def build(self) -> "AbundancePlot":
         return AbundancePlot(config=self)
@@ -66,7 +68,7 @@ class DifferentialAnalysisConfig(MethodConfig):
 
     grouping: ListConfig = ["condition", "timepoint"]
     qualityDistanceOverSpan: float
-    correction_method: str = "bonferroni"
+    correction_method: str = "fdr_bh"
     impute_values: DictConfig
 
     def build(self) -> "DifferentialAnalysis":
@@ -162,10 +164,10 @@ class MetabologramIntegrationConfig(MethodConfig):
     """
     grouping: ListConfig = ["condition", "timepoint"]
     qualityDistanceOverSpan: float
-    correction_method: str = "bonferroni"
+    correction_method: str = "fdr_bh"
     impute_values: DictConfig
     abs_values_scale_color_bar: DictConfig
-    colors_divergent_palette: ListConfig = ["darkcyan", "white", "orangered"]
+    colors_divergent_palette: ListConfig = ['royalblue', 'white', 'red']
     fig_width: float = 7
     fig_height: float = 8
     edge_color: ListConfig = ['#000000', '#000000']

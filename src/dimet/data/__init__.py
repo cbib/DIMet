@@ -12,7 +12,8 @@ from dimet.constants import molecular_types_for_metabologram
 from dimet.helpers import (df_to_dict_by_compartment,
                            drop_all_nan_metabolites_on_comp_frames,
                            set_samples_names,
-                           verify_metadata_sample_not_duplicated)
+                           verify_metadata_sample_not_duplicated,
+                           message_bad_separator_input)
 
 
 class BaseModel(PydanticBaseModel):
@@ -145,6 +146,12 @@ class Dataset(BaseModel):
             )
 
         verify_metadata_sample_not_duplicated(self.metadata_df)
+        message_bad_separator_input(self.metadata_df, "metadata")
+        message_bad_separator_input(self.abundances_df, "abundances")
+        message_bad_separator_input(self.mean_enrichment_df, "enrichment")
+        message_bad_separator_input(self.isotopologue_proportions_df,
+                                    "isotopologue proportions")
+        message_bad_separator_input(self.isotopologues_df, "isotopologues")
 
     def split_datafiles_by_compartment(self) -> None:
         frames_dict = {}

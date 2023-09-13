@@ -54,7 +54,7 @@ class TestAbundanceBars(TestCase):
         result = abundance_bars.plot_one_metabolite(
             df, "m1", axisx_var="timepoint",
             hue_var="condition", axisx_labeltilt=30,
-            palette_choice="dark", curr_ax=axs_k)
+            palette_choice="dark", curr_ax=axs_k, do_stripplot=False)
         bar = result.get_children()[0].get_facecolor()
         # one of the bars color, rgba
         self.assertAlmostEqual(bar[0], 0.062, 2)  # r
@@ -73,7 +73,11 @@ class TestAbundanceBars(TestCase):
             os.makedirs("../__pycache__/")
         except FileExistsError:
             pass
-        cfg_m = DictConfig({'analysis': {'method': {'palette': 'dark'}}})
+        cfg_m = DictConfig({'analysis': {
+            'method': {'palette': 'dark',
+                       'do_stripplot': False}
+            }
+        })
         result = abundance_bars.plot_abundance_bars_no_grid(
             df, ["m1"], "med", "total_abundance",
             axisx_var="timepoint",
