@@ -41,5 +41,6 @@ line_width: [1, 1.2] #  # widths for  <peripheral,central> lines
 font_size: 8
 display_label_and_value : False # if False, display labels of the molecules alone
 
+color_nan_elements : "gray"
 
 

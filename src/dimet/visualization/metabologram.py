@@ -49,8 +49,8 @@ def get_differential_results_dict(file_name: str,
             df, data_integration, cfg, comparison, test)
         result["compartment"] = compartment
         result = differential_analysis.reorder_columns_diff_end(result)
-        result = result.sort_values(["padj", "distance/span"],
-                                    ascending=[True, False])
+        #result = result.sort_values(["padj", "distance/span"],
+        #                            ascending=[True, False])
         result.reset_index(names=[cfg.analysis.columns_metabolites['ID']],
                            inplace=True)
         metabolomics_differential_results_dict[i] = result
@@ -132,8 +132,11 @@ def set_absolute_max_by_type_molecule(data_cleaned_dict, cfg
     for k in cfg.analysis.method.abs_values_scale_color_bar.keys():
         # keys : metabolites, transcripts
         if cfg.analysis.method.abs_values_scale_color_bar[k] is None:
-            max_absolute_value_dict[k] = max(
-                abs(data_cleaned_dict[k]['VALUES']))
+            try:
+                max_absolute_value_dict[k] = max(
+                    abs(data_cleaned_dict[k]['VALUES']))
+            except ValueError:
+                max_absolute_value_dict[k] = float(0)
         else:
             try:
                 v = float(cfg.analysis.method.abs_values_scale_color_bar[k])
@@ -288,7 +291,8 @@ def introduce_nan_elems_if_not_in(curr_pathway_df: pd.DataFrame,
                                   path_elems_here: list,
                                   context_here: str,
                                   genes_list: list,
-                                  metabo_list: list) -> pd.DataFrame:
+                                  metabo_list: list,
+                                  color_nan_elements: str) -> pd.DataFrame:
     """"
     for the current pathway, fill with nan in df where no matches
     """
@@ -298,10 +302,10 @@ def introduce_nan_elems_if_not_in(curr_pathway_df: pd.DataFrame,
     nan_df = nan_df.assign(name=list(not_in_data))
     nan_df = nan_df.assign(VALUES=np.nan)
     nan_df = nan_df.assign(context=context_here)
-    nan_df = nan_df.assign(typemol='')
-    nan_df = nan_df.assign(mycolors="gray")
+    nan_df = nan_df.assign(typemol='')  # definition in second time
+    nan_df = nan_df.assign(mycolors=color_nan_elements)
     nan_df = nan_df.assign(molecule_label=list(not_in_data))
-
+    # definition of typemol :
     for i, r in nan_df.iterrows():
         if r['name'] in genes_list:
             nan_df.loc[i, 'typemol'] = 'transcripts'
@@ -309,6 +313,11 @@ def introduce_nan_elems_if_not_in(curr_pathway_df: pd.DataFrame,
             nan_df.loc[i, 'typemol'] = 'metabolites'
 
     curr_pathway_df = pd.concat([curr_pathway_df, nan_df], axis=0)
+
+    curr_pathway_df.loc[
+        curr_pathway_df['VALUES'].isna(), 'mycolors'] = color_nan_elements
+    curr_pathway_df.loc[
+        curr_pathway_df['VALUES'].isnull(), 'mycolors'] = color_nan_elements
 
     return curr_pathway_df
 
@@ -359,10 +368,19 @@ def donut_inner(gatheredsub, cfg: DictConfig,
                 my_cmap, max_absolute_value_dict: Dict[str, float],
                 fig: matplotlib.figure.Figure) -> matplotlib.figure.Figure:
     """central part of the donut plot"""
-    inner_dict = {'metabo_mean_val': gatheredsub.loc[
-        gatheredsub.typemol == 'metabolites', 'VALUES'].mean(),
-                  'gene_mean_val': gatheredsub.loc[
-                      gatheredsub.typemol == 'transcripts', 'VALUES'].mean()}
+    metabo_mean_val = gatheredsub.loc[
+        gatheredsub.typemol == 'metabolites', 'VALUES'].mean()
+    gene_mean_val = gatheredsub.loc[
+                      gatheredsub.typemol == 'transcripts', 'VALUES'].mean()
+
+    if np.isnan(metabo_mean_val):
+        metabo_mean_val = float(0)
+    if np.isnan(gene_mean_val):
+        gene_mean_val = float(0)
+
+    inner_dict = {'metabo_mean_val': metabo_mean_val,
+                  'gene_mean_val': gene_mean_val}
+
     inner_colorsD = inner_pie_colors(inner_dict, my_cmap,
                                      max_absolute_value_dict["transcripts"],
                                      max_absolute_value_dict["metabolites"])
@@ -375,8 +393,8 @@ def donut_inner(gatheredsub, cfg: DictConfig,
                         'linewidth': cfg.analysis.method.line_width[1]},
             radius=0.41,
             startangle=90,
-            labels=np.array([inner_dict['metabo_mean_val'].round(2),
-                             inner_dict['gene_mean_val']]).round(1),
+            labels=np.array([np.round(inner_dict['metabo_mean_val'], 1),
+                             np.round(inner_dict['gene_mean_val'], 1)]),
             labeldistance=0.2)
     return fig
 
@@ -430,20 +448,23 @@ def save_donuts_plots(gathered: pd.DataFrame,
         path_elems_here = combined_elements_by_pathway[pathway_k]
         gathered_sub = gathered.loc[gathered['name'].isin(path_elems_here), :]
         context_here = auxiliary_indexes_figs_dict[indexer]['context']
+
+        gathered_sub = gathered_sub.loc[
+                       gathered_sub['context'] == context_here, :]
+
         gathered_sub = introduce_nan_elems_if_not_in(
             gathered_sub,
             path_elems_here,
             context_here,
             pathways_lists_dict["transcripts"][pathway_k],
-            pathways_lists_dict["metabolites"][pathway_k])
+            pathways_lists_dict["metabolites"][pathway_k],
+            cfg.analysis.method.color_nan_elements)
 
         gathered_sub['typemol'] = pd.Categorical(gathered_sub['typemol'],
                                                  categories=['metabolites',
                                                              'transcripts'])
         gathered_sub = gathered_sub.sort_values(by=['typemol', 'name'],
                                                 ascending=[True, False])
-        gathered_sub = gathered_sub.loc[
-                       gathered_sub['context'] == context_here, :]
 
         fig = plt.figure(figsize=(cfg.analysis.method.fig_width,
                                   cfg.analysis.method.fig_height))
