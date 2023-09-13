@@ -93,7 +93,7 @@ def split_rows_by_threshold(df: pd.DataFrame, column_name: str,
         undesired_rows = set(df.index) - set(good_df.index)
         bad_df = df.loc[list(undesired_rows)]
     except Exception as e:
-        logger.info(e)
+        logger.info(f"{e}. {message}")
         logger.info(message)
 
     return good_df, bad_df
@@ -161,9 +161,10 @@ def first_column_for_column_values(df: pd.DataFrame, columns: List,
     """
 
     if not all(len(sublist) == len(columns) for sublist in values):
-        raise ValueError(
-            "Number of values in each sublist must be"
-            " the same as number of columns")
+        message = ("Number of values in each sublist must be"
+                   " the same as number of columns")
+        logger.info(message)
+        raise ValueError(message)
 
     # Create a mask for each column-value pair
     first_column_values_list = []
@@ -194,7 +195,7 @@ def arg_repl_zero2value(how: str, df: pd.DataFrame) -> float:
             try:
                 denominator = float(str(how.split("/")[1]))
             except Exception as e:
-                logger.info(e)
+                logger.info(f"{e}. {err_msg}")
                 raise ValueError(err_msg)
         min_value = df[df > 0].min(skipna=True).min(skipna=True)
         output_value = min_value / denominator
@@ -202,7 +203,7 @@ def arg_repl_zero2value(how: str, df: pd.DataFrame) -> float:
         try:
             output_value = float(str(how))
         except Exception as e:
-            logger.info(e)
+            logger.info(f"{e}. {err_msg}")
             raise ValueError(err_msg)
 
     return output_value
@@ -276,6 +277,7 @@ def verify_metadata_sample_not_duplicated(metadata_df: pd.DataFrame) -> None:
 
     if duplicated_samples:
         txt_errors = f"-> duplicated sample names: {duplicated_samples}\n"
+        logger.info(f"Found conflicts in your metadata:\n{txt_errors}")
         raise ValueError(f"Found conflicts in your metadata:\n{txt_errors}")
 
 
@@ -465,3 +467,17 @@ def set_samples_names(frames_dict: Dict, metadata: pd.DataFrame) -> Dict:
             frames_dict[dataset][compartment] = renamed_df
 
     return frames_dict
+
+
+def message_bad_separator_input(df: pd.DataFrame, type_df: str) -> None:
+    error_message = (f"Error when reading input file of type '{type_df}': "
+                     "possible wrong delimiter (tab is expected)")
+    if df is not None:
+        try:
+            if df.shape[1] <= 1:
+                logger.info(error_message)
+                raise ValueError(error_message)
+        except Exception as e:
+            if df.empty:
+                logger.info(f"{e}. {error_message}")
+                raise ValueError(error_message)
