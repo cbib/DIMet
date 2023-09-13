@@ -9,6 +9,7 @@ from typing import List
 
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 from hydra.core.config_store import ConfigStore
@@ -46,8 +47,8 @@ def plot_one_metabolite(df: pd.DataFrame,
                         hue_var: str,
                         axisx_labeltilt: int,
                         palette_choice: str,
-                        curr_ax: matplotlib.axes
-                        ) -> matplotlib.axes:
+                        curr_ax: matplotlib.axes,
+                        do_stripplot: bool) -> matplotlib.axes:
     """"
     returns a single object of type matplotlib.axes
     with all the individual metabolite plot
@@ -66,23 +67,25 @@ def plot_one_metabolite(df: pd.DataFrame,
         errwidth=1.7,
         capsize=0.12,
     )
-    try:
-        sns.stripplot(
-            ax=curr_ax,
-            x=axisx_var,
-            y="abundance",
-            hue=str(hue_var),
-            data=df,
-            palette=palette_choice,
-            dodge=True,
-            edgecolor="black",
-            linewidth=1.5,
-            alpha=1,
-        )
-    except Exception as e:
-        # When Nan it throws error, avoid it
-        print(e)
-        pass
+    if do_stripplot:
+        np.random.seed(123)  # to force the jitter not to randomly change
+        try:
+            sns.stripplot(
+                ax=curr_ax,
+                x=axisx_var,
+                y="abundance",
+                hue=str(hue_var),
+                data=df,
+                palette=palette_choice,
+                dodge=True,
+                edgecolor="black",
+                linewidth=1.5,
+                alpha=1,
+            )
+        except Exception as e:
+            # When Nan it throws error, avoid it
+            print(e)
+            pass
 
     plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
     curr_ax.set(title=metabolite + "\n")  # title of the subplot
@@ -123,7 +126,8 @@ def plot_abundance_bars_no_grid(
         axs_k = plot_one_metabolite(pile_df, selected_metabolites[k],
                                     axisx_var, hue_var, axisx_labeltilt,
                                     cfg.analysis.method.palette,
-                                    axs_k)
+                                    axs_k,
+                                    cfg.analysis.method.do_stripplot)
         if k == 0:  # collect the legend, which is same for any plot
             thehandles, thelabels = axs_k.get_legend_handles_labels()
         axs_k.legend_.remove()
@@ -169,7 +173,8 @@ def plot_as_grid_of_bars(
         axs[i] = plot_one_metabolite(pile_df, selected_metabolites[i],
                                      axisx_var, hue_var, axisx_labeltilt,
                                      cfg.analysis.method.palette,
-                                     axs[i])
+                                     axs[i],
+                                     cfg.analysis.method.do_stripplot)
 
         if cfg.analysis.method.x_text_modify_as is not None:
             xticks_text_l: list = cfg.analysis.method.x_text_modify_as
