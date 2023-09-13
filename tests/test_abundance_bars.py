@@ -73,7 +73,11 @@ class TestAbundanceBars(TestCase):
             os.makedirs("../__pycache__/")
         except FileExistsError:
             pass
-        cfg_m = DictConfig({'analysis': {'method': {'palette': 'dark'}}})
+        cfg_m = DictConfig({'analysis': {
+            'method': {'palette': 'dark',
+                       'do_stripplot': False}
+            }
+        })
         result = abundance_bars.plot_abundance_bars_no_grid(
             df, ["m1"], "med", "total_abundance",
             axisx_var="timepoint",
