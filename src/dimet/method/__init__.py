@@ -53,7 +53,9 @@ class AbundancePlotConfig(MethodConfig):
     axisx: str = "condition"
     axisx_labeltilt: int = 20  # 0 is no tilt
     height_each_subfig: float = 5.4
+    palette: str = "pastel"
     as_grid: Union[bool, None] = False
+    do_stripplot: bool = False
 
     def build(self) -> "AbundancePlot":
         return AbundancePlot(config=self)
