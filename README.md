@@ -31,11 +31,11 @@ Or if you are a developer working in a local cloned version, you can install:
 
 ## Code organization
 
-* `src/processing` directory contains the implemented high-level analysis scripts that produced the tables for the DIMet paper
-* `src/visualization` : directory contains the implemented high-level scripts that produced the figures in the DIMet paper
-* `src/data` directory contains the python classes for data initialization  
-* `src/method` directory contains the python classes for configuration handling
-* `src/tests` directory contains unit tests
+* `src/dimet/processing` directory contains the implemented high-level analysis scripts that produced the tables for the DIMet paper
+* `src/dimet/visualization` : directory contains the implemented high-level scripts that produced the figures in the DIMet paper
+* `src/dimet/data` directory contains the python classes for data initialization  
+* `src/dimet/method` directory contains the python classes for configuration handling
+* `tests` directory contains unit tests
 * `tools` directory contains venv setup scripts.
 
 
