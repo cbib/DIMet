@@ -159,7 +159,8 @@ def save_line_plot_no_grid(melted_compartment_df: pd.DataFrame,
                            xaxis_title: str,
                            alpha_conf: float,
                            out_file_elements: List[str],
-                           out_plot_dir: str) -> None:
+                           out_plot_dir: str,
+                           figure_format: str) -> None:
     """Save each metabolite in independent plots"""
     time_ticks = melted_compartment_df['timenum'].unique()
     metabolites_selected_df = \
@@ -201,8 +202,10 @@ def save_line_plot_no_grid(melted_compartment_df: pd.DataFrame,
         )
         out_file_elements_plus_met = out_file_elements + [metabolite_name]
         output_path = os.path.join(
-            out_plot_dir, f'{"-".join(out_file_elements_plus_met)}.pdf')
-        fig.savefig(output_path, format="pdf", bbox_inches='tight')
+            out_plot_dir,
+            f'{"-".join(out_file_elements_plus_met)}.{figure_format}')
+        fig.savefig(output_path, format=figure_format,
+                    bbox_inches='tight')
         plt.close()
     # end for
     logger.info(f"Saved mean enrichment line plots in {out_plot_dir}")
@@ -217,9 +220,10 @@ def save_line_plot_as_grid(melted_compartment_df: pd.DataFrame,
                            xaxis_title: str,
                            alpha_conf: float,
                            out_file_elements: List[str],
-                           out_plot_dir) -> None:
+                           out_plot_dir,
+                           figure_format) -> None:
     """
-    constructs and saves the grid plot to pdf
+    constructs and saves the grid plot to file
     """
     time_ticks = melted_compartment_df['timenum'].unique()
     metabolites_selected_df = \
@@ -265,9 +269,11 @@ def save_line_plot_as_grid(melted_compartment_df: pd.DataFrame,
         )
     plt.subplots_adjust(hspace=corrector_factor)
 
-    output_path = os.path.join(out_plot_dir,
-                               f'{"-".join(out_file_elements)}.pdf')
-    fig.savefig(output_path, format="pdf", bbox_inches='tight')
+    output_path = os.path.join(
+        out_plot_dir,
+        f'{"-".join(out_file_elements)}.{figure_format}')
+    fig.savefig(output_path, format=figure_format,
+                bbox_inches='tight')
     plt.close
     logger.info(f"Saved mean enrichment line plots in {output_path}")
 
@@ -372,7 +378,9 @@ def line_plot_by_compartment(dataset: Dataset,
                                palette_option,
                                xaxis_title,
                                alpha_conf,
-                               out_file_elements, out_plot_dir)
+                               out_file_elements,
+                               out_plot_dir,
+                               cfg.analysis.method.figure_format)
 
         if (cfg.analysis.method.as_grid is not None) and \
                 cfg.analysis.method.as_grid:
@@ -385,7 +393,9 @@ def line_plot_by_compartment(dataset: Dataset,
                 palette_option,
                 xaxis_title,
                 alpha_conf,
-                out_file_elements, out_plot_dir)
+                out_file_elements,
+                out_plot_dir,
+                cfg.analysis.method.figure_format)
 
 
 def generate_metabolites_numbered_dict(cfg: DictConfig,

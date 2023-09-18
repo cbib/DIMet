@@ -3,8 +3,11 @@ hydra:
     chdir: true
   run:
     dir: ../outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}/${analysis.dataset.label}-${analysis.method.label}
+    
+# Notes: 
+# This config.yaml file is never used by the code, but remains here as template.
+# All the method/*.yaml files YES THEY ARE USED by the code
 
-# check https://hydra.cc/docs/patterns/specializing_config/ for more info about this
 defaults:
   - analysis: abundance_plot
   - _self_
@@ -12,3 +15,4 @@ defaults:
 figure_path: figures
 table_path: tables
 
+# check https://hydra.cc/docs/patterns/specializing_config/ for more info about this

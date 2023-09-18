@@ -111,14 +111,15 @@ def plot_abundance_bars_no_grid(
     height_each_subfig: float,
     cfg: DictConfig,
 ) -> None:
-    """ Saves independent single .pdf plot, one by each metabolite"""
+    """ Saves independent single file plot, one by each metabolite"""
     for k in range(len(selected_metabolites)):
         pile_df = piled_sel_df.loc[
                   piled_sel_df["metabolite"] == selected_metabolites[k], :]
         pile_df = pile_df.reset_index()
         output_path_k = os.path.join(
             output_directory,
-            f"bars_{CO}_{selected_metabolites[k]}-{SMX}.pdf")
+            f"bars_{CO}_{selected_metabolites[k]}-{SMX}"
+            f".{cfg.analysis.method.figure_format}")
 
         fig_this_metabolite, axs_k = plt.subplots(
             nrows=1, ncols=1,
@@ -132,12 +133,17 @@ def plot_abundance_bars_no_grid(
             thehandles, thelabels = axs_k.get_legend_handles_labels()
         axs_k.legend_.remove()
         plt.tight_layout(pad=0.01, w_pad=-2, h_pad=0.1)
-        plt.savefig(output_path_k, bbox_inches="tight", format="pdf")
+        plt.savefig(output_path_k,
+                    bbox_inches="tight",
+                    format=cfg.analysis.method.figure_format)
         plt.close()
 
     plt.legend(handles=thehandles, labels=thelabels, loc="upper right")
     plt.axis("off")
-    plt.savefig(os.path.join(output_directory, "legend.pdf"), format="pdf")
+    plt.savefig(os.path.join(
+        output_directory,
+        f"legend.{cfg.analysis.method.figure_format}"),
+        format=cfg.analysis.method.figure_format)
     plt.close()
     logger.info(f"Saved abundance plots in {output_directory}")
 
@@ -191,13 +197,19 @@ def plot_as_grid_of_bars(
     plt.subplots_adjust(left=0.2, top=0.76, bottom=0.2,
                         hspace=corrector_factor)
 
-    output_path = os.path.join(output_directory, f"bars_{CO}_{SMX}.pdf")
-    plt.savefig(output_path, bbox_inches="tight", format="pdf")
+    output_path = os.path.join(
+        output_directory,
+        f"bars_{CO}_{SMX}.{cfg.analysis.method.figure_format}")
+    plt.savefig(output_path, bbox_inches="tight",
+                format=cfg.analysis.method.figure_format)
     plt.close()
 
     plt.legend(handles=thehandles, labels=thelabels, loc="upper right")
     plt.axis("off")
-    plt.savefig(os.path.join(output_directory, "legend.pdf"), format="pdf")
+    plt.savefig(os.path.join(
+        output_directory,
+        f"legend.{cfg.analysis.method.figure_format}"),
+        format=cfg.analysis.method.figure_format)
     plt.close()
     logger.info(f"Saved abundance plot in {output_path}")
 

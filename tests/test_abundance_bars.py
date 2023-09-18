@@ -75,7 +75,8 @@ class TestAbundanceBars(TestCase):
             pass
         cfg_m = DictConfig({'analysis': {
             'method': {'palette': 'dark',
-                       'do_stripplot': False}
+                       'do_stripplot': False,
+                       'figure_format': 'svg'}
             }
         })
         result = abundance_bars.plot_abundance_bars_no_grid(

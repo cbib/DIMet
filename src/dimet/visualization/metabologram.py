@@ -477,7 +477,7 @@ def save_donuts_plots(gathered: pd.DataFrame,
         title_out = "-".join(auxiliary_inner_dict['title'])
         base_file_name = f"{title_out}-{compartment}"
         out_path = os.path.join(out_plot_dir, base_file_name)
-        plt.savefig(f"{out_path}.pdf")
+        plt.savefig(f"{out_path}.{cfg.analysis.method.figure_format}")
 
     # end for
 
@@ -502,7 +502,7 @@ def save_donuts_plots(gathered: pd.DataFrame,
 
         base_file_name = f"legend-{file_name}-{compartment}"
         out_path = os.path.join(out_plot_dir, base_file_name)
-        plt.savefig(f"{out_path}.pdf")
+        plt.savefig(f"{out_path}.{cfg.analysis.method.figure_format}")
 
 
 def run_metabologram(file_name: str,

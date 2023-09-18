@@ -26,6 +26,8 @@ statistical_test:
 
 ## parameters for the plotting part of Metabologram:
 
+figure_format: svg
+
 abs_values_scale_color_bar: # if null, automatically set max absolute value
   transcripts: null # 5
   metabolites: null # 3

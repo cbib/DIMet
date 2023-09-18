@@ -48,7 +48,7 @@ class AbundancePlotConfig(MethodConfig):
     """
     Sets default values or fills them from the method yaml file
     """
-
+    figure_format: str = "svg"
     barcolor: str = "timepoint"
     axisx: str = "condition"
     axisx_labeltilt: int = 20  # 0 is no tilt
@@ -92,6 +92,7 @@ class IsotopologueProportionsPlotConfig(MethodConfig):
     """
     Sets default values or fills them from the method yaml file
     """
+    figure_format: str = "svg"
     max_nb_carbons_possible: int = 24
     appearance_separated_time: bool = True
     separated_plots_by_condition: bool = False
@@ -109,6 +110,7 @@ class MeanEnrichmentLinePlotConfig(MethodConfig):
     """
     Sets default values or fills them from the method yaml file
     """
+    figure_format: str = "svg"
     alpha: float = 1
     xaxis_title: str = "Time"
     color_lines_by: str = "condition"  # or  "metabolite"
@@ -129,8 +131,9 @@ class PcaAnalysisConfig(MethodConfig):
 
 
 class PcaPlotConfig(MethodConfig):
-    color: Union[str, None] = "condition"
-    style: Union[str, None] = "timepoint"
+    figure_format: str = "svg"
+    color: str = "condition"
+    style: str = "timepoint"
     pca_split_further: Union[ListConfig, None] = ["timepoint"]
     draw_ellipses: Union[str, None] = "condition"
     run_iris_demo: bool = False
@@ -150,6 +153,7 @@ class TimeCourseAnalysisConfig(MethodConfig):
 
 
 class DistrFitPlotConfig(MethodConfig):
+    figure_format: str = "svg"
     grouping: ListConfig = ["condition", "timepoint"]
     qualityDistanceOverSpan: float
     impute_values: DictConfig
@@ -166,6 +170,7 @@ class MetabologramIntegrationConfig(MethodConfig):
     qualityDistanceOverSpan: float
     correction_method: str = "fdr_bh"
     impute_values: DictConfig
+    figure_format: str = "svg"
     abs_values_scale_color_bar: DictConfig
     colors_divergent_palette: ListConfig = ['royalblue', 'white', 'red']
     fig_width: float = 7
@@ -638,6 +643,8 @@ class TimeCourseAnalysis(Method):
 
 
 class DistrFitPlot(Method):
+    config: DistrFitPlotConfig
+
     def run(self, cfg: DictConfig, dataset: Dataset) -> None:
         logger.info(f"The current working directory is {os.getcwd()}")
         logger.info("Current configuration is %s", OmegaConf.to_yaml(cfg))
