@@ -140,7 +140,7 @@ are available at [Zenodo (manuscript_data)](https://sandbox.zenodo.org/record/12
 - _time_course_analysis_ runs differential analysis for time-course experiments in pairwise fashion for consecutive time points
 - _metabologram_integration_ pathway-based integration between *labeled targeted metabolomic* and *trascriptomic* data, resulting in metabologram plots
 
-All the analyses must be in a specific folder structure. Once the structure is ready, the **generic command** for running each analysis is:
+All these analyses can be executed using a **generic command**, their specifics are defined in the configuration file.
 
 ```commandline
 python -m dimet -cd config -cn GENERAL_CONFIGURATION_FILENAME
