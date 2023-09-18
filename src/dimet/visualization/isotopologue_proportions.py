@@ -265,8 +265,8 @@ def complex_stacked_plot_as_grid(
         x_to_plot: str, x_ticks_text_tilt: int) -> None:
     """
     Using the isotopologues proportions, generates stacked barplots
-    per metabolite, all arranged in a single pdf file.
-    A legend is produced separately also as pdf file.
+    per metabolite, all arranged in a single output file.
+    A legend is produced separately also as output file.
     """
     width_each_stack = cfg.analysis.width_each_stack
     numbers_size = cfg.analysis.inner_numbers_size
@@ -319,10 +319,12 @@ def complex_stacked_plot_as_grid(
 
     file_elems_str = "-".join(output_file_elements)
     output_path = os.path.join(
-        out_plot_dir, f"Isotopologues_{file_elems_str}.pdf"
+        out_plot_dir,
+        f"Isotopologues_{file_elems_str}.{cfg.analysis.method.figure_format}"
     )
     f.savefig(output_path,
-              bbox_inches="tight", format="pdf")
+              bbox_inches="tight",
+              format=cfg.analysis.method.figure_format)
     plt.close()
     logger.info(f"Saved isotopologue stacked barplots in {output_path}")
 
@@ -335,7 +337,7 @@ def stacked_plot_no_grid(
         x_to_plot: str, x_ticks_text_tilt: int) -> None:
     """
     Using the isotopologues proportions, generates stacked barplots
-    per metabolite, each one in independent pdf file
+    per metabolite, each one in independent output file
     """
     width_each_stack = cfg.analysis.width_each_stack
     numbers_size = cfg.analysis.inner_numbers_size
@@ -379,10 +381,13 @@ def stacked_plot_no_grid(
         file_elems_str = "-".join(
             output_file_elements + [one_metabolite_name])
         output_path = os.path.join(
-            out_plot_dir, f"Isotopologues_{file_elems_str}.pdf"
+            out_plot_dir,
+            f"Isotopologues_{file_elems_str}"
+            f".{cfg.analysis.method.figure_format}"
         )
         f.savefig(output_path,
-                  bbox_inches="tight", format="pdf")
+                  bbox_inches="tight",
+                  format=cfg.analysis.method.figure_format)
         plt.close()
     # end for
     logger.info(f"Saved isotopologue stacked barplots in {output_path}")
@@ -393,7 +398,7 @@ def add_xemptyspace_tolabs(conditions, time_levels_list):
     adds an 'empty space' between each timepoint in the metabolite plot,
     conditions are kept next to each other in comparative aspect.
     Note : If willing to _not_ having conditions in comparative aspect
-      but each condition in separate pdf instead,
+      but each condition in separate output file instead,
       see .split_plots_by_condition attribute.
     """
     conditions.extend(["xemptyspace"])  # to add space among time categories
@@ -557,7 +562,9 @@ def run_isotopologue_proportions_plot(dataset: Dataset,
         isotopologues_types_create_legend(cfg)  # legend alone
         plt.savefig(
             os.path.join(
-                out_plot_dir, "legend_isotopologues_stackedbars.pdf"
+                out_plot_dir,
+                f"legend_isotopologues_stackedbars"
+                f".{cfg.analysis.method.figure_format}"
             ),
-            format="pdf")
+            format=cfg.analysis.method.figure_format)
         plt.close()

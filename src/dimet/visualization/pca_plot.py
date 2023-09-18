@@ -96,14 +96,14 @@ def pca_scatter_plot(pc_df: pd.DataFrame,
     return fig
 
 
-def pca_scatter_2_pdf(figure_pc: figure.Figure,
-                      name_elements: List[str],
-                      out_plot_dir: str) -> None:
-    name_plot = f"{'--'.join(name_elements)}_pc.pdf"
+def pca_scatter_2_file(figure_pc: figure.Figure,
+                       name_elements: List[str],
+                       out_plot_dir: str, figure_format: str) -> None:
+    name_plot = f"{'--'.join(name_elements)}_pc.{figure_format}"
     figure_pc.savefig(os.path.join(out_plot_dir, name_plot))
 
 
-def demo_pca_iris(out_plot_dir: str) -> None:
+def demo_pca_iris(out_plot_dir: str, figure_format: str) -> None:
     from sklearn.decomposition import PCA
     iris = sns.load_dataset("iris")
     sns.relplot(data=iris, x="sepal_width", y="petal_width",
@@ -131,7 +131,8 @@ def demo_pca_iris(out_plot_dir: str) -> None:
                                    "species", labels_column="",
                                    ellipses_column="species")
 
-    pca_scatter_2_pdf(scatter_fig, name_elements, out_plot_dir)
+    pca_scatter_2_file(scatter_fig, name_elements, out_plot_dir,
+                       figure_format=figure_format)
     logger.info("Saving demo figure: pca on iris dataset")
     plt.close()
 
@@ -142,8 +143,8 @@ def run_pca_plot(pca_results_dict: dict,  cfg: DictConfig,
         pc_df = pca_results_dict[tup]['pc']
         var_explained_df = pca_results_dict[tup]['var']
         figure_var: figure.Figure = variance_expl_plot(var_explained_df)
-        name_plot_var = f"{'--'.join(tup)}_var.pdf"
-        figure_var.savefig(os.path.join(out_plot_dir, name_plot_var))
+        tmp = f"{'--'.join(tup)}_var.{cfg.analysis.method.figure_format}"
+        figure_var.savefig(os.path.join(out_plot_dir, tmp))
         plt.close()
 
         color_dot = cfg.analysis.method.color
@@ -159,12 +160,13 @@ def run_pca_plot(pca_results_dict: dict,  cfg: DictConfig,
                 pc_df,  var_explained_df, color_dot,
                 style_dot, labels_column,
                 ellipses_column=cfg.analysis.method.draw_ellipses)
-            pca_scatter_2_pdf(scatter_fig, name_elements, out_plot_dir)
+            pca_scatter_2_file(scatter_fig, name_elements, out_plot_dir,
+                               cfg.analysis.method.figure_format)
             plt.close()
 
     # end for
     if cfg.analysis.method.run_iris_demo:
-        demo_pca_iris(out_plot_dir)
+        demo_pca_iris(out_plot_dir, cfg.analysis.method.figure_format)
 
 # end
 

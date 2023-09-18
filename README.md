@@ -41,8 +41,8 @@ Or if you are a developer working in a local cloned version, you can install:
 
 ## Running unit tests 
 
-* with pytest, by running `pytest` from `DIMet`
-* Place yourself in `DIMet/tests` and execute `python -m unittest` 
+* With pytest, by running `pytest` from `DIMet`
+* Alternatively, place yourself in `DIMet/tests` and execute `python -m unittest` 
 
 -----------------------------------------------------------------------------------------------
 

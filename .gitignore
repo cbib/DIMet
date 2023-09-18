@@ -2,3 +2,9 @@ __pycache__
 .pytest_cache
 dist
 *.egg-info
+.idea
+src/dimet/__pycache__
+src/dimet/data/__pycache__
+src/dimet/method/__pycache__
+src/dimet/processing/__pycache__
+src/dimet/visualization/__pycache__

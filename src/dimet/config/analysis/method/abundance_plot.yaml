@@ -3,6 +3,7 @@ _target_: dimet.method.AbundancePlotConfig
 label: abundance plot
 name: Generate abundance plots
 
+figure_format : svg
 barcolor : condition
 axisx : timepoint
 axisx_labeltilt : 70 # 0 is no tilt
@@ -13,3 +14,4 @@ x_text_modify_as: null # or a list of float, int or str, e.g ['0h', '4h'] or [0,
 as_grid : False
 
 do_stripplot: True
+

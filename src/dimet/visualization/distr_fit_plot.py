@@ -169,7 +169,9 @@ def run_distr_fit_plot(
             for comparison in cfg.analysis.comparisons:
                 comp = "-".join(map(lambda x: "-".join(x), comparison))
                 file_basename = dataset.get_file_for_label(file_name)
-                file_basename += f"--{compartment}-{comp}-{test}.pdf"
+                file_basename += f"--{compartment}-{comp}-{test}"
+                # add extension to file, by figure_format
+                file_basename += f".{cfg.analysis.method.figure_format}"
                 out_file_path = os.path.join(out_plot_dir, file_basename)
                 run_dist_fit_plot_pairwise(df, dataset, cfg, comparison,
                                            test, out_file_path)
