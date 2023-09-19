@@ -48,13 +48,10 @@ Or if you are a developer working in a local cloned version, you can install:
 
 # Documentation
 
-All the details of how to run DIMet are found in the [Wiki](https://github.com/cbib/DIMet/wiki) page. This documentation contains the information that the user needs to build her/his own folder structure of data and configuration files, and to successfully run DIMet. 
-
+All the details about how to run DIMet can be found on the dedicated [Wiki](https://github.com/cbib/DIMet/wiki) page. 
+Importantly, this is where you will find the information about how to organise the data (folder structure) and how to populate the configuration files to successfully run DIMet. 
 
 -----------------------------------------------
-
-
-
   
 # Getting help
 
