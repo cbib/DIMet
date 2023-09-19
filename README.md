@@ -1,7 +1,7 @@
 DIMet: Differential analysis of Isotope-labeled targeted Metabolomics data
 ===
 
-<img src="img/logo_opt_4_big.png" alt="drawing" width="160"/>
+<img src="https://raw.githubusercontent.com/cbib/DIMet/main/img/logo_opt_4_big.png" alt="logo" width="170"/>
 
 # Introduction
 
