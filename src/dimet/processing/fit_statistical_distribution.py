@@ -12,6 +12,8 @@ import scipy.stats as stats
 
 logger = logging.getLogger(__name__)
 
+np.random.seed(123)
+
 
 def compute_z_score(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
     """
@@ -26,7 +28,8 @@ def find_best_distribution(df: pd.DataFrame):
     Find the best distribution among all the scipy.stats distributions
     and return it together with its parameters
 
-    The input dataframe df has to have a "zscore" column as the fitting is done on the zscores
+    The input dataframe df has to have a "zscore" column
+    as the fitting is done on the zscores
     """
     logger.info("Fitting a distribution")
     dist = np.around(np.array((df["zscore"]).astype(float)), 5)

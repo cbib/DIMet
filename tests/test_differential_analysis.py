@@ -125,6 +125,29 @@ class TestDifferentialAnalysis(TestCase):
             )))
         self.assertEqual(result.shape, (2, 11))
 
+    def test_round_result_float_columns(self):
+        data = {
+            "distance": [2, 1.5], "span_allsamples": [4, 6],
+            "distance/span": [0.59595959595959, 0.25],
+            "count_nan_samples_group1": [0, 0],
+            "count_nan_samples_group2": [0, 0],
+            "pvalue": [0, 0],
+            "padj": [1.54354343434e-3, 1.3543434354335e-4],
+            "log2FC": [4.063030512104, 5.0202235],
+            "FC": [8, 23], "compartment": ["med", "med"],
+        }
+        df = pd.DataFrame(data)
+        df.index = ['met1', 'met3']
+        result = differential_analysis.round_result_float_columns(df)
+        self.assertTrue(
+            any(np.array(result["padj"]) == np.array([0.001544, 0.000135])
+                )
+        )
+        self.assertTrue(
+            any(np.array(result["log2FC"]) == np.array([4.063031, 5.020224])
+                )
+        )
+
     def test_time_course_auto_list_comparisons(self):
         metadata = pd.DataFrame({
             'condition': ['cond1', 'cond1', 'cond1', 'cond1',

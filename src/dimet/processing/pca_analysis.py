@@ -52,6 +52,7 @@ def compute_pca(
     X = np.transpose(np.array(quantitative_df))
     pca = PCA(n_components=dims)
     pc = pca.fit_transform(X)
+    pc = np.around(pc, decimals=6)
     pc_df = pd.DataFrame(data=pc,
                          columns=['PC' + str(i) for i in range(1, dims + 1)])
     pc_df = pc_df.assign(name_to_plot=quantitative_df.columns)
@@ -60,6 +61,10 @@ def compute_pca(
     var_explained_df = pd.DataFrame({
         'Explained Variance %': pca.explained_variance_ratio_ * 100,
         'PC': ['PC' + str(i) for i in range(1, dims + 1)]})
+    var_explained_df['Explained Variance %'] = np.around(
+        var_explained_df['Explained Variance %'].astype(float).to_numpy(),
+        decimals=6
+    )
 
     return pc_df, var_explained_df
 
