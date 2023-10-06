@@ -424,6 +424,7 @@ def pairwise_comparison(
 
     # re-integrate the "bad" sub-dataframes to the full dataframe
     result = concatenate_dataframes(df_good, df_bad, df_no_padj)
+    result = round_result_float_columns(result)
     return result
 
 
@@ -452,7 +453,7 @@ def differential_comparison(
             result = pairwise_comparison(df, dataset, cfg, comparison, test)
             result["compartment"] = compartment
             result = reorder_columns_diff_end(result)
-            result = round_result_float_columns(result)
+
             result = result.sort_values(["padj", "distance/span"],
                                         ascending=[True, False])
             comp = "-".join(map(lambda x: "-".join(x), comparison))
@@ -506,6 +507,7 @@ def multi_group_compairson(
         df4c = apply_multi_group_kruskal_wallis(df4c, this_comparison)
         df4c = compute_padj(df4c, 0.05,
                             cfg.analysis.method.correction_method)
+        df4c = round_result_float_columns(df4c)
         base_file_name = dataset.get_file_for_label(file_name)
         base_file_name += f"--{compartment}--multigroup"
         output_file_name = os.path.join(out_table_dir,
