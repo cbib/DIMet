@@ -5,7 +5,7 @@ name: Generate isotopologues stack plots
 
 # here put 'hidden' advanced defaults
 figure_format: svg
-max_nb_carbons_possible: 12
+max_nb_carbons_possible: 18  # up to 30 are supported
 appearance_separated_time: True # adds a space between timepoints, conditions stay comparative
 split_plots_by_condition: False # prints each condition in independent plots
 height_each_stack: !!float 4.9

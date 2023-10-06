@@ -11,6 +11,7 @@ import matplotlib
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
+import numpy as np
 import pandas as pd
 import seaborn as sns
 from dimet.data import Dataset
@@ -54,6 +55,11 @@ def isotopologue_proportions_2piled_df(
     piled_df['timenum'] = piled_df['timenum'].astype(str)
     piled_df['Isotopologue Contribution (%)'] = \
         piled_df['Isotopologue Contribution (%)'] * 100
+
+    piled_df['Isotopologue Contribution (%)'] = np.around(
+        piled_df['Isotopologue Contribution (%)'].astype(float).to_numpy(),
+        decimals=6
+    )
     return piled_df
 
 
@@ -85,15 +91,24 @@ def massage_isotopologues(piled_df) -> pd.DataFrame:
 
 def prepare_means_replicates(piled_df, metaboli_selected) -> Dict:
     """
-    returns a dictionary of dataframes, keys are metabolites
+    returns a dictionary of dataframes, keys are metabolites.
+    for each dataframe:
+       - the mean over the biological replicates, by isotopologue, is computed
+          and is saved in the column 'Isotopologue Contribution (%)'
+       - has columns:
+           condition, metabolite, m+x, timenum, Isotopologue Contribution (%)
     """
     dfcopy = piled_df.copy()
     # instead groupby isotopologue_name, using m+x and metabolite works better
     dfcopy = dfcopy.groupby(
         ["condition", "metabolite", "m+x", "timenum"]) \
-        .mean("Isotopologue Contribution %")  # df.mean skips nan by default
-    dfcopy = dfcopy.reset_index()
+        .mean("Isotopologue Contribution (%)")  # df.mean skips nan by default
 
+    dfcopy["Isotopologue Contribution (%)"] = np.around(
+        dfcopy["Isotopologue Contribution (%)"].astype(float).to_numpy(),
+        decimals=6
+    )
+    dfcopy = dfcopy.reset_index()
     dfs_dict = dict()
     for i in metaboli_selected:
         tmp = dfcopy.loc[dfcopy["metabolite"] == i, ].reset_index(drop=True)

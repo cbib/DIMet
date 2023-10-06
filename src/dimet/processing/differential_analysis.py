@@ -278,7 +278,8 @@ def run_distribution_fitting(df: pd.DataFrame):
     autoset_tailway = auto_detect_tailway(df, best_distribution, args_param)
     logger.info(f"auto, best pvalues calculated : {autoset_tailway}")
     df = compute_p_value(df, autoset_tailway, best_distribution, args_param)
-
+    df["zscore"] = np.around(
+        df["zscore"].astype(float).to_numpy(), decimals=6)
     return df
 
 
@@ -345,6 +346,31 @@ def reorder_columns_diff_end(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def round_result_float_columns(df: pd.DataFrame) -> pd.DataFrame:
+    result_float_columns = [
+        "log2FC",
+        "pvalue",
+        "padj",
+        "distance/span",
+        "FC",
+        "distance",
+        "span_allsamples"]
+
+    columns_gmean = [column for column in list(df.columns) if
+                     column.startswith("gmean_")]  # also gmean columns
+    result_float_columns = list(
+        set(result_float_columns).union(set(columns_gmean)))
+
+    for column in result_float_columns:
+        if column in list(df.columns):
+            df[column] = np.around(
+                df[column].astype(float).to_numpy(),
+                decimals=6
+            )
+
+    return df
+
+
 def pairwise_comparison(
         df: pd.DataFrame, dataset: Dataset, cfg: DictConfig,
         comparison: List[str], test: availtest_methods_type
@@ -368,17 +394,19 @@ def pairwise_comparison(
     df4c = df4c[(df4c.T != 0).any()]  # delete rows being zero everywhere
     df4c = df4c.dropna(axis=0, how="all")
     df4c = row_wise_nanstd_reduction(df4c)
+    df4c = df4c.round(decimals=6)
     df4c = countnan_samples(df4c, this_comparison)
     df4c = distance_or_overlap(df4c, this_comparison)
     df4c = compute_span_incomparison(df4c, this_comparison)
     df4c["distance/span"] = df4c.distance.div(df4c.span_allsamples)
     df4c = calculate_gmean(df4c, this_comparison)
-    print(this_comparison)
+
     df_good, df_bad = select_rows_with_sufficient_non_nan_values(
         df4c, groups=this_comparison)
 
     if test == "disfit":
         df_good = run_distribution_fitting(df_good)
+
     else:
         result_test_df = run_statistical_test(df_good, this_comparison, test)
         assert result_test_df.shape[0] == df_good.shape[0]
@@ -424,6 +452,7 @@ def differential_comparison(
             result = pairwise_comparison(df, dataset, cfg, comparison, test)
             result["compartment"] = compartment
             result = reorder_columns_diff_end(result)
+            result = round_result_float_columns(result)
             result = result.sort_values(["padj", "distance/span"],
                                         ascending=[True, False])
             comp = "-".join(map(lambda x: "-".join(x), comparison))
@@ -471,6 +500,7 @@ def multi_group_compairson(
         df4c = df4c.dropna(axis=0, how="all")
 
         df4c = row_wise_nanstd_reduction(df4c)
+        df4c = df4c.round(decimals=6)
         this_comparison = [list(filter(lambda x: x in columns, sublist)) for
                            sublist in conditions_list]
         df4c = apply_multi_group_kruskal_wallis(df4c, this_comparison)
@@ -514,13 +544,13 @@ def time_course_analysis(file_name: data_files_keys_type,
                          cfg: DictConfig,
                          test: availtest_methods_type,
                          out_table_dir: str):
-    '''
+    """
     Time-course comparison is performed on compartmentalized versions of
     data files
     Attention: we replace zero values using the provided method
     Writes the table(s) with computed statistics in the relevant
      output directory
-    '''
+    """
 
     assert_literal(test, availtest_methods_type, "Available test")
     assert_literal(file_name, data_files_keys_type, "file name")

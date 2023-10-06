@@ -4,6 +4,7 @@ from typing import List
 
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 from hydra.core.config_store import ConfigStore
@@ -38,6 +39,10 @@ def melt_data_metadata_2df(compartment_df: pd.DataFrame,
                         value_name="Fractional Contribution (%)")
     melted_df["Fractional Contribution (%)"] = \
         melted_df["Fractional Contribution (%)"] * 100
+    melted_df["Fractional Contribution (%)"] = np.around(
+        melted_df["Fractional Contribution (%)"].astype(float).to_numpy(),
+        decimals=6
+    )
     return melted_df
 
 
@@ -79,6 +84,14 @@ def metabolite_df__mean_and_sd(
     one_metabolite_result = mean_df.merge(std_df, how='inner',
                                           on=["condition", "timenum",
                                               "metabolite"])
+    one_metabolite_result['mean'] = np.around(
+        one_metabolite_result['mean'] .astype(float).to_numpy(),
+        decimals=6
+    )
+    one_metabolite_result['sd'] = np.around(
+        one_metabolite_result['sd'] .astype(float).to_numpy(),
+        decimals=6
+    )
     return one_metabolite_result
 
 
@@ -406,7 +419,7 @@ def generate_metabolites_numbered_dict(cfg: DictConfig,
     { 0: ['Pyr', 'Cit'], 1: ['Asn', 'Asp']}
     will result in one plot by couple of metabolites, totalling 2 plots.
     If option 'plot_grouped_by_dict' not specified, one single metabolite
-    per numeric key is set.
+    per numeric key is set (default behaviour).
     """
     if cfg.analysis.method.plot_grouped_by_dict is not None:
         metabolites_numbered_dict = cfg.analysis.method.plot_grouped_by_dict

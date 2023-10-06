@@ -100,6 +100,9 @@ def pile_dfs_by_contexts(contexts_dict: Dict[int, Dict[str, pd.DataFrame]],
             df = df.assign(context=context, typemol=molecule_type)
             df['context'] = df['context'].astype(int)
             df_out = pd.concat([df_out, df], axis=0)
+            df_out['VALUES'] = np.around(
+                df_out['VALUES'].astype(float).to_numpy(), decimals=6
+            )
 
         data_cleaned_dict[molecule_type] = df_out
     return data_cleaned_dict
@@ -328,9 +331,13 @@ def donut_outer(curr_pathway_context_df,
     genecircportion = 50 / curr_pathway_context_df.loc[
                            curr_pathway_context_df.typemol == "transcripts",
                            :].shape[0]
+    genecircportion = np.around(np.array(genecircportion), decimals=6)
+
     metabocircportion = 50 / curr_pathway_context_df.loc[
                              curr_pathway_context_df.typemol == "metabolites",
                              :].shape[0]
+    metabocircportion = np.around(np.array(metabocircportion), decimals=6)
+
     curr_pathway_context_df.loc[
         curr_pathway_context_df.typemol == "transcripts",
         "circportion"] = genecircportion

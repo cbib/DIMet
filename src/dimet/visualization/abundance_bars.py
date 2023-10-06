@@ -51,7 +51,7 @@ def plot_one_metabolite(df: pd.DataFrame,
                         do_stripplot: bool) -> matplotlib.axes:
     """"
     returns a single object of type matplotlib.axes
-    with all the individual metabolite plot
+    with the individual metabolite plot
     """
     plt.rcParams.update({"font.size": 21})
     sns.barplot(
@@ -237,7 +237,7 @@ def run_plot_abundance_bars(dataset: Dataset, out_plot_dir,
             metadata_df.loc[metadata_df['compartment'] == compartment, :]
         compartment_df = dataset.compartmentalized_dfs[
             "abundances"][compartment]
-        # metadata and abundances time of interest
+        # metadata and abundances: slice of timepoints of interest
         metadata_slice = metadata_compartment_df.loc[
                          metadata_compartment_df[
                              "timepoint"].isin(timepoints), :]
@@ -245,6 +245,10 @@ def run_plot_abundance_bars(dataset: Dataset, out_plot_dir,
 
         # total piled-up data:
         piled_sel = pile_up_abundance(values_slice, metadata_slice)
+        piled_sel['abundance'] = np.around(
+            piled_sel['abundance'].astype(float).to_numpy(),
+            decimals=6
+        )
         piled_sel["condition"] = pd.Categorical(
             piled_sel["condition"], conditions)
         piled_sel["timepoint"] = pd.Categorical(
