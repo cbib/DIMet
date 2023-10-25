@@ -14,7 +14,11 @@ DIMet also offers a _pathway-based omics integration_ through **Metabolograms**.
 
 _Note_: DIMet is intended for downstream analysis of tracer metabolomics data that has been corrected for the presence of natural isotopologues. 
 
-_Formatting and normalisation helper_: scripts for formatting and normalization are provided in [Tracegroomer](https://github.com/johaGL/Tracegroomer).
+_Formatting and normalisation helper_: scripts for formatting and normalization are provided in [Tracegroomer](https://github.com/cbib/TraceGroomer).
+
+_New_: DIMet is now available in **Galaxy**: Visit https://usegalaxy.eu/ to access the user-friendly interface of our tool.
+
+--------
 
 # Installing DIMet 
 
@@ -32,6 +36,10 @@ Via pip command:
 
 Or if you are a developer working in a local cloned version, you can install:
 `pip install -e .`
+
+
+Alternatively, our tool is also available as a conda package (see [here](https://bioconda.github.io/recipes/dimet/README.html)). Moreover, it can be used via Docker (`docker pull quay.io/biocontainers/dimet:0.1.4`) or singularity (`depot.galaxyproject.org/singularity/dimet:0.1.4--pyhdfd78af_0`) containers. 
+
 
 
 ## Code organization
