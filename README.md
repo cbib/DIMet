@@ -14,7 +14,7 @@ DIMet also offers a _pathway-based omics integration_ through **Metabolograms**.
 
 _Note_: DIMet is intended for downstream analysis of tracer metabolomics data that has been corrected for the presence of natural isotopologues. 
 
-_Formatting and normalisation helper_: scripts for formatting and normalization are provided in [Tracegroomer](https://github.com/cbib/TraceGroomer).
+_Formatting and normalisation helper_: scripts for formatting and normalization are provided in [TraceGroomer](https://github.com/cbib/TraceGroomer).
 
 _New_: DIMet is now available in **Galaxy**: Visit https://usegalaxy.eu/ to access the user-friendly interface of our tool.
 
