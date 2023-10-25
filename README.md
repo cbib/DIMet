@@ -38,7 +38,7 @@ Or if you are a developer working in a local cloned version, you can install:
 `pip install -e .`
 
 
-Alternatively, our tool is also available as a conda package (see [here](https://bioconda.github.io/recipes/dimet/README.html)). Moreover, it can be used via Docker (`docker pull quay.io/biocontainers/dimet:0.1.4`) or singularity (`depot.galaxyproject.org/singularity/dimet:0.1.4--pyhdfd78af_0`) containers. 
+Alternatively to the [PyPI version](https://pypi.org/project/DIMet/), our tool is also available as a [conda package](https://bioconda.github.io/recipes/dimet/README.html). Moreover, it can be used via Docker (`docker pull quay.io/biocontainers/dimet:0.1.4`) or singularity (`depot.galaxyproject.org/singularity/dimet:0.1.4--pyhdfd78af_0`) containers. 
 
 
 
