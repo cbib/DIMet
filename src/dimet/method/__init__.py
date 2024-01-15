@@ -15,6 +15,7 @@ from dimet.constants import (assert_literal, availtest_methods,
                              metabolites_values_for_metabologram)
 from dimet.data import DataIntegration, Dataset
 from dimet.helpers import flatten
+from dimet.processing.bivariate_analysis import bi_variate_analysis
 from dimet.processing.differential_analysis import (differential_comparison,
                                                     multi_group_compairson,
                                                     time_course_analysis)
@@ -182,6 +183,17 @@ class MetabologramIntegrationConfig(MethodConfig):
 
     def build(self) -> "MetabologramIntegration":
         return MetabologramIntegration(config=self)
+
+
+class BivariateAnalysisConfig(MethodConfig):
+    """
+    Sets default values or fills them for the bi-variate analysis
+    """
+    grouping: ListConfig = ["condition", "timepoint"]
+    correction_method: str = "fdr_bh"
+
+    def build(self) -> "BivariateAnalysis":
+        return BivariateAnalysis(config=self)
 
 
 class Method(BaseModel):
@@ -851,4 +863,73 @@ class MetabologramIntegration(Method):
             sys.exit(1)
         except ValueError as e:
             logger.error(f"Data inconsistency: {e}")
+            sys.exit(1)
+
+
+class BivariateAnalysis(Method):
+    config: BivariateAnalysisConfig
+
+    def run(self, cfg: DictConfig, dataset: Dataset) -> None:
+        logger.info(
+            "Will compute bi-variate analysis, with the following config: %s",
+            self.config)
+
+        out_table_dir = os.path.join(os.getcwd(), cfg.table_path)
+        os.makedirs(out_table_dir, exist_ok=True)
+        self.check_expectations(cfg, dataset)
+
+        if (len(cfg.analysis.conditions) >= 2) and (
+           len(dataset.metadata_df["timepoint"].unique()) >= 2):
+            for datatype in ["abundances", "mean_enrichment"]:
+                if datatype in dataset.compartmentalized_dfs.keys():
+                    logger.info(f"Running bi-variate analysis with "
+                                f"{datatype} to compare "
+                                f"time course blocks between conditions")
+                    bi_variate_analysis(
+                        datatype, dataset, cfg,
+                        behavior="conditions_comparison_time_blocks",
+                        out_table_dir=out_table_dir)
+
+        datatype = "isotopologues_proportions"
+        if datatype in dataset.compartmentalized_dfs.keys():
+            logger.info(f"Running bi-variate analysis with "
+                        f"{datatype}:")
+            if len(cfg.analysis.conditions) >= 2:
+                logger.info("assessing MDV (Mass Distribution Vector) "
+                            "between conditions")
+                bi_variate_analysis(
+                    datatype, dataset, cfg,
+                    behavior="conditions_MDV_comparison",
+                    out_table_dir=out_table_dir)
+            if len(dataset.metadata_df["timepoint"].unique()) >= 2:
+                logger.info("assessing MDV (Mass Distribution Vector) "
+                            "between time-points")
+                bi_variate_analysis(
+                    datatype, dataset, cfg,
+                    behavior="timepoints_MDV_comparison",
+                    out_table_dir=out_table_dir)
+
+    def check_expectations(self, cfg: DictConfig, dataset: Dataset) -> None:
+        # check that necessary information is provided in the analysis config
+        try:
+            if ((len(cfg.analysis.conditions) < 2) and
+                    (len(dataset.metadata_df["timepoint"].unique()) < 2)):
+                raise ValueError("Less than 2 conditions, "
+                                 "AND less than 2 timepoints, " # TODO check if I can do this option
+                                 "impossible to run bi-variate analysis, "
+                                 "aborting")
+            if not set(cfg.analysis.conditions).issubset(
+                        set(dataset.metadata_df['condition'])):
+                raise ValueError(
+                    "Conditions provided for bi-variate analysis "
+                    "in the config file "
+                    "are not present in the metadata file, aborting"
+                )
+        except ConfigAttributeError as e:
+            logger.error(
+                f"Mandatory parameter not provided in the config file:{e}, "
+                f"aborting")
+            sys.exit(1)
+        except ValueError as e:
+            logger.error(f"Data inconsistency:{e}")
             sys.exit(1)

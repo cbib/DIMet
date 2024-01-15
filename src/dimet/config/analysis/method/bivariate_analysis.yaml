@@ -1,0 +1,29 @@
+_target_: dimet.method.BivariateAnalysisConfig
+
+label: bivariate analysis
+name: Computation of the correlation of MDV or time course blocks of values
+
+
+grouping :  # check if this is necessary or not
+  - condition
+  - timepoint
+
+
+conditions_comparison_time_blocks:
+  # requires >= 2 conditions  AND >=2 time points in data
+  abundances: pearson  # processes the time course blocks
+  mean_enrichment: pearson # processes the time course blocks
+
+conditions_MDV_comparison: # requires >= 2 conditions and >=1 timepoint (timepoints run separately)
+  isotopologue_proportions: pearson
+
+timepoints_MDV_comparison:  # requires >= 1 condition and >=2 timepoints
+    isotopologue_proportions: pearson
+
+correction_method: fdr_bh
+
+impute_values:
+  abundances: "min"
+  mean_enrichment: "min"
+  isotopologues: "min"
+  isotopologue_proportions: "min"

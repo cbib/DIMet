@@ -81,7 +81,7 @@ def distance_or_overlap(df: pd.DataFrame, groups: List) -> pd.DataFrame:
     return df
 
 
-def select_rows_with_sufficient_non_nan_values___previous_version(
+def select_rows_with_sufficient_non_nan_values___previous_version(  # TODO: since version 1.2 is not used, delete completely
         df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
     """
     Identifies rows in the input DataFrame that have enough replicates.

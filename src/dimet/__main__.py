@@ -25,7 +25,7 @@ def main_run_analysis(cfg: DictConfig) -> None:
         config=hydra.utils.instantiate(cfg.analysis.dataset))
     dataset.preload()
     dataset.split_datafiles_by_compartment()
-    dataset.save_datafiles_split_by_compartment()
+    # dataset.save_datafiles_split_by_compartment()  # TODO delete because related to 'processed' intermediary folder
     method: Method = hydra.utils.instantiate(
         cfg.analysis.method).build()  # method factory
 
