@@ -26,12 +26,13 @@ from omegaconf import DictConfig
 logger = logging.getLogger(__name__)
 
 
-def save_output(result, compartment, dataset, file_name, more_string,test,
-                out_table_dir):
+def save_output(result_df, compartment, dataset, file_name, more_string,
+                test, out_table_dir):
 
-    result = result.sort_values(["padj"],
+    result = result_df.sort_values(["padj"],
                                 ascending=True)
-    #comp = "-".join(map(lambda x: "-".join(x), comparison))
+    result['compartment'] = compartment
+
     base_file_name = dataset.get_file_for_label(file_name)
     base_file_name += f"--{compartment}-{more_string}-{test}"
     output_file_name = os.path.join(out_table_dir,
@@ -45,13 +46,13 @@ def save_output(result, compartment, dataset, file_name, more_string,test,
     logger.info(f"Saved the result in {output_file_name}")
 
 
-def bivariate_compute_this(
+def bivariate_compute_current_comparison(
         file_name, df: pd.DataFrame, metadata_df,
         compartment: str,
         dataset: Dataset,
         cfg: DictConfig,
         comparison: List[str], behavior: str,
-        test: str, out_table_dir:str) -> None:
+        test: str, out_table_dir: str) -> None:
     """
     Runs a bivariate analysis for blocks of values, handling two behaviors:
     a. comparing conditions, time block:
@@ -63,19 +64,21 @@ def bivariate_compute_this(
       - MDV blocks, using isotopologue proportions
 
     """
-    df_dict = compute_bivariate_fashion(
+    df_dict = compute_bivariate_by_case(
          df, metadata_df, compartment, comparison, behavior, test
     )
 
     for akey in df_dict.keys():
         df = df_dict[akey]
+
         df.set_index("metabolite", inplace=True)
-        result = compute_padj(df, 0.05,
+        result_df = compute_padj(df, 0.05,
                            cfg.analysis.method.correction_method)
-        more_string = f"{comparison}-{akey}"
+        comparison_str = "-".join(comparison)
+        more_string = f"{comparison_str}-{akey}"
         if akey == "ok":
-            more_string = f"{comparison}"
-        save_output(result, compartment, dataset, file_name,
+            more_string = f"{comparison_str}"
+        save_output(result_df, compartment, dataset, file_name,
                     more_string, test, out_table_dir)
 
 
@@ -133,46 +136,107 @@ def way_1(df, metadata_df , comparison) -> Dict[str, pd.DataFrame]:
     return df_dict
 
 
+def compute_isotopologue_meaning(isotopologues_list):
+    isotopologues_uniq = sorted(list(np.unique(np.array(isotopologues_list))))
+    clue_isotopologue = pd.DataFrame({
+        "isotopologue_name": isotopologues_uniq
+    })
+    clue_isotopologue[["metabolite", "m+x"]] = (
+        clue_isotopologue["isotopologue_name"].str.split(
+         "_m+", expand=True, regex=False))
+    clue_isotopologue["m+x"] = clue_isotopologue["m+x"].astype(int)
+    clue_isotopologue = clue_isotopologue.sort_values(
+        by=["metabolite", "m+x"])
+    return clue_isotopologue
+
+
+def way_2(df, metadata_df, comparison):
+    """
+        Using isotopologue proportions,
+        computes the arrays of geometric means, ordered by m+x.
+        Outputs dict of df of arrays, for comparing 2 condition time blocks.
+        (a separated computation is done by time-point)
+    """
+    df_dict = dict()
+    clue_isotopologue = compute_isotopologue_meaning(list(df.index))
+    metabolites_uniq = clue_isotopologue["metabolite"].unique()
+    df_dict = dict()
+    for timepoint in list(metadata_df["timepoint"].unique()):
+        tmp_dict: dict = {"metabolite": metabolites_uniq,
+        "arr_1" : list(),  "arr_2": list()}
+        metadata_df_tp = metadata_df.loc[
+                         metadata_df["timepoint"] == timepoint, :]
+        df_timepoint = df[metadata_df_tp['name_to_plot']].copy()
+        for j, condition in enumerate(comparison):
+            metadata_df_tp_cond = metadata_df_tp.loc[
+                                  metadata_df["condition"] == condition, :]
+            df_compar = df_timepoint[
+                metadata_df_tp_cond['name_to_plot']].copy()
+            df_compar["gmean"] = np.around(df_compar.apply(
+                lambda x: stats.gmean(x.dropna()), axis = 1), decimals=6)
+            df_compar["isotopologue_name"] = list(df_compar.index)
+            merged_df = pd.merge(df_compar, clue_isotopologue, how='left',
+                                 on="isotopologue_name").sort_values(
+                                 by=["metabolite", "m+x"])
+            MDV_ordered_list_gmeans = list()
+            for i, metabolite in enumerate(metabolites_uniq):
+                mdv_arr = merged_df.loc[merged_df["metabolite"] == metabolite, 
+                "gmean"].values
+                MDV_ordered_list_gmeans.append(np.array(mdv_arr))
+
+            location = f'arr_{j + 1}'
+            tmp_dict[location] = MDV_ordered_list_gmeans
+
+        df_dict[timepoint] =  pd.DataFrame(tmp_dict)
+
+    return df_dict
+
+
 def compute_test_for_df_dict(df_dict, test):
-    """xxxx"""
+    """parses a dictionary of dataframes
+       computes bivariate test for each dataframe"""
     for akey in df_dict.keys():
         df = df_dict[akey].copy()
+
         df.index = df['metabolite']
-        print(df.head())
         stat_list = []
         pvalue_list = []
         for i, metabolite in enumerate(list(df['metabolite'])):
+            # array of n-(timepoints or m+x) geometrical means values
             array_1 = df.loc[metabolite, "arr_1"]
             array_2 = df.loc[metabolite, "arr_2"]
             if test == "pearson":
                 stat_res, pvalue = stats.pearsonr(array_1, array_2)
+
             elif test == "spearman":
                 stat_res, pvalue = stats.spearmanr(array_1, array_2)
 
             stat_list.append(stat_res)
             pvalue_list.append(pvalue)
 
-    df["correlation_coefficient"] = stat_list
-    df["pvalue"] = pvalue_list
-    df_dict[akey] = df.copy()
+        df["correlation_coefficient"] = stat_list
+        df["pvalue"] = pvalue_list
+        df_dict[akey] = df.copy()
 
     return df_dict
 
 
-def compute_bivariate_fashion(df, metadata_df,
-                              compartment, # TODO define if necesary here ?
+def compute_bivariate_by_case(df, metadata_df,
+                              compartment,  # TODO define if necesary here ?
                               comparison, behavior, test
-      ) -> pd.DataFrame:
+                              ) -> pd.DataFrame:
     # format the data
     if behavior == "conditions_comparison_time_blocks":
         # as stated in config, only abundances or mean enrichment processed
         df_dict = way_1(df, metadata_df, comparison)
 
     elif behavior == "conditions_MDV_comparison":
-        df_dict = way_2() # separately for each time point)
+        df_dict = way_2(df, metadata_df, comparison) # separately for each time point)
 
     elif behavior == "timepoints_MDV_comparison":
-        df_dict = way_3() # separately for each condition
+        import sys
+        sys.exit()
+        df_dict = way_3(df, metadata_df, comparison) # separately for each condition
 
     # call the computation
     df_dict = compute_test_for_df_dict(df_dict, test)
@@ -273,7 +337,8 @@ def bi_variate_analysis(
         val_instead_zero = arg_repl_zero2value(impute_value, df)
         df = df.replace(to_replace=0, value=val_instead_zero)
         # note: do not drop rows all zero or all nan, blocks can break !
-        df = row_wise_nanstd_reduction(df)
+        if file_name == "abundances":  # only reduce if abundances
+            df = row_wise_nanstd_reduction(df)
         df = df.round(decimals=6)
 
         automatic_comparisons = set_comparisons_by_behavior(
@@ -281,7 +346,7 @@ def bi_variate_analysis(
         )
 
         for comparison in automatic_comparisons:
-            bivariate_compute_this(
+            bivariate_compute_current_comparison(
                 file_name,
                 df, metadata_df_subset,
                 compartment, dataset,
@@ -289,52 +354,3 @@ def bi_variate_analysis(
                 behavior,  # specifies the mode, coheret with the df
                 test, out_table_dir)
 
-
-
-
-
-
-#
-#
-# def run_bivariate_test(df: pd.DataFrame, comparison: List,  # TODO fix argunemtns
-#                          test: str) -> pd.DataFrame:
-#     """
-#     This is a switch function for computing statistics for a pairwise
-#     differential analysis
-#     The comparison is a list with 2 sublists that contain column names
-#     """
-#     metabolites = df.index.values
-#     correlation_coeff_array = []
-#     pval = []
-#
-#     for i in df.index:  # i is one  metabolite name
-#         a1 = np.array(df.loc[i, comparison[0]], dtype=float)
-#         a2 = np.array(df.loc[i, comparison[1]], dtype=float)
-#         vInterest = a1[~np.isnan(a1)]
-#         vBaseline = a2[~np.isnan(a2)]
-#
-#         if (len(vInterest) < 2) | (len(vBaseline) < 2):
-#             return pd.DataFrame(
-#                 data={
-#                     "metabolite": metabolites,
-#                     "stat": [float("nan")] * len(metabolites),
-#                     "pvalue": [float("nan")] * len(metabolites),
-#                 }
-#             )
-#
-#         if test == "pearson":
-#             stat_result, pval_result = 0
-#
-#         elif test == "spearman":
-#             stat_result, pval_result = 0
-#
-#         correlation_coeff_array.append(stat_result)
-#         pval.append(pval_result)
-#
-#     assert len(metabolites) == len(pval)
-#     return pd.DataFrame(
-#         data={
-#             "metabolite": metabolites,
-#             "pvalue": pval,
-#         }
-#     )

@@ -890,7 +890,7 @@ class BivariateAnalysis(Method):
                         behavior="conditions_comparison_time_blocks",
                         out_table_dir=out_table_dir)
 
-        datatype = "isotopologues_proportions"
+        datatype = "isotopologue_proportions"
         if datatype in dataset.compartmentalized_dfs.keys():
             logger.info(f"Running bi-variate analysis with "
                         f"{datatype}:")
