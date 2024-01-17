@@ -53,7 +53,6 @@ def plot_one_metabolite(df: pd.DataFrame,
     returns a single object of type matplotlib.axes
     with the individual metabolite plot
     """
-    plt.rcParams.update({"font.size": 21})
     sns.barplot(
         ax=curr_ax,
         x=axisx_var,
@@ -120,7 +119,7 @@ def plot_abundance_bars_no_grid(
             output_directory,
             f"bars_{CO}_{selected_metabolites[k]}-{SMX}"
             f".{cfg.analysis.method.figure_format}")
-
+        plt.rcParams.update({"font.size": 21})
         fig_this_metabolite, axs_k = plt.subplots(
             nrows=1, ncols=1,
             figsize=(width_each_subfig, height_each_subfig))
@@ -129,6 +128,7 @@ def plot_abundance_bars_no_grid(
                                     cfg.analysis.method.palette,
                                     axs_k,
                                     cfg.analysis.method.do_stripplot)
+        axs_k = apply_advanced_param_custom_x_labs(cfg, axs_k)
         if k == 0:  # collect the legend, which is same for any plot
             thehandles, thelabels = axs_k.get_legend_handles_labels()
         axs_k.legend_.remove()
@@ -146,6 +146,17 @@ def plot_abundance_bars_no_grid(
         format=cfg.analysis.method.figure_format)
     plt.close()
     logger.info(f"Saved abundance plots in {output_directory}")
+
+
+def apply_advanced_param_custom_x_labs(cfg, curr_axs):
+    if cfg.analysis.method.x_text_modify_as is not None:
+        xticks_text_l: list = cfg.analysis.method.x_text_modify_as
+        try:
+            xticks_text_l = [str(i) for i in xticks_text_l]
+            curr_axs.set_xticklabels(xticks_text_l)
+        except Exception as e:
+            print(e, "The argument 'x_text_modify_as' is incorrectly set")
+    return curr_axs
 
 
 def plot_as_grid_of_bars(
@@ -166,7 +177,7 @@ def plot_as_grid_of_bars(
     corrector_factor = 0.7
     total_height_grid = height_each_subfig * len(selected_metabolites) + \
         (corrector_factor * 7 * len(selected_metabolites))
-
+    plt.rcParams.update({"font.size": 21})
     fig, axs = plt.subplots(
         nrows=len(selected_metabolites), ncols=1,
         sharey=False, figsize=(width_each_subfig, total_height_grid))
@@ -182,13 +193,7 @@ def plot_as_grid_of_bars(
                                      axs[i],
                                      cfg.analysis.method.do_stripplot)
 
-        if cfg.analysis.method.x_text_modify_as is not None:
-            xticks_text_l: list = cfg.analysis.method.x_text_modify_as
-            try:
-                xticks_text_l = [str(i) for i in xticks_text_l]
-                axs[i].set_xticklabels(xticks_text_l)
-            except Exception as e:
-                print(e, "The argument 'x_text_modify_as' is incorrectly set")
+        axs[i] = apply_advanced_param_custom_x_labs(cfg, axs[i])
 
     thehandles, thelabels = axs[-1].get_legend_handles_labels()
     for i in range(len(selected_metabolites)):

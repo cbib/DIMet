@@ -123,21 +123,24 @@ def plot_one_metabolite(metabolite_name: str,
     If several metabolites in input dataframes,
     they will be plotted sharing axes in same plane.
     """
-    sns.lineplot(
-        ax=axs_z,  # starts in 1 (after the empty row index 0)
-        x="timenum",
-        y="Fractional Contribution (%)",
-        hue=color_lines_by,
-        style="condition",
-        err_style=None,
-        alpha=alpha_conf,
-        linewidth=4.5,
-        palette=palette_option[color_lines_by],
-        zorder=1,
-        data=metabolite_df,
-
-        legend=True,
-    )
+    if len(list(metabolite_df['timenum'].unique())) > 1:
+        sns.lineplot(
+            ax=axs_z,  # starts in 1 (after the empty row index 0)
+            x="timenum",  y="Fractional Contribution (%)",
+            hue=color_lines_by,
+            style="condition",
+            err_style=None,
+            alpha=alpha_conf,
+            linewidth=4.5,
+            palette=palette_option[color_lines_by],
+            zorder=1, data=metabolite_df,
+            legend=True)
+    else:  # when only one time point line is impossible, do scatter (dots)
+        sns.scatterplot(
+            ax=axs_z, x="timenum", y="Fractional Contribution (%)",
+            hue=color_lines_by, style="condition", alpha=alpha_conf, s=40,
+            palette=palette_option[color_lines_by], zorder=1, legend=True,
+            data=metabolite_df)
     axs_z.set_xticks([float(i) for i in time_ticks])
 
     axs_z.scatter(
@@ -149,10 +152,7 @@ def plot_one_metabolite(metabolite_name: str,
         mean_and_sd_metabolite_df["timenum"],
         mean_and_sd_metabolite_df["mean"],
         yerr=mean_and_sd_metabolite_df["sd"],
-        fmt="none",
-        capsize=3.5,
-        ecolor="black",
-        zorder=2
+        fmt="none", capsize=3.5, ecolor="black", zorder=2
     )
     axs_z.set_ylabel("Fractional Contribution (%)", size=19),
     axs_z.set(xlabel=xaxis_title)
@@ -300,7 +300,7 @@ def give_colors_by_metabolite(cfg: DictConfig,
                    "mediumturquoise", "darkcyan", "teal", "cadetblue",
                    "slategrey", "steelblue", "navy", "darkslateblue",
                    "blueviolet",
-                   "darkochid", "purple", "mediumvioletred", "crimson"]
+                   "darkorchid", "purple", "mediumvioletred", "crimson"]
 
     colors_dict = dict()
 
