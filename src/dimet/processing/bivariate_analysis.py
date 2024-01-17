@@ -17,8 +17,7 @@ from dimet.constants import (assert_literal, availtest_methods_type,
 from dimet.data import Dataset
 from dimet.helpers import (arg_repl_zero2value,
                            compute_padj,
-                           row_wise_nanstd_reduction
-                           )
+                           row_wise_nanstd_reduction)
 from omegaconf import DictConfig
 
 logger = logging.getLogger(__name__)
@@ -64,7 +63,7 @@ def compute_bivariate_by_behavior(df, metadata_df, comparison,
                                   behavior: str, test: str) -> pd.DataFrame:
     """
     performs two steps:
-    1. calls functions to compute geometric means, obtaining df's in dict
+    1. calls functions to compute geometric means, obtaining df's inside dict
     2. computes the bivariate statistical test (pearson by default)
     """
     if behavior == "conditions_MDV_comparison":
@@ -163,6 +162,7 @@ def inner_gmean_dict_filler(k: int, inner_gmean_dict, df_sub2,
     # compute the arrays of geometric means
     df_sub2["gmean"] = np.around(df_sub2.apply(
         lambda x: stats.gmean(x.dropna()), axis=1), decimals=6)
+    df_sub2['gmean'] = modify_gmean_by_sanity(df_sub2)
     df_sub2["isotopologue_name"] = list(df_sub2.index)
     # order these geometric means by m+x
     merged_df = pd.merge(df_sub2, clue_isotopologue_df, how='left',
@@ -171,12 +171,28 @@ def inner_gmean_dict_filler(k: int, inner_gmean_dict, df_sub2,
     MDV_ordered_list_gmeans = list()
     for i, metabolite in enumerate(metabolites_uniq):
         mdv_arr = merged_df.loc[merged_df["metabolite"] == metabolite,
-        "gmean"].values
+                                "gmean"].values
         MDV_ordered_list_gmeans.append(np.array(mdv_arr))
     key_name = f'gmean_arr_{k + 1}'
     inner_gmean_dict[key_name] = MDV_ordered_list_gmeans
 
     return inner_gmean_dict
+
+
+def modify_gmean_by_sanity(df) -> np.array:
+    """
+    Accepts the df of samples of one single group, with gmean column (last).
+    If at least 2 no-NaN samples, gmean value is preserved,
+     otherwise gmean value is replaced by np.nan.
+    """
+    gmean_values = df["gmean"].to_numpy()
+    df_samples = df.drop(columns=["gmean"])
+    # Count non-NaN cells for each  row
+    no_nan_count = df_samples.count(axis=1).to_numpy()
+    for i in range(len(gmean_values)):
+        if no_nan_count[i] < 2:
+            gmean_values[i] = np.nan
+    return gmean_values
 
 
 def metabolite_time_profiles_gmean_df_dict(
@@ -205,7 +221,7 @@ def metabolite_time_profiles_gmean_df_dict(
             data_time_df = data_time_df.assign(
                 gmean=data_time_df.apply(lambda x: stats.gmean(x.dropna()),
                                          axis=1))
-            # todo: add sanity check: if not at least 2 no NaN samples, replace gmean value by NaN
+            data_time_df['gmean'] = modify_gmean_by_sanity(data_time_df)
             tmp_gmean_time_dict[curr_time] = data_time_df["gmean"].tolist()
         tmp_df = pd.DataFrame(tmp_gmean_time_dict)
         #  tmp_df :   T0       T2h  ...
