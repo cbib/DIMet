@@ -15,7 +15,7 @@ from dimet.constants import (assert_literal, availtest_methods,
                              metabolites_values_for_metabologram)
 from dimet.data import DataIntegration, Dataset
 from dimet.helpers import flatten
-from dimet.processing.bivariate_analysis import bi_variate_analysis
+from dimet.processing.bivariate_analysis import bivariate_comparison
 from dimet.processing.differential_analysis import (differential_comparison,
                                                     multi_group_compairson,
                                                     time_course_analysis)
@@ -870,6 +870,12 @@ class BivariateAnalysis(Method):
     config: BivariateAnalysisConfig
 
     def run(self, cfg: DictConfig, dataset: Dataset) -> None:
+        """
+        Runs bivariate analysis, the 'behavior' is the type of comparison:
+        - conditions_MDV_comparison
+        - timepoints_MDV_comparison
+        - conditions_metabolite_time_profiles
+        """
         logger.info(
             "Will compute bi-variate analysis, with the following config: %s",
             self.config)
@@ -878,18 +884,6 @@ class BivariateAnalysis(Method):
         os.makedirs(out_table_dir, exist_ok=True)
         self.check_expectations(cfg, dataset)
 
-        if (len(cfg.analysis.conditions) >= 2) and (
-           len(dataset.metadata_df["timepoint"].unique()) >= 2):
-            for datatype in ["abundances", "mean_enrichment"]:
-                if datatype in dataset.compartmentalized_dfs.keys():
-                    logger.info(f"Running bi-variate analysis with "
-                                f"{datatype} to compare "
-                                f"time course blocks between conditions")
-                    bi_variate_analysis(
-                        datatype, dataset, cfg,
-                        behavior="conditions_comparison_time_blocks",
-                        out_table_dir=out_table_dir)
-
         datatype = "isotopologue_proportions"
         if datatype in dataset.compartmentalized_dfs.keys():
             logger.info(f"Running bi-variate analysis with "
@@ -897,17 +891,31 @@ class BivariateAnalysis(Method):
             if len(cfg.analysis.conditions) >= 2:
                 logger.info("assessing MDV (Mass Distribution Vector) "
                             "between conditions")
-                bi_variate_analysis(
+                bivariate_comparison(
                     datatype, dataset, cfg,
                     behavior="conditions_MDV_comparison",
                     out_table_dir=out_table_dir)
             if len(dataset.metadata_df["timepoint"].unique()) >= 2:
                 logger.info("assessing MDV (Mass Distribution Vector) "
                             "between time-points")
-                bi_variate_analysis(
+                bivariate_comparison(
                     datatype, dataset, cfg,
                     behavior="timepoints_MDV_comparison",
                     out_table_dir=out_table_dir)
+
+        if (len(cfg.analysis.conditions) >= 2) and (
+           len(dataset.metadata_df["timepoint"].unique()) >= 2):
+            for datatype in ["abundances", "mean_enrichment"]:
+                if datatype in dataset.compartmentalized_dfs.keys():
+                    logger.info(f"Running bi-variate analysis with "
+                                f"{datatype} to compare "
+                                f"time course profiles between conditions")
+                    bivariate_comparison(
+                        datatype, dataset, cfg,
+                        behavior="conditions_metabolite_time_profiles",
+                        out_table_dir=out_table_dir)
+
+
 
     def check_expectations(self, cfg: DictConfig, dataset: Dataset) -> None:
         # check that necessary information is provided in the analysis config
@@ -915,7 +923,7 @@ class BivariateAnalysis(Method):
             if ((len(cfg.analysis.conditions) < 2) and
                     (len(dataset.metadata_df["timepoint"].unique()) < 2)):
                 raise ValueError("Less than 2 conditions, "
-                                 "AND less than 2 timepoints, " # TODO check if I can do this option
+                                 "AND less than 2 timepoints, "
                                  "impossible to run bi-variate analysis, "
                                  "aborting")
             if not set(cfg.analysis.conditions).issubset(
