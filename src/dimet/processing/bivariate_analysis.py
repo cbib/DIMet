@@ -36,8 +36,8 @@ def compute_test_for_df_dict(df_dict, test: str) -> Dict[str, pd.DataFrame]:
         pvalue_list = []
         for i, metabolite in enumerate(list(df['metabolite'])):
             # array of n-(timepoints or m+x) geometrical means values
-            array_1 = df.loc[metabolite, "arr_1"]
-            array_2 = df.loc[metabolite, "arr_2"]
+            array_1 = df.loc[metabolite, "gmean_arr_1"]
+            array_2 = df.loc[metabolite, "gmean_arr_2"]
             if test == "pearson":
                 try:
                     stat_res, pvalue = stats.pearsonr(array_1, array_2)
@@ -98,18 +98,18 @@ def conditions_MDV_gmean_df_dict(df, metadata_df, comparison: List[str]):
     df_dict = dict()
     for timepoint in list(metadata_df["timepoint"].unique()):
         inner_gmean_dict = {"metabolite": metabolites_uniq,
-                            "arr_1": list(),  "arr_2": list()}
+                            "gmean_arr_1": list(),  "gmean_arr_2": list()}
         metadata_df_tp = metadata_df.loc[
                          metadata_df["timepoint"] == timepoint, :]
         df_timepoint = df[metadata_df_tp['name_to_plot']].copy()
-        for j, condition in enumerate(comparison):
+        for k, condition in enumerate(comparison):
             metadata_df_tp_cond = metadata_df_tp.loc[
-                                  metadata_df["condition"] == condition, :]
+                                  metadata_df_tp["condition"] == condition, :]
             df_compar = df_timepoint[
                 metadata_df_tp_cond['name_to_plot']].copy()
 
             inner_gmean_dict = inner_gmean_dict_filler(
-                j, inner_gmean_dict, df_compar, clue_isotopologue_df)
+                k, inner_gmean_dict, df_compar, clue_isotopologue_df)
 
         df_dict[timepoint] = pd.DataFrame(inner_gmean_dict)
 
@@ -133,32 +133,32 @@ def timepoints_MDV_gmean_df_dict(df, metadata_df, comparison: List[str]):
 
         df_sub1 = df[metadata_df_sub1['name_to_plot']].copy()
         inner_gmean_dict = {"metabolite": metabolites_uniq,
-                            "arr_1": list(), "arr_2": list()}
+                            "gmean_arr_1": list(), "gmean_arr_2": list()}
 
-        for j, timepoint in enumerate(comparison):
+        for k, timepoint in enumerate(comparison):
             metadata_df_sub2 = metadata_df_sub1.loc[
                                metadata_df_sub1["timepoint"] == timepoint, :]
             df_sub2 = df_sub1[metadata_df_sub2['name_to_plot']].copy()
             inner_gmean_dict = inner_gmean_dict_filler(
-                j, inner_gmean_dict, df_sub2, clue_isotopologue_df)
+                k, inner_gmean_dict, df_sub2, clue_isotopologue_df)
 
         df_dict[condition] = pd.DataFrame(inner_gmean_dict)
 
     return df_dict
 
 
-def inner_gmean_dict_filler(j: int, inner_gmean_dict, df_sub2,
+def inner_gmean_dict_filler(k: int, inner_gmean_dict, df_sub2,
                             clue_isotopologue_df) -> Dict[str, list]:
     """
     For MDV, fills the dictionary (of one single condition or time point)
     inner_gmean_dict = {"metabolite": metabolites_uniq,
-                          "arr_1": list(), "arr_2": list()}, where
+                          "gmean_arr_1": list(), "gmean_arr_2": list()}, where
     arr_1 represents the first str of comparison, and arr_2 the second.
-    Each 'arr_-' list has as many np.arrays as metabolites; each 'arr_-' list
+    Each 'gmean_arr_-' list has as many np.arrays as metabolites; each 'gmean_arr_-' list
     respects the order of the metabolites in the 'metabolite' key.
     And each inner array respects the order of isotopologues m+x integer
     """
-    assert j in [0, 1], "j can only take value 0 or 1"
+    assert k in [0, 1], "k can only take value 0 or 1"
     metabolites_uniq = clue_isotopologue_df["metabolite"].unique()
     # compute the arrays of geometric means
     df_sub2["gmean"] = np.around(df_sub2.apply(
@@ -173,7 +173,7 @@ def inner_gmean_dict_filler(j: int, inner_gmean_dict, df_sub2,
         mdv_arr = merged_df.loc[merged_df["metabolite"] == metabolite,
         "gmean"].values
         MDV_ordered_list_gmeans.append(np.array(mdv_arr))
-    key_name = f'arr_{j + 1}'
+    key_name = f'gmean_arr_{k + 1}'
     inner_gmean_dict[key_name] = MDV_ordered_list_gmeans
 
     return inner_gmean_dict
@@ -184,33 +184,37 @@ def metabolite_time_profiles_gmean_df_dict(
     """
     Using mean enrichment or abundances,
     computes the arrays of geometric means, ordered by time.
-    Outputs dict of df of arrays, for comparing 2 condition time blocks.
+    Outputs dict of df of arrays, for comparing 2 condition time profiles.
     """
     metadata_df = metadata_df.loc[
                   metadata_df['condition'].isin(comparison), :]
     metadata_df['timenum'] = metadata_df['timenum'].astype(float)
     metadata_df_sorted = metadata_df.sort_values(by="timenum")
-
     df = df[metadata_df_sorted['name_to_plot']]
-    sorted_time_numeric = sorted(metadata_df['timenum'].unique())
-    init_val = [np.array([0 for j in range(len(sorted_time_numeric))])
-                   for i in range(df.shape[0])]
     metabolites = list(df.index)
     inner_gmean_dict = {"metabolite": metabolites,
-                        "arr_1": init_val.copy(), "arr_2": init_val.copy()}
-    for i, metabolite in enumerate(metabolites):
-        # time ordered array of values for this current condition
-        row = df.loc[metabolite, :]
-        for j, curr_condition in enumerate(comparison):
-            time_ordered_gmeans = compute_time_ordered_gmeans(
-                sorted_time_numeric, metadata_df_sorted,
-                curr_condition, row)
-            key_name = f'arr_{j + 1}'
-            inner_gmean_dict[key_name][i] = time_ordered_gmeans
+                        "gmean_arr_1": list(), "gmean_arr_2": list()}
+    for k, condition in enumerate(comparison):
+        metadata_sorted2 = metadata_df_sorted.loc[
+                metadata_df_sorted["condition"] == condition, :].copy()
+        tmp_gmean_time_dict = {}
+        for curr_time in list(metadata_sorted2['timepoint'].unique()):
+            metadata_sorted3 = metadata_sorted2.loc[
+                metadata_sorted2['timepoint'] == curr_time, :].copy()
+            data_time_df = df[metadata_sorted3['name_to_plot']].copy()
+            data_time_df = data_time_df.assign(
+                gmean=data_time_df.apply(lambda x: stats.gmean(x.dropna()),
+                                         axis=1))
+            # todo: add sanity check: if not at least 2 no NaN samples, replace gmean value by NaN
+            tmp_gmean_time_dict[curr_time] = data_time_df["gmean"].tolist()
+        tmp_df = pd.DataFrame(tmp_gmean_time_dict)
+        #  tmp_df :   T0       T2h  ...
+        # 0  0.471528  0.719920  ...
+        # 1  3.692766  1.743812   ...
+        key_name = f'gmean_arr_{k + 1}'
+        inner_gmean_dict[key_name] = list(np.around(tmp_df.to_numpy(), 6))
 
-    df_dict : dict = {"ok": pd.DataFrame(inner_gmean_dict)}
-
-    return df_dict
+    return {'metabo_time_profile': pd.DataFrame(inner_gmean_dict)}
 
 
 def compute_isotopologue_meaning(isotopologues_list) -> pd.DataFrame:
@@ -230,28 +234,6 @@ def compute_isotopologue_meaning(isotopologues_list) -> pd.DataFrame:
     clue_isotopologue = clue_isotopologue.sort_values(
         by=["metabolite", "m+x"])
     return clue_isotopologue
-
-
-def compute_time_ordered_gmeans(sorted_time_numeric, metadata_df_sorted,
-                  curr_condition, row: pd.Series) -> List[float]:
-    """input: TODO: fill this description
-    output: """
-    time_ordered_gmeans = []
-    for k in sorted_time_numeric:
-        samples_names = metadata_df_sorted.loc[
-            (metadata_df_sorted['condition'] == curr_condition) &
-            (metadata_df_sorted["timenum"] == k), 'name_to_plot'].values
-        x = list(row[samples_names].dropna())  # TODO: handle to put np.nan if not at least 2 samples !
-        try:
-            time_ordered_gmeans.append(np.around(
-                stats.gmean(np.array(x)), decimals=6))
-        except ValueError:
-            time_ordered_gmeans.append(np.nan)
-        except Exception as e:
-            logger.info(e)
-            time_ordered_gmeans.append(np.nan)
-
-    return time_ordered_gmeans
 
 
 def conditions_to_comparisons(conditions: List[str]) -> List[List[str]]:
@@ -280,7 +262,7 @@ def timepoints_to_comparisons(metadata_df: pd.DataFrame) -> List[List[str]]:
     time_df["timenum"] = time_df["timenum"].astype(float)
     time_df = time_df.sort_values(by='timenum')
     comparisons = list()
-    for i  in range(time_df.shape[0] - 1):
+    for i in range(time_df.shape[0] - 1):
         j = i + 1
         comparisons.append([
             time_df["timepoint"].tolist()[j], time_df["timepoint"].tolist()[i]])
@@ -305,7 +287,7 @@ def set_comparisons_by_behavior(behavior: str, cfg: DictConfig,
     return comparisons
 
 
-def save_output(result_df, compartment, dataset, file_name, more_string,
+def save_output(result_df, compartment, dataset, file_name, out_file_name_str,
                 test, out_table_dir) -> None:
     """saves result to tab delimited file, for one comparison"""
     result = result_df.sort_values(["padj"],
@@ -313,7 +295,7 @@ def save_output(result_df, compartment, dataset, file_name, more_string,
     result['compartment'] = compartment
 
     base_file_name = dataset.get_file_for_label(file_name)
-    base_file_name += f"--{compartment}-{more_string}-{test}"
+    base_file_name += f"--{compartment}-{out_file_name_str}-{test}"
     output_file_name = os.path.join(out_table_dir,
                                     f"{base_file_name}.tsv")
     result.to_csv(
@@ -343,7 +325,6 @@ def bivariate_run_and_save_current_comparison(
     df_dict = compute_bivariate_by_behavior(
          df, metadata_df, comparison, behavior, test
     )
-
     for akey in df_dict.keys():
         df = df_dict[akey]
 
@@ -351,11 +332,11 @@ def bivariate_run_and_save_current_comparison(
         result_df = compute_padj(df, 0.05,
                                  cfg.analysis.method.correction_method)
         comparison_str = "-".join(comparison)
-        more_string = f"{comparison_str}-{akey}"
-        if akey == "ok":
-            more_string = f"{comparison_str}"
+        out_file_name_str = f"-MDV-{comparison_str}--{akey}"
+        if akey == "metabo_time_profile":
+            out_file_name_str = f"{comparison_str}"
         save_output(result_df, compartment, dataset, file_name,
-                    more_string, test, out_table_dir)
+                    out_file_name_str, test, out_table_dir)
 
 
 def bivariate_comparison(
