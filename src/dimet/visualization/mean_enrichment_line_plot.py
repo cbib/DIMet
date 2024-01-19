@@ -304,30 +304,44 @@ def give_colors_by_metabolite(cfg: DictConfig,
 
     colors_dict = dict()
 
+    tmp = set()
+    for co in metabolites_numbered_dict.keys():
+        for k in metabolites_numbered_dict[co].keys():
+            tmp.update(set(metabolites_numbered_dict[co][k]))
+    metabolites = sorted(list(tmp))
+
     if cfg.analysis.method.palette_metabolite == "auto_multi_color":
-        tmp = set()
-        for co in metabolites_numbered_dict.keys():
-            for k in metabolites_numbered_dict[co].keys():
-                tmp.update(set(metabolites_numbered_dict[co][k]))
-        metabolites = sorted(list(tmp))
         if len(metabolites) <= 12:
             # default Paired palette for coloring individual metabolites
             palettecols = sns.color_palette("Paired", 12)
             for i in range(len(metabolites)):
                 colors_dict[metabolites[i]] = palettecols[i]
-        else:  # more than 12 colors obliges to set them manually
+        elif (len(metabolites) > 12) and (
+                len(metabolites) <= len(handycolors)):
             for i in range(len(metabolites)):
                 colors_dict[metabolites[i]] = handycolors[i]
-    else:  # argument_color_metabolites is a csv file
+        elif len(metabolites) > 30:
+            logger.error(
+                "Error: > %s metabolites: wrong combination of params "
+                " color_lines_by and palette_metabolite options. Please set  "
+                "color_lines_by as 'condition'; or alternatively give key-"
+                "value pairs in palette_metabolite", (len(handycolors)))
+            raise ValueError
+    else:  # argument_color_metabolites is a key-value dict (set in yaml)
         try:
-            file_containing_colors = cfg.analysis.method.palette_metabolite
-            df = pd.read_csv(file_containing_colors, header=0)
-            for i, row in df.iterrows():
-                metabolite = df.iloc[i, 0]  # first column metabolite
-                color = df.iloc[i, 1]  # second column is color
-                colors_dict[metabolite] = color
+            # fill the user blanks with dimgray color by default
+            for metabolite in metabolites:
+                try:
+                    colors_dict[metabolite] = (
+                        cfg.analysis.method.palette_metabolite[metabolite])
+                except KeyError:
+                    colors_dict[metabolite] = "dimgray"
+                except Exception as e:
+                    colors_dict[metabolite] = "dimgray"
+                    logger.info(e, "user color not readable, continuing")
+
         except Exception as e:
-            logger.info(e, f"\n could not assign color, wrong csv file: \
+            logger.info(e, f"\n could not assign color : \
                    {cfg.analysis.method.palette_metabolite}")
             colors_dict = None
 

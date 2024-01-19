@@ -176,5 +176,5 @@ def run_distr_fit_plot(
                 run_dist_fit_plot_pairwise(df, dataset, cfg, comparison,
                                            test, out_file_path)
         # elif mode == "time_course":
-        #     pass  # not implemented to date, evaluate if worthed
+        #     pass  # not implemented to date, evaluate if worth it
         logger.info(f"saved plots to {out_plot_dir}")
