@@ -1,0 +1,24 @@
+_target_: dimet.method.BivariateAnalysisConfig
+
+label: bivariate analysis
+name: Computation of the correlation of MDV profiles, or the metabolite time course profiles
+
+
+conditions_MDV_comparison: # requires >= 2 conditions and >=1 timepoint (timepoints run separately)
+  isotopologue_proportions: pearson
+
+timepoints_MDV_comparison:  # requires >= 1 condition and >=2 timepoints
+  isotopologue_proportions: pearson
+
+conditions_metabolite_time_profiles:
+  # requires >= 2 conditions  AND >=2 time points in data
+  abundances: pearson  # processes the time course blocks
+  mean_enrichment: pearson # processes the time course blocks
+
+correction_method: fdr_bh
+
+impute_values:
+  abundances: "min"
+  mean_enrichment: "min"
+  isotopologues: "min"
+  isotopologue_proportions: "min"
