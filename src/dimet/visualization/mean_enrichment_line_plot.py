@@ -123,21 +123,24 @@ def plot_one_metabolite(metabolite_name: str,
     If several metabolites in input dataframes,
     they will be plotted sharing axes in same plane.
     """
-    sns.lineplot(
-        ax=axs_z,  # starts in 1 (after the empty row index 0)
-        x="timenum",
-        y="Fractional Contribution (%)",
-        hue=color_lines_by,
-        style="condition",
-        err_style=None,
-        alpha=alpha_conf,
-        linewidth=4.5,
-        palette=palette_option[color_lines_by],
-        zorder=1,
-        data=metabolite_df,
-
-        legend=True,
-    )
+    if len(list(metabolite_df['timenum'].unique())) > 1:
+        sns.lineplot(
+            ax=axs_z,  # starts in 1 (after the empty row index 0)
+            x="timenum",  y="Fractional Contribution (%)",
+            hue=color_lines_by,
+            style="condition",
+            err_style=None,
+            alpha=alpha_conf,
+            linewidth=4.5,
+            palette=palette_option[color_lines_by],
+            zorder=1, data=metabolite_df,
+            legend=True)
+    else:  # when only one time point line is impossible, do scatter (dots)
+        sns.scatterplot(
+            ax=axs_z, x="timenum", y="Fractional Contribution (%)",
+            hue=color_lines_by, style="condition", alpha=alpha_conf, s=40,
+            palette=palette_option[color_lines_by], zorder=1, legend=True,
+            data=metabolite_df)
     axs_z.set_xticks([float(i) for i in time_ticks])
 
     axs_z.scatter(
@@ -149,10 +152,7 @@ def plot_one_metabolite(metabolite_name: str,
         mean_and_sd_metabolite_df["timenum"],
         mean_and_sd_metabolite_df["mean"],
         yerr=mean_and_sd_metabolite_df["sd"],
-        fmt="none",
-        capsize=3.5,
-        ecolor="black",
-        zorder=2
+        fmt="none", capsize=3.5, ecolor="black", zorder=2
     )
     axs_z.set_ylabel("Fractional Contribution (%)", size=19),
     axs_z.set(xlabel=xaxis_title)
@@ -300,34 +300,48 @@ def give_colors_by_metabolite(cfg: DictConfig,
                    "mediumturquoise", "darkcyan", "teal", "cadetblue",
                    "slategrey", "steelblue", "navy", "darkslateblue",
                    "blueviolet",
-                   "darkochid", "purple", "mediumvioletred", "crimson"]
+                   "darkorchid", "purple", "mediumvioletred", "crimson"]
 
     colors_dict = dict()
 
+    tmp = set()
+    for co in metabolites_numbered_dict.keys():
+        for k in metabolites_numbered_dict[co].keys():
+            tmp.update(set(metabolites_numbered_dict[co][k]))
+    metabolites = sorted(list(tmp))
+
     if cfg.analysis.method.palette_metabolite == "auto_multi_color":
-        tmp = set()
-        for co in metabolites_numbered_dict.keys():
-            for k in metabolites_numbered_dict[co].keys():
-                tmp.update(set(metabolites_numbered_dict[co][k]))
-        metabolites = sorted(list(tmp))
         if len(metabolites) <= 12:
             # default Paired palette for coloring individual metabolites
             palettecols = sns.color_palette("Paired", 12)
             for i in range(len(metabolites)):
                 colors_dict[metabolites[i]] = palettecols[i]
-        else:  # more than 12 colors obliges to set them manually
+        elif (len(metabolites) > 12) and (
+                len(metabolites) <= len(handycolors)):
             for i in range(len(metabolites)):
                 colors_dict[metabolites[i]] = handycolors[i]
-    else:  # argument_color_metabolites is a csv file
+        elif len(metabolites) > 30:
+            logger.error(
+                "Error: > %s metabolites: wrong combination of params "
+                " color_lines_by and palette_metabolite options. Please set  "
+                "color_lines_by as 'condition'; or alternatively give key-"
+                "value pairs in palette_metabolite", (len(handycolors)))
+            raise ValueError
+    else:  # argument_color_metabolites is a key-value dict (set in yaml)
         try:
-            file_containing_colors = cfg.analysis.method.palette_metabolite
-            df = pd.read_csv(file_containing_colors, header=0)
-            for i, row in df.iterrows():
-                metabolite = df.iloc[i, 0]  # first column metabolite
-                color = df.iloc[i, 1]  # second column is color
-                colors_dict[metabolite] = color
+            # fill the user blanks with dimgray color by default
+            for metabolite in metabolites:
+                try:
+                    colors_dict[metabolite] = (
+                        cfg.analysis.method.palette_metabolite[metabolite])
+                except KeyError:
+                    colors_dict[metabolite] = "dimgray"
+                except Exception as e:
+                    colors_dict[metabolite] = "dimgray"
+                    logger.info(e, "user color not readable, continuing")
+
         except Exception as e:
-            logger.info(e, f"\n could not assign color, wrong csv file: \
+            logger.info(e, f"\n could not assign color : \
                    {cfg.analysis.method.palette_metabolite}")
             colors_dict = None
 

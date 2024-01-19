@@ -76,6 +76,7 @@ class TestAbundanceBars(TestCase):
         cfg_m = DictConfig({'analysis': {
             'method': {'palette': 'dark',
                        'do_stripplot': False,
+                       'x_text_modify_as': None,
                        'figure_format': 'svg'}
             }
         })

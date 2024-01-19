@@ -115,7 +115,7 @@ class MeanEnrichmentLinePlotConfig(MethodConfig):
     xaxis_title: str = "Time"
     color_lines_by: str = "condition"  # or  "metabolite"
     palette_condition: str = "paired"  # seaborn/matplotlib pals
-    palette_metabolite: str = "auto_multi_color"  # or .csv path
+    palette_metabolite: Union[str, dict] = "auto_multi_color"
     height_subplot: float = 4.3
     as_grid: Union[bool, None] = False
 
