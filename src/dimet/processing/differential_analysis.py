@@ -81,30 +81,6 @@ def distance_or_overlap(df: pd.DataFrame, groups: List) -> pd.DataFrame:
     return df
 
 
-def select_rows_with_sufficient_non_nan_values___previous_version(
-        df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
-    """
-    Identifies rows in the input DataFrame that have enough replicates.
-    Separates the DataFrame into two parts based on the presence or absence
-    of enough replicates,
-    returning them as separate DataFrames.
-    """
-    # TODO:  this is too stringent --> !
-    #  ! -- > changed  to: len([not NaN values]) >= 2  in each group
-    # see the  re-writen function select_rows_with_sufficient_non_nan_values
-    try:
-        bad_df = df[(df["count_nan_samples_group1"] > 0) | (
-                    df["count_nan_samples_group2"] > 0)]
-        good_df = df[(df["count_nan_samples_group1"] == 0) & (
-                    df["count_nan_samples_group2"] == 0)]
-
-    except Exception as e:
-        print(e)
-        print("Error in separate_before_stats (enough replicates ?)")
-
-    return good_df, bad_df
-
-
 def select_rows_with_sufficient_non_nan_values(
         df: pd.DataFrame, groups: List[List[str]]
 ) -> (pd.DataFrame, pd.DataFrame):

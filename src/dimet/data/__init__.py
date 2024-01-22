@@ -47,7 +47,6 @@ class DatasetConfig(BaseModel):
 class Dataset(BaseModel):
     config: DatasetConfig
     raw_data_folder: str = None
-    processed_data_folder: str = None
     sub_folder_absolute: str = None
     metadata_df: Optional[pd.DataFrame] = None
     abundances_df: Optional[pd.DataFrame] = None
@@ -77,8 +76,7 @@ class Dataset(BaseModel):
         else:
             self.sub_folder_absolute = self.config.subfolder
         self.raw_data_folder = os.path.join(self.sub_folder_absolute, "raw")
-        self.processed_data_folder = os.path.join(self.sub_folder_absolute,
-                                                  "processed")
+
         # start loading the dataframes
         file_paths = [
             ("metadata", os.path.join(self.raw_data_folder,
@@ -106,10 +104,14 @@ class Dataset(BaseModel):
                     dfs.append(pd.read_csv(file_path, sep="\t", header=0))
                 self.available_datasets.add(label)
             except FileNotFoundError:
-                logger.critical(
-                    "File %s not found, continuing, "
-                    "but this might fail miserably",
-                    file_path)
+                if file_path.endswith(self.config.isotopologues + ".csv"):
+                    message_detail = "isotopologue absolute values missing"
+                    logger.critical(
+                        "File %s not found (%s), continuing"
+                        % (file_path, message_detail))
+                else:
+                    logger.critical("File %s not found, continuing",
+                                    file_path)
                 dfs.append(None)
             except Exception as e:
                 logger.error(
@@ -169,19 +171,6 @@ class Dataset(BaseModel):
         frames_dict = set_samples_names(frames_dict, self.metadata_df)
         self.compartmentalized_dfs = frames_dict
 
-    def save_datafiles_split_by_compartment(self) -> None:
-        os.makedirs(self.processed_data_folder, exist_ok=True)
-        out_data_path = self.processed_data_folder
-        for file_name in self.compartmentalized_dfs.keys():
-            for compartment in self.compartmentalized_dfs[file_name].keys():
-                df = self.compartmentalized_dfs[file_name][compartment]
-                tmp_file_name = self.get_file_for_label(file_name)
-                output_file_name = f"{tmp_file_name}-{compartment}.csv"
-                df.to_csv(os.path.join(out_data_path, output_file_name),
-                          sep="\t", header=True, index=False)
-                logger.info(
-                    f"Saved the {compartment} compartment version "
-                    f"of {file_name} in {out_data_path}")
 
     def get_file_for_label(self, label):
         if label == "abundances":
@@ -210,7 +199,6 @@ class DataIntegration(Dataset):
     def set_dataset_integration_config(self):
         self.preload()
         self.split_datafiles_by_compartment()
-        self.save_datafiles_split_by_compartment()
 
         self.integration_files_folder_absolute = os.path.join(
             self.sub_folder_absolute, "integration_files")
