@@ -189,8 +189,8 @@ class BivariateAnalysisConfig(MethodConfig):
     """
     Sets default values or fills them for the bi-variate analysis
     """
-    grouping: ListConfig = ["condition", "timepoint"]
     correction_method: str = "fdr_bh"
+    output_include_gmean_arr_columns: bool = True
 
     def build(self) -> "BivariateAnalysis":
         return BivariateAnalysis(config=self)
