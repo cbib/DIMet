@@ -4,21 +4,21 @@
 @author: Johanna Galvis, Macha Nikolski
 """
 import logging
-import operator
 import os
-
-from typing import List, Dict
+from typing import Dict, List
 
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
-from dimet.constants import (assert_literal, availtest_methods_type,
+from omegaconf import DictConfig
+
+from dimet.constants import (assert_literal,
                              data_files_keys_type)
 from dimet.data import Dataset
 from dimet.helpers import (arg_repl_zero2value,
                            compute_padj,
                            row_wise_nanstd_reduction)
-from omegaconf import DictConfig
+
 
 logger = logging.getLogger(__name__)
 
@@ -305,7 +305,8 @@ def timepoints_to_comparisons(metadata_df: pd.DataFrame) -> List[List[str]]:
     for i in range(time_df.shape[0] - 1):
         j = i + 1
         comparisons.append([
-            time_df["timepoint"].tolist()[j], time_df["timepoint"].tolist()[i]])
+            time_df["timepoint"].tolist()[j],
+            time_df["timepoint"].tolist()[i]])
 
     return comparisons
 
@@ -363,9 +364,11 @@ def bivariate_run_and_save_current_comparison(
     """
     Runs a bivariate analysis for blocks of values, handling 3 behavior types:
     a - conditions_MDV_comparison:
-        comparison of the MDV arrays between 2 user specified conditions (separately for each time point)
+        comparison of the MDV arrays between 2 user specified conditions
+            (separately for each time point)
     b - timepoints_MDV_comparison:
-        comparison of the MDV arrays between 2 consecutive time points (separately for each condition)
+        comparison of the MDV arrays between 2 consecutive time points
+            (separately for each condition)
     c - conditions_metabolite_time_profiles:
         comparison of the time course profiles of the metabolites
         total abundances and mean enrichment, between two conditions

@@ -196,7 +196,6 @@ class BivariateAnalysisConfig(MethodConfig):
         return BivariateAnalysis(config=self)
 
 
-
 class Method(BaseModel):
     config: MethodConfig
 

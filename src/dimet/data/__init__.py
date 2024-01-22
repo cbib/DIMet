@@ -171,7 +171,6 @@ class Dataset(BaseModel):
         frames_dict = set_samples_names(frames_dict, self.metadata_df)
         self.compartmentalized_dfs = frames_dict
 
-
     def get_file_for_label(self, label):
         if label == "abundances":
             return self.config.abundances
