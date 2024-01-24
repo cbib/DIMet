@@ -35,22 +35,16 @@ def main_run_analysis(cfg: DictConfig) -> None:
 
 
 @click.command(context_settings=dict(
-        help_option_names=['-h', '--help']  # needed to recognize -h as well
+        help_option_names=['-h', '--help'])  # needed to recognize -h as well
     )
-)
-@click.option('-cd', help="Directory containing the general configuration"
-                          " .yaml files")
-@click.option('-cn', help="File name of the general configuration "
-                          "(only one .yaml file name)")
+@click.option('-cd', type=str, required=True,
+              help="Directory containing the general configuration "
+                   "(see -cn)")
+@click.option('-cn', type=str, required=True,
+              help="File name of the general configuration "
+                   "(only one .yaml file name)")
 def main_run_analysis__or_display_help(cd, cn) -> None:
-    if (cd is None) and (cn is None):
-        click.echo("This is DIMet, type --help or -h for help")
-    elif (cd is None) and (cn is not None):
-        click.echo("Please set the option -cd")
-    elif (cd is not None) and (cn is None):
-        click.echo("Please set the option -cn")
-    elif not ((cd is None) and (cn is None)):
-        main_run_analysis()  # run, hydra handles further arguments validation
+    main_run_analysis()  # run: hydra handles further arguments validation
 
 
 if __name__ == "__main__":
