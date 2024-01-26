@@ -1,0 +1,38 @@
+# App name, override to match the name your app is known by
+app_name: DIMet
+
+# Help header, customize to describe your app to your users
+header: Welcome to ${hydra.help.app_name}!
+
+footer: |-
+  Powered by Hydra (https://hydra.cc)
+  Use --hydra-help to view Hydra specific help
+
+template: |-
+  ${hydra.help.header}
+
+  DIMet is a tool for the Differential analysis of targeted Isotope-labeled Metabolomics data
+  
+  Usage: python -m dimet [options]
+
+  optional arguments:
+    -cd, --config-dir     Directory name where the general configuration is located (see -cn)
+    -cn, --config-name    File name of the general configuration, only one .yaml file name
+    -h, --help            Show this help message and exit
+  
+  
+  == Available analyses ==
+  $APP_CONFIG_GROUPS
+ 
+  ${hydra.help.footer}
+  
+
+# Basic Hydra flags:
+#   $FLAGS_HELP
+#
+# Config groups, choose one of:
+#   $APP_CONFIG_GROUPS: All config groups that does not start with hydra/.
+#   $HYDRA_CONFIG_GROUPS: All the Hydra config groups (starts with hydra/)
+#
+# Configuration generated with overrides:
+#   $CONFIG : Generated config

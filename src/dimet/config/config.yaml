@@ -3,14 +3,15 @@ hydra:
     chdir: true
   run:
     dir: ../outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}/${analysis.dataset.label}-${analysis.method.label}
-    
-# Notes: 
-# This config.yaml file is never used by the code, but remains here as template.
-# All the method/*.yaml files YES THEY ARE USED by the code
+
+
+# This config.yaml file is used by the code when calling --help
 
 defaults:
-  - analysis: abundance_plot
+  # - analysis: abundance_plot  # deactivated as it blocks the --help display
   - _self_
+  - override hydra/help: dimet_help
+
 
 figure_path: figures
 table_path: tables
