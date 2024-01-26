@@ -46,7 +46,6 @@ class DatasetConfig(BaseModel):
 
 class Dataset(BaseModel):
     config: DatasetConfig
-    raw_data_folder: str = None
     sub_folder_absolute: str = None
     metadata_df: Optional[pd.DataFrame] = None
     abundances_df: Optional[pd.DataFrame] = None
@@ -75,22 +74,23 @@ class Dataset(BaseModel):
             logger.info("looking for data in %s", self.sub_folder_absolute)
         else:
             self.sub_folder_absolute = self.config.subfolder
-        self.raw_data_folder = os.path.join(self.sub_folder_absolute, "raw")
+
 
         # start loading the dataframes
         file_paths = [
-            ("metadata", os.path.join(self.raw_data_folder,
+            ("metadata", os.path.join(self.sub_folder_absolute,
                                       self.config.metadata + ".csv")),
-            ("abundances", os.path.join(self.raw_data_folder,
+            ("abundances", os.path.join(self.sub_folder_absolute,
                                         self.config.abundances + ".csv")),
             ("mean_enrichment", os.path.join(
-                self.raw_data_folder,
+                self.sub_folder_absolute,
                 self.config.mean_enrichment + ".csv")),
             ("isotopologue_proportions", os.path.join(
-                self.raw_data_folder,
+                self.sub_folder_absolute,
                 self.config.isotopologue_proportions + ".csv")),
             ("isotopologues", os.path.join(
-                self.raw_data_folder, self.config.isotopologues + ".csv")),
+                self.sub_folder_absolute,
+                self.config.isotopologues + ".csv")),
         ]
         dfs = []
         for label, file_path in file_paths:
@@ -130,7 +130,7 @@ class Dataset(BaseModel):
         # log the first 5 rows of the metadata
         logger.info("Loaded metadata: \n%s", self.metadata_df.head())
         logger.info(
-            "Finished loading raw dataset %s, available dataframes are : %s",
+            "Finished loading dataset %s, available dataframes are : %s",
             self.config.label, self.available_datasets
         )
         self.check_expectations()
@@ -191,16 +191,12 @@ class DataIntegrationConfig(DatasetConfig):
 
 class DataIntegration(Dataset):
     config: DataIntegrationConfig
-    integration_files_folder_absolute: str = None  # absolute path directory
     deg_dfs: Dict[int, pd.DataFrame] = {}
     pathways_dfs: Dict[str, pd.DataFrame] = {}
 
     def set_dataset_integration_config(self):
         self.preload()
         self.split_datafiles_by_compartment()
-
-        self.integration_files_folder_absolute = os.path.join(
-            self.sub_folder_absolute, "integration_files")
 
         self.check_expectations()  # of the Dataset class
         self.check_expectations_integration_data()  # of this child class
@@ -231,7 +227,7 @@ class DataIntegration(Dataset):
         for i, file_name in enumerate(self.config.transcripts):
             try:
                 path_deg_file = os.path.join(
-                    self.integration_files_folder_absolute,
+                    self.sub_folder_absolute,
                     f"{file_name}.csv")
                 deg_df = pd.read_csv(path_deg_file, sep='\t', header=0)
                 self.deg_dfs[i] = deg_df
@@ -247,7 +243,7 @@ class DataIntegration(Dataset):
         for k in self.config.pathways.keys():
             try:
                 path_file = os.path.join(
-                    self.integration_files_folder_absolute,
+                    self.sub_folder_absolute,
                     f"{self.config.pathways[k]}.csv")
                 pathway_df = pd.read_csv(path_file, sep='\t', header=0)
                 self.pathways_dfs[k] = pathway_df

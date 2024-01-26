@@ -9,12 +9,11 @@ import os, sys
 
 import hydra
 
-from dimet.method import Method
 from omegaconf import DictConfig, OmegaConf
 
 from dimet.data import Dataset
+from dimet.method import Method
 
-import click
 
 logger = logging.getLogger(__name__)
 
@@ -34,18 +33,17 @@ def main_run_analysis(cfg: DictConfig) -> None:
     method.run(cfg, dataset)
 
 
-@click.command(context_settings=dict(
-        help_option_names=['-h', '--help'])  # needed to recognize -h as well
+def fully_empty_args_custom_message() -> None:
+    custom_message: str = (
+        "\nDIMet is a tool for the Differential analysis of "
+        "targeted Isotope-labeled Metabolomics data. \n\n  Please type "
+        "'python -m dimet --help' or 'python -m dimet -h' for usage.\n"
     )
-@click.option('-cd', type=str, required=True,
-              help="Directory containing the general configuration "
-                   "(see -cn)")
-@click.option('-cn', type=str, required=True,
-              help="File name of the general configuration "
-                   "(only one .yaml file name)")
-def main_run_analysis__or_display_help(cd, cn) -> None:
-    main_run_analysis()  # run: hydra handles further arguments validation
+    print(custom_message)
 
 
 if __name__ == "__main__":
-    main_run_analysis__or_display_help()
+    if len(sys.argv) <= 1:
+        fully_empty_args_custom_message()
+    else:
+        main_run_analysis()
