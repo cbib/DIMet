@@ -75,7 +75,6 @@ class Dataset(BaseModel):
         else:
             self.sub_folder_absolute = self.config.subfolder
 
-
         # start loading the dataframes
         file_paths = [
             ("metadata", os.path.join(self.sub_folder_absolute,

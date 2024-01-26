@@ -267,8 +267,8 @@ def compute_p_value(df: pd.DataFrame, test: str, best_dist,
         df["pvalue"] = 2 * (
                     1 - best_dist.cdf(abs(df["zscore"]), **args_param))
     else:
-        print(
-            "WARNING: two-tailed or not")  # TODO: clarify the warning message
+        print("WARNING [compute_p_value]: only 'right-tailed' or " 
+              "'two-sided' as test argument supported")
     return df
 
 
