@@ -102,8 +102,8 @@ For any information or help running DIMet, you can get in touch with:
     (2) CBiB - University of Bordeaux,
     146, rue Leo Saignat, Bordeaux, France
 
-    (3) Spectrometric Data Processing and Analysis,
-    Masaryk University, Brno, Czech Republic
+    (3) RECETOX
+    Faculty of Science, Masaryk University, Kotlarksá 2, 60200 Brno, Czech Republic
     
     (4) University of Freiburg, 
     Freiburg, Germany
