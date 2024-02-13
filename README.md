@@ -40,7 +40,15 @@ Or if you are a developer working in a local cloned version, you can install:
 
 Alternatively to the [PyPI version](https://pypi.org/project/DIMet/), our tool is also available as a [conda package](https://bioconda.github.io/recipes/dimet/README.html). Moreover, it can be used via Docker (`docker pull quay.io/biocontainers/dimet:0.1.4`) or singularity (`depot.galaxyproject.org/singularity/dimet:0.1.4--pyhdfd78af_0`) containers. 
 
+## Developer Setup
 
+To start contributing to DIMet you require a python environment with python >= 3.9 and [poetry]() installed.
+Poetry is a python build system and package manager and is used to build and develop DIMet.
+
+After creating the environment, the project can be installed with
+```bash
+poetry install
+```
 
 ## Code organization
 
@@ -56,6 +64,7 @@ Alternatively to the [PyPI version](https://pypi.org/project/DIMet/), our tool i
 
 * With pytest, by running `pytest` from `DIMet`
 * Alternatively, place yourself in `DIMet/tests` and execute `python -m unittest` 
+* If the project was installed with `poetry install`, tests can also be run using `poetry run pytest` or from VSCode's GUI
 
 -----------------------------------------------------------------------------------------------
 

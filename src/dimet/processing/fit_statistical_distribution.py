@@ -109,7 +109,7 @@ def best_fit_distribution(data, bins=200):
         stats.gamma,
         stats.gengamma,
         stats.genhalflogistic,
-        stats.gilbrat,
+        stats.gibrat,
         stats.gompertz,
         stats.gumbel_r,
         stats.gumbel_l,
