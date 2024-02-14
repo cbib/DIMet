@@ -3,6 +3,9 @@ DIMet: Differential analysis of Isotope-labeled targeted Metabolomics data
 
 <img src="https://raw.githubusercontent.com/cbib/DIMet/main/img/logo_opt_4_big.png" alt="logo" width="170"/>
 
+[![bioconda package](https://img.shields.io/conda/v/bioconda/DIMet)](https://anaconda.org/bioconda/DIMet)
+[![PyPI - Python Version](https://img.shields.io/pypi/v/DIMet)](https://pypi.org/project/DIMet/)
+
 # Introduction
 
 DIMet is a bioinformatics pipeline for **differential and time-course analysis of targeted isotope-labeled metabolomics data**.
