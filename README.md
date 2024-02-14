@@ -103,7 +103,7 @@ For any information or help running DIMet, you can get in touch with:
     146, rue Leo Saignat, Bordeaux, France
 
     (3) RECETOX
-    Faculty of Science, Masaryk University, Kotlarksá 2, 60200 Brno, Czech Republic
+    Faculty of Science, Masaryk University, Kotlářksá 2, 611 37 Brno, Czech Republic
     
     (4) University of Freiburg, 
     Freiburg, Germany
