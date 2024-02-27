@@ -272,17 +272,6 @@ def compute_p_value(df: pd.DataFrame, test: str, best_dist,
     return df
 
 
-# def filter_diff_results(ratiosdf, padj_cutoff, log2FC_abs_cutoff): # TODO: delete as never used
-#     ratiosdf["abslfc"] = ratiosdf["log2FC"].abs()
-#     ratiosdf = ratiosdf.loc[(ratiosdf["padj"] <= padj_cutoff) & (
-#                 ratiosdf["abslfc"] >= log2FC_abs_cutoff), :]
-#     ratiosdf = ratiosdf.sort_values(["padj", "pvalue", "distance/span"],
-#                                     ascending=[True, True, False])
-#     ratiosdf = ratiosdf.drop(columns=["abslfc"])
-#
-#     return ratiosdf
-
-
 def reorder_columns_diff_end(df: pd.DataFrame, test:str) -> pd.DataFrame:
     standard_cols = [
         "count_nan_samples_group1",
@@ -340,13 +329,13 @@ def round_result_float_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def wrap_steps_test(df_good: pd.DataFrame, df_bad: pd.DataFrame,
-                    this_comparison: List[List], test:str,
-                    cfg: DictConfig) ->  pd.DataFrame: # TODO: rename
+def compute_current_comparison(df_good: pd.DataFrame, df_bad: pd.DataFrame,
+                               this_comparison: List[List], test:str,
+                               cfg: DictConfig) ->  pd.DataFrame: # TODO: rename
     """
     Wraps functions for applying the parametric or non-parametric chosen test
-    Note that 'this_comparison' is the list of, exactly, two lists
-    of samples names, e.g.:
+    Note that 'this_comparison' is the list of, exactly,
+    two lists of samples names, e.g.:
     [['Tr_cell_0h-1', 'Tr_cell_0h-2'], ['Ct_cell_0h-1', 'Ct_cell_0h-2']]
     the first list corresponds to the treated samples,
     the second list corresponds to the control samples.
@@ -408,8 +397,8 @@ def pairwise_comparison(
     df_good, df_bad = select_rows_with_sufficient_non_nan_values(
         df4c, groups=this_comparison)
 
-    result = wrap_steps_test(df_good, df_bad,
-                                  this_comparison, test, cfg)
+    result = compute_current_comparison(df_good, df_bad,
+                                        this_comparison, test, cfg)
 
     return result
 

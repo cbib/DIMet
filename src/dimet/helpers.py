@@ -481,3 +481,11 @@ def message_bad_separator_input(df: pd.DataFrame, type_df: str) -> None:
             if df.empty:
                 logger.info(f"{e}. {error_message}")
                 raise ValueError(error_message)
+
+def msg_correction_method_not_suitable(filename: str, test:str) -> str:
+    message = (f"Using '{test}' for {filename}: the method"
+               f" for multiple tests correction (e.g. Bonferroni, "
+               f" B-H, or other), is unsuitable and will be omitted")
+    return message
+
+
