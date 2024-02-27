@@ -49,10 +49,9 @@ correction_methods_type = Literal[
     "fdr_bh", "fdr_by", "fdr_tsbh", "fdr_tsbky"
 ]
 
-comparison_modes = ["pairwise", "multigroup"]  # TODO: verify if ever used
+# comparison_modes = ["pairwise", "multigroup"]  # unused to date
 
-comparison_modes_types = Literal[
-    "pairwise", "multigroup"]  # TODO: verify if ever used
+# comparison_modes_types = Literal["pairwise", "multigroup"]  # unused to date
 
 overlap_methods = ["symmetric", "asymmetric"]
 

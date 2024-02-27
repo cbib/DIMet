@@ -96,7 +96,6 @@ class TestDifferentialAnalysis(TestCase):
         self.assertIsInstance(autoset_tailway, str)
         self.assertTrue(autoset_tailway in ["right-tailed", "two-sided"])
 
-
     def test_reorder_columns_diff_end(self):
         data = {
             "distance": [2, 1.5], "span_allsamples": [4, 6],

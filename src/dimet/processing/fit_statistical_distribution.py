@@ -52,9 +52,9 @@ def find_best_distribution(df: pd.DataFrame, *args):
 def get_best_fit(input_array, *args):
     """Return the best fit distribution to data and its parameters"""
 
-    try: # *args are used by unitary tests
+    try:  # *args are used by unitary tests
         DISTRIBUTIONS = args[0]
-    except:
+    except Exception:
         DISTRIBUTIONS = None
 
     # Load data
@@ -62,7 +62,7 @@ def get_best_fit(input_array, *args):
 
     # Find best fit distribution
     best_fit_name, best_fit_params = best_fit_distribution(
-        data, DISTRIBUTIONS,200)
+        data, DISTRIBUTIONS, 200)
 
     best_dist = getattr(stats, best_fit_name)
 
@@ -227,6 +227,6 @@ def compute_p_value(df: pd.DataFrame, test: str, best_dist,
         df["pvalue"] = 2 * (
                     1 - best_dist.cdf(abs(df["zscore"]), **args_param))
     else:
-        print("WARNING [compute_p_value]: only 'right-tailed' or " 
+        print("WARNING [compute_p_value]: only 'right-tailed' or "
               "'two-sided' as test argument supported")
     return df

@@ -248,7 +248,7 @@ def auto_detect_tailway(good_df, best_distribution, args_param):
 
 
 def run_distribution_fitting(df: pd.DataFrame,
-                             disfit_tail_option: str) ->  pd.DataFrame:
+                             disfit_tail_option: str) -> pd.DataFrame:
     recognized_tail_options = ["auto", "two-sided", "right-tailed"]
     assert disfit_tail_option in recognized_tail_options, ("unrecognized"
            "disfit_tail_option")
@@ -272,7 +272,7 @@ def run_distribution_fitting(df: pd.DataFrame,
     return df
 
 
-def reorder_columns_diff_end(df: pd.DataFrame, test:str) -> pd.DataFrame:
+def reorder_columns_diff_end(df: pd.DataFrame, test: str) -> pd.DataFrame:
     standard_cols = [
         "count_nan_samples_group1",
         "count_nan_samples_group2",
@@ -299,7 +299,7 @@ def reorder_columns_diff_end(df: pd.DataFrame, test:str) -> pd.DataFrame:
         "compartment"
     ]
 
-    if test == "disfit": # exclude the senseless column when this test ran
+    if test == "disfit":  # exclude the senseless column when this test ran
         standard_cols = [i for i in standard_cols if i != "padj"]
         desired_order = [i for i in desired_order if i != "padj"]
     standard_df = df[standard_cols]
@@ -331,8 +331,8 @@ def round_result_float_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 def compute_current_comparison_test(
         df_good: pd.DataFrame, df_bad: pd.DataFrame,
-        this_comparison: List[List], test:str, cfg: DictConfig
-) ->  pd.DataFrame:
+        this_comparison: List[List], test: str, cfg: DictConfig
+) -> pd.DataFrame:
     """
     Wraps functions for applying the parametric or non-parametric chosen test
     Note that 'this_comparison' is the list of, exactly,
@@ -366,6 +366,7 @@ def compute_current_comparison_test(
     result = round_result_float_columns(result)
 
     return result
+
 
 def pairwise_comparison(
         df: pd.DataFrame, dataset: Dataset, cfg: DictConfig,

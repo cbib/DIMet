@@ -25,13 +25,13 @@ class TestBivariateAnalysis(TestCase):
                            'A-T0-1': [4.6, 4.6], 'A-T0-2': [6.5, 6.5],
                            'A-T1-1': [2, 2],
                            'A-T1-2': [10.1, 8.4], 'A-T4-1': [5.6, 3.6],
-                           'A-T4-1': [1.6, 1.8],
-                           'A-T7-1': [7.6, 7.6], 'A-T7-1': [8.1, 9.3],
+                           'A-T4-2': [1.6, 1.8],
+                           'A-T7-1': [7.6, 7.6], 'A-T7-2': [8.1, 9.3],
                            'B-T0-1': [8.1, 9.3], 'B-T0-2': [1.6, 1.8],
                            'B-T1-1': [6, 7],
                            'B-T1-2': [10.1, 8.4], 'B-T4-1': [3.2, 3.6],
-                           'B-T4-1': [6.5, 6.5],
-                           'B-T7-1': [4.6, 4.6], 'B-T7-1': [7.6, 7.6]})
+                           'B-T4-2': [6.5, 6.5],
+                           'B-T7-1': [4.6, 4.6], 'B-T7-2': [7.6, 7.6]})
         metadata_df = pd.DataFrame({
             'condition': ['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A',
                           'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'],
@@ -40,9 +40,9 @@ class TestBivariateAnalysis(TestCase):
             'timepoint': ['0h', '0h', '1.5h', '1.5h', '4h', '4h', '7h', '7h',
                           '0h', '0h', '1.5h', '1.5h', '4h', '4h', '7h', '7h'],
             'name_to_plot': ['A-T0-1', 'A-T0-2', 'A-T1-1', 'A-T1-2',
-                             'A-T4-1', 'A-T4-1', 'A-T7-1', 'A-T7-1',
+                             'A-T4-1', 'A-T4-2', 'A-T7-1', 'A-T7-2',
                              'B-T0-1', 'B-T0-2', 'B-T1-1', 'B-T1-2',
-                             'B-T4-1', 'B-T4-1', 'B-T7-1', 'B-T7-1']})
+                             'B-T4-1', 'B-T4-2', 'B-T7-1', 'B-T7-2']})
         comparison = ["A", "B"]
         result = bivariate_analysis.metabolite_time_profiles_gmean_df_dict(
             df, metadata_df, comparison
@@ -54,7 +54,7 @@ class TestBivariateAnalysis(TestCase):
         self.assertTrue(list(result.keys())[0] == 'metabo_time_profile')
         self.assertListEqual(
             result['metabo_time_profile'].iloc[0, 1].tolist(),
-            [5.468089, 4.494441, 1.6, 8.1])
+            [5.468089, 4.494441, 2.993326, 7.846018])
 
     def test_modify_gmean_by_sanity(self):
         df = pd.DataFrame({'A-T0-1': [4.6, np.nan],
@@ -139,6 +139,3 @@ class TestBivariateAnalysis(TestCase):
                                -0.992587, places=5)
         self.assertAlmostEqual(result.loc['Ala', 'pvalue'],
                                0.007413, places=5)
-
-
-

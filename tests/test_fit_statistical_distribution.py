@@ -89,7 +89,7 @@ class TestFitStatisticalDistribution(TestCase):
         result = fit_statistical_distribution.compute_p_value(
             df, "right-tailed", best_dist, args_param
         )
-        self.assertEqual(len(result['pvalue']), len(df["zscore"]) )
+        self.assertEqual(len(result['pvalue']), len(df["zscore"]))
         self.assertAlmostEqual(result['pvalue'][0], 0.7572, places=1)
         self.assertAlmostEqual(result['pvalue'][1], 0.5879, places=1)
         self.assertAlmostEqual(result['pvalue'][2], 0.1721, places=1)
