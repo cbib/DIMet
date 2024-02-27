@@ -239,68 +239,55 @@ def run_statistical_test(df: pd.DataFrame, comparison: List,
 def auto_detect_tailway(good_df, best_distribution, args_param):
     min_pval_ = list()
     for tail_way in ["two-sided", "right-tailed"]:
-        tmp = compute_p_value(good_df, tail_way, best_distribution,
-                              args_param)
+        tmp = fit_statistical_distribution.compute_p_value(
+            good_df, tail_way, best_distribution, args_param)
 
         min_pval_.append(tuple([tail_way, tmp["pvalue"].min()]))
 
     return min(min_pval_, key=lambda x: x[1])[0]
 
 
-def run_distribution_fitting(df: pd.DataFrame):
+def run_distribution_fitting(df: pd.DataFrame,
+                             disfit_tail_option: str) -> pd.DataFrame:
+    recognized_tail_options = ["auto", "two-sided", "right-tailed"]
+    assert disfit_tail_option in recognized_tail_options, ("unrecognized"
+           "disfit_tail_option")
     df = fit_statistical_distribution.compute_z_score(df, "FC")
     best_distribution, args_param = \
         fit_statistical_distribution.find_best_distribution(df)
-    autoset_tailway = auto_detect_tailway(df, best_distribution, args_param)
-    logger.info(f"auto, best pvalues calculated : {autoset_tailway}")
-    df = compute_p_value(df, autoset_tailway, best_distribution, args_param)
+    if disfit_tail_option == "auto":
+        autoset_tailway = auto_detect_tailway(
+            df, best_distribution, args_param)
+        logger.info(f"auto, best pvalues calculated : {autoset_tailway}")
+        df = fit_statistical_distribution.compute_p_value(
+            df, autoset_tailway, best_distribution, args_param)
+    else:  # two-sided or right-tailed
+        logger.info(f"the disfit_tail_option is: '{disfit_tail_option}'")
+        df = fit_statistical_distribution.compute_p_value(
+            df, disfit_tail_option, best_distribution, args_param)
+
     df["zscore"] = np.around(
         df["zscore"].astype(float).to_numpy(), decimals=6)
+
     return df
 
 
-def compute_p_value(df: pd.DataFrame, test: str, best_dist,
-                    args_param) -> pd.DataFrame:
-    if test == "right-tailed":
-        df["pvalue"] = 1 - best_dist.cdf(df["zscore"], **args_param)
-    elif test == "two-sided":
-        df["pvalue"] = 2 * (
-                    1 - best_dist.cdf(abs(df["zscore"]), **args_param))
-    else:
-        print("WARNING [compute_p_value]: only 'right-tailed' or " 
-              "'two-sided' as test argument supported")
-    return df
-
-
-def filter_diff_results(ratiosdf, padj_cutoff, log2FC_abs_cutoff):
-    ratiosdf["abslfc"] = ratiosdf["log2FC"].abs()
-    ratiosdf = ratiosdf.loc[(ratiosdf["padj"] <= padj_cutoff) & (
-                ratiosdf["abslfc"] >= log2FC_abs_cutoff), :]
-    ratiosdf = ratiosdf.sort_values(["padj", "pvalue", "distance/span"],
-                                    ascending=[True, True, False])
-    ratiosdf = ratiosdf.drop(columns=["abslfc"])
-
-    return ratiosdf
-
-
-def reorder_columns_diff_end(df: pd.DataFrame) -> pd.DataFrame:
+def reorder_columns_diff_end(df: pd.DataFrame, test: str) -> pd.DataFrame:
     standard_cols = [
         "count_nan_samples_group1",
         "count_nan_samples_group2",
         "distance",
         "span_allsamples",
         "distance/span",
-        #        'stat',
         "pvalue",
         "padj",
         "log2FC",
         "FC",
-        "compartment",
+        "compartment"
     ]
 
     desired_order = [
         "log2FC",
-        #        'stat',
         "pvalue",
         "padj",
         "distance/span",
@@ -309,9 +296,12 @@ def reorder_columns_diff_end(df: pd.DataFrame) -> pd.DataFrame:
         "count_nan_samples_group2",
         "distance",
         "span_allsamples",
-        "compartment",
+        "compartment"
     ]
 
+    if test == "disfit":  # exclude the senseless column when this test ran
+        standard_cols = [i for i in standard_cols if i != "padj"]
+        desired_order = [i for i in desired_order if i != "padj"]
     standard_df = df[standard_cols]
     df = df.drop(columns=standard_cols)
     # reorder the standard part
@@ -323,28 +313,59 @@ def reorder_columns_diff_end(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def round_result_float_columns(df: pd.DataFrame) -> pd.DataFrame:
-    result_float_columns = [
-        "log2FC",
-        "pvalue",
-        "padj",
-        "distance/span",
-        "FC",
-        "distance",
-        "span_allsamples"]
-
-    columns_gmean = [column for column in list(df.columns) if
-                     column.startswith("gmean_")]  # also gmean columns
-    result_float_columns = list(
-        set(result_float_columns).union(set(columns_gmean)))
-
-    for column in result_float_columns:
-        if column in list(df.columns):
+    for column in list(df.columns):
+        try:
             df[column] = np.around(
-                df[column].astype(float).to_numpy(),
-                decimals=6
-            )
-
+                 df[column].astype(float).to_numpy(),
+                 decimals=6
+             )
+        except ValueError:
+            continue
+        except TypeError:
+            continue
+        except Exception as e:
+            print(e)
+            continue
     return df
+
+
+def compute_current_comparison_test(
+        df_good: pd.DataFrame, df_bad: pd.DataFrame,
+        this_comparison: List[List], test: str, cfg: DictConfig
+) -> pd.DataFrame:
+    """
+    Wraps functions for applying the parametric or non-parametric chosen test
+    Note that 'this_comparison' is the list of, exactly,
+    two lists of samples names, e.g.:
+    [['Tr_cell_0h-1', 'Tr_cell_0h-2'], ['Ct_cell_0h-1', 'Ct_cell_0h-2']]
+    the first list corresponds to the treated samples,
+    the second list corresponds to the control samples.
+    """
+    # log transform, in base 2, the Fold Change
+    df_good = df_good.assign(log2FC=np.log2(df_good["FC"]))
+
+    if test == "disfit":
+        result = run_distribution_fitting(
+            df_good,
+            disfit_tail_option=cfg.analysis.method.disfit_tail_option)
+    else:
+        result_test_df = run_statistical_test(df_good, this_comparison, test)
+        assert result_test_df.shape[0] == df_good.shape[0]
+        result_test_df.set_index("metabolite", inplace=True)
+        df_good = pd.merge(df_good, result_test_df, left_index=True,
+                           right_index=True)
+        df_good, df_no_quality_d_s = split_rows_by_threshold(
+            df_good, "distance/span",
+            cfg.analysis.method.qualityDistanceOverSpan
+        )
+        df_good = compute_padj(df_good, 0.05,
+                               cfg.analysis.method.correction_method)
+        # re-integrate the "bad" sub-dataframes to the full dataframe
+        result = concatenate_dataframes(df_good, df_bad, df_no_quality_d_s)
+
+    result = round_result_float_columns(result)
+
+    return result
 
 
 def pairwise_comparison(
@@ -380,27 +401,9 @@ def pairwise_comparison(
     df_good, df_bad = select_rows_with_sufficient_non_nan_values(
         df4c, groups=this_comparison)
 
-    if test == "disfit":
-        df_good = run_distribution_fitting(df_good)
+    result = compute_current_comparison_test(df_good, df_bad,
+                                             this_comparison, test, cfg)
 
-    else:
-        result_test_df = run_statistical_test(df_good, this_comparison, test)
-        assert result_test_df.shape[0] == df_good.shape[0]
-        result_test_df.set_index("metabolite", inplace=True)
-        df_good = pd.merge(df_good, result_test_df, left_index=True,
-                           right_index=True)
-
-    df_good["log2FC"] = np.log2(df_good["FC"])
-
-    df_good, df_no_padj = split_rows_by_threshold(
-        df_good, "distance/span", cfg.analysis.method.qualityDistanceOverSpan
-    )
-    df_good = compute_padj(df_good, 0.05,
-                           cfg.analysis.method.correction_method)
-
-    # re-integrate the "bad" sub-dataframes to the full dataframe
-    result = concatenate_dataframes(df_good, df_bad, df_no_padj)
-    result = round_result_float_columns(result)
     return result
 
 
@@ -428,9 +431,9 @@ def differential_comparison(
         for comparison in cfg.analysis.comparisons:
             result = pairwise_comparison(df, dataset, cfg, comparison, test)
             result["compartment"] = compartment
-            result = reorder_columns_diff_end(result)
+            result = reorder_columns_diff_end(result, test)
 
-            result = result.sort_values(["padj", "distance/span"],
+            result = result.sort_values(["pvalue", "distance/span"],
                                         ascending=[True, False])
             comp = "-".join(map(lambda x: "-".join(x), comparison))
             base_file_name = dataset.get_file_for_label(file_name)
@@ -441,7 +444,7 @@ def differential_comparison(
                 output_file_name,
                 index_label="metabolite",
                 header=True,
-                sep="\t",
+                sep="\t"
             )
             logger.info(f"Saved the result in {output_file_name}")
 
@@ -550,8 +553,9 @@ def time_course_analysis(file_name: data_files_keys_type,
             result = pairwise_comparison(df, dataset, cfg, comparison,
                                          test)
             result["compartment"] = compartment
-            result = reorder_columns_diff_end(result)
-            result = result.sort_values(["padj", "distance/span"],
+            result = reorder_columns_diff_end(result, test)
+
+            result = result.sort_values(["pvalue", "distance/span"],
                                         ascending=[True, False])
             comp = "-".join(map(lambda x: "-".join(x), comparison))
             base_file_name = dataset.get_file_for_label(file_name)

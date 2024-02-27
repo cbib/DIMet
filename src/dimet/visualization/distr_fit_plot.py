@@ -91,7 +91,7 @@ def get_best_fit_to_plot(input_array, out_file):
 
     # Find best fit distribution
     best_fit_name, best_fit_params = \
-        fit_statistical_distribution.best_fit_distribution(data, 200)
+        fit_statistical_distribution.best_fit_distribution(data, None, 200)
 
     best_dist = getattr(stats, best_fit_name)
 

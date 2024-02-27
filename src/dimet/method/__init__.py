@@ -14,7 +14,7 @@ from dimet.constants import (assert_literal, availtest_methods,
                              data_types_suitable_for_metabologram,
                              metabolites_values_for_metabologram)
 from dimet.data import DataIntegration, Dataset
-from dimet.helpers import flatten
+from dimet.helpers import flatten, msg_correction_method_not_suitable
 from dimet.processing.bivariate_analysis import bivariate_comparison
 from dimet.processing.differential_analysis import (differential_comparison,
                                                     multi_group_compairson,
@@ -289,6 +289,8 @@ class DifferentialAnalysis(Method):
             tmp = dataset.get_file_for_label(file_name)  # current file name
             logger.info(
                 f"Running differential analysis of {tmp} using {test} test")
+            if test == "disfit":
+                logger.info(msg_correction_method_not_suitable(tmp, test))
             differential_comparison(file_name, dataset, cfg, test,
                                     out_table_dir=out_table_dir)
 
@@ -619,6 +621,8 @@ class TimeCourseAnalysis(Method):
             tmp = dataset.get_file_for_label(file_name)  # current file
             logger.info(
                 f"Running time-course analysis of {tmp} using {test} test")
+            if test == "disfit":
+                logger.info(msg_correction_method_not_suitable(tmp, test))
             time_course_analysis(file_name, dataset, cfg, test,
                                  out_table_dir=out_table_dir)
 

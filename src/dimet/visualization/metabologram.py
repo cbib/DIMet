@@ -48,7 +48,6 @@ def get_differential_results_dict(file_name: str,
         result = differential_analysis.pairwise_comparison(
             df, data_integration, cfg, comparison, test)
         result["compartment"] = compartment
-        result = differential_analysis.reorder_columns_diff_end(result)
         result.reset_index(names=[cfg.analysis.columns_metabolites['ID']],
                            inplace=True)
         metabolomics_differential_results_dict[i] = result

@@ -96,17 +96,6 @@ class TestDifferentialAnalysis(TestCase):
         self.assertIsInstance(autoset_tailway, str)
         self.assertTrue(autoset_tailway in ["right-tailed", "two-sided"])
 
-    def test_filter_diff_results(self):
-        data = {'row': np.arange(0, 5, 1),
-                'pvalue': [0.004, 1.0, 0.064, 0.015, np.nan],
-                'padj': [0.004, 1.0, 0.064, 0.015, np.nan],
-                'log2FC': [4, 1.2, 0, -3, -1],
-                'distance/span': [1, -0.6, 0, 0.3, -0.6]}
-        df = pd.DataFrame(data)
-        result = differential_analysis.filter_diff_results(df, 0.05, 1.1)
-        self.assertTrue(result.shape[0] == 2)
-        self.assertTrue(any(np.array(result['row']) == np.array([0, 3])))
-
     def test_reorder_columns_diff_end(self):
         data = {
             "distance": [2, 1.5], "span_allsamples": [4, 6],
@@ -118,7 +107,7 @@ class TestDifferentialAnalysis(TestCase):
         }
         df = pd.DataFrame(data)
         df.index = ['met1', 'met3']
-        result = differential_analysis.reorder_columns_diff_end(df)
+        result = differential_analysis.reorder_columns_diff_end(df, "BrMu")
         self.assertTrue(
             any(np.array(result.loc["met1", :]) == np.array(
                 [4.0, 1e-3, 1e-3, 0.5, 8, 0, 0, 2.0, 4, 'med', 400]

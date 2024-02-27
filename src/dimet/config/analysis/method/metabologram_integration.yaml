@@ -45,4 +45,10 @@ display_label_and_value : False # if False, display labels of the molecules alon
 
 color_nan_elements : "gray"
 
+disfit_tail_option: "two-sided"
+
+# Note: the disfit_tail_option depends on the comparison and the data:
+#    if advanced knowledge of both, set "two-sided" or "right-tailed"
+#    otherwise leave "auto" as default
+
 
