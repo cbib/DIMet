@@ -11,7 +11,7 @@ DIMet: Differential analysis of Isotope-labeled targeted Metabolomics data
 DIMet is a bioinformatics pipeline for **differential and time-course analysis of targeted isotope-labeled metabolomics data**.
 
 DIMet supports the analysis of full metabolite abundances and isotopologue contributions, 
-and allows to perform it either in the differential comparison mode or as a time-series analysis. 
+and allows to perform it in the differential comparison mode, or as a time-series analysis, or even processing entire labelling profiles.
 As input, DIMet accepts three types of measures: a) isotopologues’ contributions, b) fractional contributions (also known as mean enrichment), c) full metabolites’ abundances. 
 DIMet also offers a _pathway-based omics integration_ through **Metabolograms**.
 
