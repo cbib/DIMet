@@ -239,36 +239,36 @@ def run_statistical_test(df: pd.DataFrame, comparison: List,
 def auto_detect_tailway(good_df, best_distribution, args_param):
     min_pval_ = list()
     for tail_way in ["two-sided", "right-tailed"]:
-        tmp = compute_p_value(good_df, tail_way, best_distribution,
-                              args_param)
+        tmp = fit_statistical_distribution.compute_p_value(
+            good_df, tail_way, best_distribution, args_param)
 
         min_pval_.append(tuple([tail_way, tmp["pvalue"].min()]))
 
     return min(min_pval_, key=lambda x: x[1])[0]
 
 
-def run_distribution_fitting(df: pd.DataFrame):
+def run_distribution_fitting(df: pd.DataFrame,
+                             disfit_tail_option: str) ->  pd.DataFrame:
+    recognized_tail_options = ["auto", "two-sided", "right-tailed"]
+    assert disfit_tail_option in recognized_tail_options, ("unrecognized"
+           "disfit_tail_option")
     df = fit_statistical_distribution.compute_z_score(df, "FC")
     best_distribution, args_param = \
         fit_statistical_distribution.find_best_distribution(df)
-    autoset_tailway = auto_detect_tailway(df, best_distribution, args_param)
-    logger.info(f"auto, best pvalues calculated : {autoset_tailway}")
-    df = compute_p_value(df, autoset_tailway, best_distribution, args_param)
+    if disfit_tail_option == "auto":
+        autoset_tailway = auto_detect_tailway(
+            df, best_distribution, args_param)
+        logger.info(f"auto, best pvalues calculated : {autoset_tailway}")
+        df = fit_statistical_distribution.compute_p_value(
+            df, autoset_tailway, best_distribution, args_param)
+    else:  # two-sided or right-tailed
+        logger.info(f"the disfit_tail_option is: '{disfit_tail_option}'")
+        df = fit_statistical_distribution.compute_p_value(
+            df, disfit_tail_option, best_distribution, args_param)
+
     df["zscore"] = np.around(
         df["zscore"].astype(float).to_numpy(), decimals=6)
-    return df
 
-
-def compute_p_value(df: pd.DataFrame, test: str, best_dist,
-                    args_param) -> pd.DataFrame:
-    if test == "right-tailed":
-        df["pvalue"] = 1 - best_dist.cdf(df["zscore"], **args_param)
-    elif test == "two-sided":
-        df["pvalue"] = 2 * (
-                    1 - best_dist.cdf(abs(df["zscore"]), **args_param))
-    else:
-        print("WARNING [compute_p_value]: only 'right-tailed' or " 
-              "'two-sided' as test argument supported")
     return df
 
 
@@ -329,9 +329,10 @@ def round_result_float_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def compute_current_comparison(df_good: pd.DataFrame, df_bad: pd.DataFrame,
-                               this_comparison: List[List], test:str,
-                               cfg: DictConfig) ->  pd.DataFrame: # TODO: rename
+def compute_current_comparison_test(
+        df_good: pd.DataFrame, df_bad: pd.DataFrame,
+        this_comparison: List[List], test:str, cfg: DictConfig
+) ->  pd.DataFrame:
     """
     Wraps functions for applying the parametric or non-parametric chosen test
     Note that 'this_comparison' is the list of, exactly,
@@ -344,7 +345,9 @@ def compute_current_comparison(df_good: pd.DataFrame, df_bad: pd.DataFrame,
     df_good = df_good.assign(log2FC=np.log2(df_good["FC"]))
 
     if test == "disfit":
-        result = run_distribution_fitting(df_good)
+        result = run_distribution_fitting(
+            df_good,
+            disfit_tail_option=cfg.analysis.method.disfit_tail_option)
     else:
         result_test_df = run_statistical_test(df_good, this_comparison, test)
         assert result_test_df.shape[0] == df_good.shape[0]
@@ -397,8 +400,8 @@ def pairwise_comparison(
     df_good, df_bad = select_rows_with_sufficient_non_nan_values(
         df4c, groups=this_comparison)
 
-    result = compute_current_comparison(df_good, df_bad,
-                                        this_comparison, test, cfg)
+    result = compute_current_comparison_test(df_good, df_bad,
+                                             this_comparison, test, cfg)
 
     return result
 

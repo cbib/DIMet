@@ -21,3 +21,9 @@ statistical_test:
   mean_enrichment: KW
   isotopologues: KW
   isotopologue_proportions: KW
+
+disfit_tail_option: "auto"
+
+# Note: the disfit_tail_option depends on the comparison and the data:
+#    if advanced knowledge of both, set "two-sided" or "right-tailed"
+#    otherwise leave "auto" as default
