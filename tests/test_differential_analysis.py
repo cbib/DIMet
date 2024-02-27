@@ -108,7 +108,7 @@ class TestDifferentialAnalysis(TestCase):
         }
         df = pd.DataFrame(data)
         df.index = ['met1', 'met3']
-        result = differential_analysis.reorder_columns_diff_end(df)
+        result = differential_analysis.reorder_columns_diff_end(df, "BrMu")
         self.assertTrue(
             any(np.array(result.loc["met1", :]) == np.array(
                 [4.0, 1e-3, 1e-3, 0.5, 8, 0, 0, 2.0, 4, 'med', 400]
