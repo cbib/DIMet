@@ -6,16 +6,16 @@ name: Computation of the correlation of MDV profiles, or the metabolite time cou
 # (**) : automatically will run
 
 conditions_MDV_comparison: # (**) if >= 2 conditions and >=1 timepoint (timepoints run separately)
-  isotopologue_proportions: pearson
+  isotopologue_proportions: spearman
 
 timepoints_MDV_comparison:  # (**) if >= 1 condition and >=2 timepoints
-  isotopologue_proportions: pearson
+  isotopologue_proportions: spearman
 
 conditions_metabolite_time_profiles:  # (**) if >= 2 conditions  AND >=2 time points in data
-  abundances: pearson
-  mean_enrichment: pearson
+  abundances: spearman
+  mean_enrichment: spearman
 
-# test modification doable with external config 'statistical_test'
+# test modification accessible through external config 'statistical_test'
 
 correction_method: fdr_bh
 

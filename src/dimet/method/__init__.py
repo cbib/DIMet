@@ -1,7 +1,7 @@
 ﻿import logging
 import os
 import sys
-from typing import Union
+from typing import Dict, Union
 
 import hydra
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
@@ -191,6 +191,14 @@ class BivariateAnalysisConfig(MethodConfig):
     """
     correction_method: str = "fdr_bh"
     output_include_gmean_arr_columns: bool = True
+    conditions_MDV_comparison: Dict[str, str] = {
+        'isotopologue_proportions': 'spearman'}
+    timepoints_MDV_comparison: Dict[str, str] = {
+        'isotopologue_proportions': 'spearman'}
+    conditions_metabolite_time_profiles: Dict[str, str] = {
+        'abundances': 'spearman',
+        'mean_enrichment': 'spearman'
+    }
 
     def build(self) -> "BivariateAnalysis":
         return BivariateAnalysis(config=self)
