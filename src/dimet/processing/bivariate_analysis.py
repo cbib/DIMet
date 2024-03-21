@@ -32,7 +32,7 @@ def compute_statistical_correlation(df: pd.DataFrame,
     stat_list = []
     pvalue_list = []
     for i, metabolite in enumerate(list(df['metabolite'])):
-        # array of n-(timepoints or m+x) geometrical means values
+        # array of n (timepoints or m+x) geometrical means values
         array_1 = df.loc[metabolite, "gmean_arr_1"]
         array_2 = df.loc[metabolite, "gmean_arr_2"]
         if test == "pearson":
@@ -79,7 +79,7 @@ def compute_bivariate_by_behavior(
     """
     performs two steps:
     1. calls functions to compute geometric means, obtaining df's inside dict
-    2. computes the bivariate statistical test (pearson by default)
+    2. computes the bivariate statistical test
     """
     if behavior == "conditions_MDV_comparison":
         df_dict = conditions_MDV_gmean_df_dict(df, metadata_df, comparison)

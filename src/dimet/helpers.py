@@ -3,12 +3,16 @@
 """
 @author: Johanna Galvis, Florian Specque, Macha Nikolski
 """
+import os
 import logging
 from collections.abc import Iterable
 from functools import reduce
 from typing import Dict, List
 
-from dimet.constants import assert_literal, overlap_methods_types
+from dimet.constants import (assert_literal,
+                             minimum_tolerated_fraction_value,
+                             overlap_methods_types,
+                             supported_file_extension)
 
 import numpy as np
 
@@ -73,7 +77,7 @@ def concatenate_dataframes(df1: pd.DataFrame, df2: pd.DataFrame,
     df2 = df2.reindex(columns=df1.columns, fill_value=np.nan)
     df3 = df3.reindex(columns=df1.columns, fill_value=np.nan)
     # please leave ignore_index as False:
-    # otherwise numbers and not metabolites appear in .csv exported results:
+    # otherwise numbers and not metabolites appear in exported results:
     result = pd.concat([df1, df2, df3], ignore_index=False)
     return result
 
@@ -197,7 +201,9 @@ def arg_repl_zero2value(how: str, df: pd.DataFrame) -> float:
             except Exception as e:
                 logger.info(f"{e}. {err_msg}")
                 raise ValueError(err_msg)
-        min_value = df[df > 0].min(skipna=True).min(skipna=True)
+        min_value = df[
+            df >= minimum_tolerated_fraction_value  # '> 0' prone to errors if values < 1e-6 exist in the data (and round is 6 places!)
+        ].min(skipna=True).min(skipna=True)
         output_value = min_value / denominator
     else:
         try:
@@ -488,3 +494,18 @@ def msg_correction_method_not_suitable(filename: str, test: str) -> str:
                f" for multiple tests correction (e.g. Bonferroni, "
                f" B-H, or other), is unsuitable and will be omitted")
     return message
+
+
+def extfind(parent_folder_absolute, file_name):
+    repertoire_extension = supported_file_extension
+    out_str = ""
+    for x in repertoire_extension:
+        if not os.path.exists(
+                os.path.join(parent_folder_absolute,
+                             file_name + f".{x}")):
+            continue
+        else:
+            out_str = x
+    if out_str not in repertoire_extension:
+        out_str = "csv"  # if none of the supported extensions, try this one
+    return out_str
