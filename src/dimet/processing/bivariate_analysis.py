@@ -10,6 +10,7 @@ from typing import Dict, List
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
+import scipy.spatial as spatial
 from omegaconf import DictConfig
 
 from dimet.constants import (assert_literal,
@@ -19,7 +20,7 @@ from dimet.helpers import (arg_repl_zero2value,
                            compute_padj,
                            row_wise_nanstd_reduction)
 
-
+from dimet.processing import fit_statistical_distribution
 logger = logging.getLogger(__name__)
 
 
@@ -32,7 +33,7 @@ def compute_statistical_correlation(df: pd.DataFrame,
     stat_list = []
     pvalue_list = []
     for i, metabolite in enumerate(list(df['metabolite'])):
-        # array of n-(timepoints or m+x) geometrical means values
+        # array of n (timepoints or m+x) geometrical means values
         array_1 = df.loc[metabolite, "gmean_arr_1"]
         array_2 = df.loc[metabolite, "gmean_arr_2"]
         if test == "pearson":
@@ -59,6 +60,37 @@ def compute_statistical_correlation(df: pd.DataFrame,
     return df
 
 
+def compute_fitting_euclidean_distances(df):
+    euclidean_distance_l = []
+
+    for i, metabolite in enumerate(list(df['metabolite'])):
+        array_1 = df.loc[metabolite, "gmean_arr_1"]
+        array_2 = df.loc[metabolite, "gmean_arr_2"]
+        try:
+            eudi = spatial.distance.euclidean(array_1, array_2)
+        except ValueError:
+            eudi = np.nan
+        euclidean_distance_l.append(eudi)
+
+    df["euclidean_distance"] = euclidean_distance_l
+
+    df_nan = df.loc[df['euclidean_distance'].isna(), :]
+    df_nan = df_nan.assign(zscore=np.nan)
+    df_nan = df_nan.assign(pvalue=np.nan)
+    df_good = df.loc[~df['euclidean_distance'].isna(), :]
+
+    df_good = fit_statistical_distribution.compute_z_score(
+        df_good,   "euclidean_distance")
+    best_distribution, args_param = \
+        fit_statistical_distribution.find_best_distribution(df_good)
+    # euclidean distances extremes: always right tailed:
+    df_good = fit_statistical_distribution.compute_p_value(
+        df_good, "right-tailed", best_distribution, args_param)
+
+    df = pd.concat([df_good, df_nan], axis=0, ignore_index=False)
+    return df
+
+
 def compute_test_for_df_dict(df_dict: Dict[str, pd.DataFrame],
                              test: str) -> Dict[str, pd.DataFrame]:
     """parses a dictionary of dataframes
@@ -67,8 +99,10 @@ def compute_test_for_df_dict(df_dict: Dict[str, pd.DataFrame],
     for akey in df_dict.keys():
         df = df_dict[akey].copy()
         df.index = df['metabolite']
-
-        df_dict[akey] = compute_statistical_correlation(df, test)
+        if not test == "fit_euclidean_distances":  # spearman|pearson
+            df_dict[akey] = compute_statistical_correlation(df, test)
+        else:
+            df_dict[akey] = compute_fitting_euclidean_distances(df)
 
     return df_dict
 
@@ -333,15 +367,21 @@ def save_output(result_df: pd.DataFrame, compartment: str, dataset: Dataset,
                 test: str, out_table_dir: str, cfg: DictConfig) -> None:
     """saves result to tab delimited file, for one comparison"""
 
-    result = result_df.sort_values(["correlation_coefficient", "padj"],
-                                   ascending=True)
-    for name_col in ['correlation_coefficient', 'pvalue', 'padj']:
-        result[name_col] = np.around(result[name_col].to_numpy(), 6)
+    for name_col in list(result_df.columns):
+        if name_col not in ['metabolite', 'gmean_arr_1', 'gmean_arr_2']:
+            result_df[name_col] = np.around(result_df[name_col].to_numpy(), 6)
 
-    result['compartment'] = compartment
-    out_order_columns = ['correlation_coefficient', 'pvalue',
-                         'padj', 'compartment', 'gmean_arr_1', 'gmean_arr_2']
-    result = result[out_order_columns]  # fix the order of columns
+    result_df['compartment'] = compartment
+    if test != "fit_euclidean_distances":
+        result_df = result_df[['correlation_coefficient', 'pvalue', 'padj',
+                               'compartment', 'gmean_arr_1', 'gmean_arr_2']]
+        result = result_df.sort_values(["correlation_coefficient", "padj"],
+                                       ascending=True)
+    else:
+        result_df = result_df[['euclidean_distance', 'pvalue', 'compartment',
+                               'gmean_arr_1', 'gmean_arr_2']]
+        result = result_df.sort_values(["pvalue"], ascending=True)
+
     if not cfg.analysis.method.output_include_gmean_arr_columns:
         result = result.drop(columns=['gmean_arr_1', 'gmean_arr_2'])
 
@@ -383,15 +423,16 @@ def bivariate_run_and_save_current_comparison(
         df.set_index("metabolite", inplace=True)
 
         # apply multiple test correction method to df results
-        result_df = compute_padj(df, 0.05,
-                                 cfg.analysis.method.correction_method)
+        if test != "fit_euclidean_distances":
+            df = compute_padj(df, 0.05,
+                              cfg.analysis.method.correction_method)
 
         comparison_str = "-".join(comparison)
         out_file_name_str = f"-MDV-{comparison_str}--{akey}"
         if akey == "metabo_time_profile":
             out_file_name_str = f"{comparison_str}"
 
-        save_output(result_df, compartment, dataset, file_name,
+        save_output(df, compartment, dataset, file_name,
                     out_file_name_str, test, out_table_dir, cfg)
 
 
