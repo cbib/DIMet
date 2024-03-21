@@ -873,6 +873,27 @@ class MetabologramIntegration(Method):
 class BivariateAnalysis(Method):
     config: BivariateAnalysisConfig
 
+    @staticmethod
+    def replace_test__if_user_external_config(cfg):
+        """
+        replaces the test in bivariate internal config if user set another
+         test in the external config
+        """
+        if "statistical_test" in list(cfg.analysis.keys()):
+            if cfg.analysis.statistical_test is not None:
+                user_test = cfg.analysis.statistical_test
+                cfg.analysis.method.conditions_MDV_comparison[
+                    'isotopologue_proportions'] = user_test
+                cfg.analysis.method.timepoints_MDV_comparison[
+                    'isotopologue_proportions'] = user_test
+                cfg.analysis.method.conditions_metabolite_time_profiles[
+                    'abundances'] = user_test
+                cfg.analysis.method.conditions_metabolite_time_profiles[
+                    'mean_enrichment'] = user_test
+        else:
+            pass
+        return cfg
+
     def run(self, cfg: DictConfig, dataset: Dataset) -> None:
         """
         Runs bivariate analysis, the 'behavior' is the type of comparison:
@@ -880,30 +901,36 @@ class BivariateAnalysis(Method):
         - timepoints_MDV_comparison
         - conditions_metabolite_time_profiles
         """
+        logger.info(f"The current working directory is {os.getcwd()}")
+
+        cfg = self.replace_test__if_user_external_config(cfg)
+        logger.info("Current configuration is %s", OmegaConf.to_yaml(cfg))
+
         logger.info(
             "Will compute bi-variate analysis, with the following config: %s",
             self.config)
 
         out_table_dir = os.path.join(os.getcwd(), cfg.table_path)
         os.makedirs(out_table_dir, exist_ok=True)
+
         self.check_expectations(cfg, dataset)
 
-        datatype = "isotopologue_proportions"
-        if datatype in dataset.compartmentalized_dfs.keys():
+        datatype_mdv = "isotopologue_proportions"
+        if datatype_mdv in dataset.compartmentalized_dfs.keys():
             logger.info(f"Running bi-variate analysis with "
-                        f"{datatype}:")
+                        f"{datatype_mdv}:")
             if len(cfg.analysis.conditions) >= 2:
                 logger.info("assessing MDV (Mass Distribution Vector) "
                             "between conditions")
                 bivariate_comparison(
-                    datatype, dataset, cfg,
+                    datatype_mdv, dataset, cfg,
                     behavior="conditions_MDV_comparison",
                     out_table_dir=out_table_dir)
             if len(dataset.metadata_df["timepoint"].unique()) >= 2:
                 logger.info("assessing MDV (Mass Distribution Vector) "
                             "between time-points")
                 bivariate_comparison(
-                    datatype, dataset, cfg,
+                    datatype_mdv, dataset, cfg,
                     behavior="timepoints_MDV_comparison",
                     out_table_dir=out_table_dir)
 

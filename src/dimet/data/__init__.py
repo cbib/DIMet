@@ -11,7 +11,7 @@ from pydantic import BaseModel as PydanticBaseModel
 from dimet.constants import molecular_types_for_metabologram
 from dimet.helpers import (df_to_dict_by_compartment,
                            drop_all_nan_metabolites_on_comp_frames,
-                           set_samples_names,
+                           extfind, set_samples_names,
                            verify_metadata_sample_not_duplicated,
                            message_bad_separator_input)
 
@@ -76,20 +76,23 @@ class Dataset(BaseModel):
             self.sub_folder_absolute = self.config.subfolder
 
         # start loading the dataframes
+        ext = self.get_files_extension_as_dict()  # extension str by file
         file_paths = [
-            ("metadata", os.path.join(self.sub_folder_absolute,
-                                      self.config.metadata + ".csv")),
-            ("abundances", os.path.join(self.sub_folder_absolute,
-                                        self.config.abundances + ".csv")),
+            ("metadata", os.path.join(
+                self.sub_folder_absolute,
+                self.config.metadata + "." + ext['metadata'])),
+            ("abundances", os.path.join(
+                self.sub_folder_absolute,
+                self.config.abundances + "." + ext['abundances'])),
             ("mean_enrichment", os.path.join(
                 self.sub_folder_absolute,
-                self.config.mean_enrichment + ".csv")),
+                self.config.mean_enrichment + "." + ext['mean_enrichment'])),
             ("isotopologue_proportions", os.path.join(
                 self.sub_folder_absolute,
-                self.config.isotopologue_proportions + ".csv")),
+                self.config.isotopologue_proportions + "." + ext['isotopologue_proportions'])),
             ("isotopologues", os.path.join(
                 self.sub_folder_absolute,
-                self.config.isotopologues + ".csv")),
+                self.config.isotopologues + "." + ext['isotopologues'])),
         ]
         dfs = []
         for label, file_path in file_paths:
@@ -103,13 +106,13 @@ class Dataset(BaseModel):
                     dfs.append(pd.read_csv(file_path, sep="\t", header=0))
                 self.available_datasets.add(label)
             except FileNotFoundError:
-                if file_path.endswith(self.config.isotopologues + ".csv"):
+                if file_path.endswith(self.config.isotopologues + "." + ext['isotopologues']):
                     message_detail = "isotopologue absolute values missing"
                     logger.critical(
-                        "File %s not found (%s), continuing"
+                        "File %s not found (%s), continue"
                         % (file_path, message_detail))
                 else:
-                    logger.critical("File %s not found, continuing",
+                    logger.critical("File %s not found, continue",
                                     file_path)
                 dfs.append(None)
             except Exception as e:
@@ -182,6 +185,22 @@ class Dataset(BaseModel):
         else:
             raise ValueError(f"Unknown label {label}")
 
+    def get_files_extension_as_dict(self):
+        """returns dictionary of file extensions, uses extfind (helpers)"""
+        extension_dict: Dict[str, str] = dict()
+        extension_dict['metadata'] = extfind(self.sub_folder_absolute,
+                                             self.config.metadata)
+        extension_dict['abundances'] = extfind(self.sub_folder_absolute,
+                                               self.config.abundances)
+        extension_dict['mean_enrichment'] = extfind(
+            self.sub_folder_absolute, self.config.mean_enrichment)
+        extension_dict['isotopologues'] = extfind(self.sub_folder_absolute,
+                                                  self.config.isotopologues)
+        extension_dict['isotopologue_proportions'] = extfind(
+            self.sub_folder_absolute,
+            self.config.isotopologue_proportions)
+        return extension_dict
+
 
 class DataIntegrationConfig(DatasetConfig):
     transcripts: ListConfig
@@ -225,15 +244,18 @@ class DataIntegration(Dataset):
         # the keys are integers, with the order of files in the dataset yml
         for i, file_name in enumerate(self.config.transcripts):
             try:
+                file_extension = extfind(self.sub_folder_absolute, file_name)
                 path_deg_file = os.path.join(
                     self.sub_folder_absolute,
-                    f"{file_name}.csv")
+                    f"{file_name}.{file_extension}")
                 deg_df = pd.read_csv(path_deg_file, sep='\t', header=0)
                 self.deg_dfs[i] = deg_df
             except FileNotFoundError:
-                logger.info(f"{file_name}.csv: file not found")
+                logger.info(f"{file_name}.{file_extension}: file not found")
             except Exception as e:
-                logger.info(f'Error while opening file {file_name}.csv {e}')
+                logger.info(
+                    f'Error while opening file {file_name}.{file_extension} '
+                    f' \n {e}')
 
         logger.info("Finished loading transcripts dataframes: "
                     "%s", self.config.transcripts)
@@ -241,16 +263,20 @@ class DataIntegration(Dataset):
     def load_pathways_dfs(self):
         for k in self.config.pathways.keys():
             try:
+                file_extension = extfind(
+                    self.sub_folder_absolute, self.config.pathways[k])
                 path_file = os.path.join(
                     self.sub_folder_absolute,
-                    f"{self.config.pathways[k]}.csv")
+                    f"{self.config.pathways[k]}.{file_extension}")
                 pathway_df = pd.read_csv(path_file, sep='\t', header=0)
                 self.pathways_dfs[k] = pathway_df
             except FileNotFoundError:
-                logger.info(f"{self.config.pathways[k]}.csv: file not found")
+                logger.info(
+                    f"{self.config.pathways[k]}.{file_extension}: not found")
             except Exception as e:
-                logger.info(f'Error while opening file '
-                            f'{self.config.pathways[k]}.csv {e}')
+                logger.info(
+                    f'{e}. Error while opening file '
+                    f'{self.config.pathways[k]}.{file_extension} \n {e}')
 
         logger.info("Finished loading pathways dataframes: "
                     "%s", self.config.pathways)

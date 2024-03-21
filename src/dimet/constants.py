@@ -25,6 +25,8 @@ data_files_keys_type = Literal[
     "isotopologues",
 ]
 
+supported_file_extension = ["csv", "tsv"]
+
 availtest_methods = ["MW", "KW", "ranksum", "Wcox", "Tt", "BrMu", "prm-scipy",
                      "disfit", "none"]
 

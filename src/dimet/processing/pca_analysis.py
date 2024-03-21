@@ -121,12 +121,12 @@ def pca_global_compartment_dataset(df: pd.DataFrame,
 
 def send_to_tables(pca_results_compartment_dict: dict,
                    out_table_dir: str) -> None:
-    """ Save each result to .csv files """
+    """ Save each result to tab delimited files """
     for tup in pca_results_compartment_dict.keys():
         out_table = "--".join(list(tup))
         for df in pca_results_compartment_dict[tup].keys():
             pca_results_compartment_dict[tup][df].to_csv(
-                os.path.join(out_table_dir, f"{out_table}_{df}.csv"),
+                os.path.join(out_table_dir, f"{out_table}_{df}.tsv"),
                 sep='\t', index=False)
     logger.info(f"Saved pca tables in {out_table_dir}")
 
@@ -136,7 +136,7 @@ def run_pca_analysis(file_name: data_files_keys_type,
                      out_table_dir: str, mode: str) -> Union[None, dict]:
     """
     Generates all PCA results, both global (default) and with splited data.
-     - mode='save_tables', the PCA tables are saved to .csv;
+     - mode='save_tables', the PCA tables are saved to tab delimited files;
      or
      - mode='return_results_dict', returns the results object (dict)
     """
