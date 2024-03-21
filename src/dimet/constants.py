@@ -66,3 +66,6 @@ molecular_types_for_metabologram = ["transcripts", "metabolites"]
 columns_transcripts_config_keys = ['ID', 'values']
 
 metabolites_values_for_metabologram = ['log2FC', 'FC']
+
+# minimum non-zero value tolerated when values are fractions or proportions
+minimum_tolerated_fraction_value = 1e-4

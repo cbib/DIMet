@@ -10,6 +10,7 @@ from functools import reduce
 from typing import Dict, List
 
 from dimet.constants import (assert_literal,
+                             minimum_tolerated_fraction_value,
                              overlap_methods_types,
                              supported_file_extension)
 
@@ -200,7 +201,9 @@ def arg_repl_zero2value(how: str, df: pd.DataFrame) -> float:
             except Exception as e:
                 logger.info(f"{e}. {err_msg}")
                 raise ValueError(err_msg)
-        min_value = df[df > 0].min(skipna=True).min(skipna=True)
+        min_value = df[
+            df >= minimum_tolerated_fraction_value  # '> 0' prone to errors if values < 1e-6 exist in the data (and round is 6 places!)
+        ].min(skipna=True).min(skipna=True)
         output_value = min_value / denominator
     else:
         try:
