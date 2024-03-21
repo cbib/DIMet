@@ -62,8 +62,9 @@ def plot_one_metabolite(df: pd.DataFrame,
         palette=palette_choice,
         alpha=1,
         edgecolor="black",
-        errcolor="black",
-        errwidth=1.7,
+        # errcolor="black",   # deprecated in seaborn0.13.2
+        # errwidth=1.7,   # deprecated in seaborn0.13.2
+        err_kws={'linewidth': 1.7, 'color': 'black'},
         capsize=0.12,
     )
     if do_stripplot:

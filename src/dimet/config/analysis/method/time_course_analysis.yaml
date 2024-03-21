@@ -27,3 +27,5 @@ disfit_tail_option: "auto"
 # Note: the disfit_tail_option depends on the comparison and the data:
 #    if advanced knowledge of both, set "two-sided" or "right-tailed"
 #    otherwise leave "auto" as default
+
+# Note2: the statistical_test options can be modified using the external config (not here)

@@ -338,7 +338,7 @@ def give_colors_by_metabolite(cfg: DictConfig,
                     colors_dict[metabolite] = "dimgray"
                 except Exception as e:
                     colors_dict[metabolite] = "dimgray"
-                    logger.info(e, "user color not readable, continuing")
+                    logger.info(e, "user color not readable, continue")
 
         except Exception as e:
             logger.info(e, f"\n could not assign color : \
