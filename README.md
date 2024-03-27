@@ -45,8 +45,7 @@ Alternatively to the [PyPI version](https://pypi.org/project/DIMet/), our tool i
 
 ## Developer Setup
 
-To start contributing to DIMet you require a python environment with python >= 3.9 and [poetry](https://python-poetry.org/docs/) installed.
-Poetry is a python build system and package manager and is used to build and develop DIMet.
+To start contributing to DIMet it is required to have a python environment with python >= 3.9 and [poetry](https://python-poetry.org/docs/) installed.
 
 After creating the environment, the project can be installed with
 ```bash
