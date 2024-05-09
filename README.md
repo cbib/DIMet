@@ -21,6 +21,11 @@ _Formatting and normalisation helper_: scripts for formatting and normalization 
 
 _New_: DIMet is now available in **Galaxy**: Visit https://usegalaxy.eu/ to access the user-friendly interface of our tool.
 
+
+> [!IMPORTANT]
+> When using DIMet, please cite:
+> 
+> Galvis J, Guyon J, Dartigues B, Hecht H, Grüning B, Specque F,  Soueidan H, Karkar S,  Daubon T, Nikolski M. DIMet: An open-source tool for Differential analysis of targeted Isotope-labeled Metabolomics data. _Bioinformatics_ 2024; btae282. [https://doi.org/10.1093/bioinformatics/btae282](https://doi.org/10.1093/bioinformatics/btae282)
 --------
 
 # Installing DIMet 
