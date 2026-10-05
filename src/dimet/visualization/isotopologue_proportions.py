@@ -22,6 +22,8 @@ logger = logging.getLogger(__name__)
 
 cs = ConfigStore.instance()
 
+matplotlib.rcParams['svg.fonttype'] = 'none'
+
 
 def isotopologue_proportions_2piled_df(
         compartment_df: pd.DataFrame,

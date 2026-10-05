@@ -5,6 +5,7 @@ import logging
 import os
 from typing import List, Union
 
+import matplotlib
 import matplotlib.figure as figure
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,6 +18,8 @@ from omegaconf import DictConfig
 logger = logging.getLogger(__name__)
 
 cs = ConfigStore.instance()
+
+matplotlib.rcParams['svg.fonttype'] = 'none'
 
 
 def variance_expl_plot(var_explained_df: pd.DataFrame) -> figure.Figure:

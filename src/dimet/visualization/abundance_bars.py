@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 cs = ConfigStore.instance()
 
+matplotlib.rcParams['svg.fonttype'] = 'none'
 
 def pile_up_abundance(df: pd.DataFrame,
                       metada_sel: pd.DataFrame) -> pd.DataFrame:

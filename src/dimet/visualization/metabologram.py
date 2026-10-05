@@ -28,6 +28,8 @@ from dimet.processing import differential_analysis
 
 logger = logging.getLogger(__name__)
 
+matplotlib.rcParams['svg.fonttype'] = 'none'
+
 
 def get_differential_results_dict(file_name: str,
                                   data_integration: DataIntegration,
