@@ -50,11 +50,12 @@ def pca_scatter_plot(pc_df: pd.DataFrame,
                      var_explained_df: pd.DataFrame,
                      col1: str, col2: str,
                      labels_column: str,
-                     ellipses_column: Union[str, None]) -> figure.Figure:
+                     ellipses_column: Union[str, None],
+                     width: float=6.0, height: float=4.0) -> figure.Figure:
     """
     returns the scatter plot (a seaborn matplotlib figure)
     """
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(width, height))
     sns.scatterplot(x="PC1", y="PC2",
                     ax=ax,
                     data=pc_df,
@@ -62,6 +63,15 @@ def pca_scatter_plot(pc_df: pd.DataFrame,
                     style=col2,
                     legend=True,
                     s=80, zorder=3)
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(
+        handles,
+        labels,
+        bbox_to_anchor=(1.05, 1), # Places legend outside the top-right corner
+        loc='upper left',
+        borderaxespad=0.0
+    )
+    plt.tight_layout()  # Ensures the legend is not clipped
     ax.axhline(0, ls="--", color="gray", zorder=1)
     ax.axvline(0, ls="--", color="gray", zorder=1)
     if labels_column != "":
@@ -152,6 +162,7 @@ def run_pca_plot(pca_results_dict: dict,  cfg: DictConfig,
 
         color_dot = cfg.analysis.method.color
         style_dot = cfg.analysis.method.style
+
         options_labels = {'label-y': "name_to_plot",
                           'label-n': ""}  # when empty string, no dot labels
 
@@ -162,7 +173,10 @@ def run_pca_plot(pca_results_dict: dict,  cfg: DictConfig,
             scatter_fig: figure.Figure = pca_scatter_plot(
                 pc_df,  var_explained_df, color_dot,
                 style_dot, labels_column,
-                ellipses_column=cfg.analysis.method.draw_ellipses)
+                ellipses_column=cfg.analysis.method.draw_ellipses,
+                width=cfg.analysis.method.width,
+                height=cfg.analysis.method.height
+            )
             pca_scatter_2_file(scatter_fig, name_elements, out_plot_dir,
                                cfg.analysis.method.figure_format)
             plt.close()
