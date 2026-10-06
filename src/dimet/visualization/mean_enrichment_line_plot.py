@@ -16,6 +16,8 @@ logger = logging.getLogger(__name__)
 
 cs = ConfigStore.instance()
 
+matplotlib.rcParams['svg.fonttype'] = 'none'
+
 
 def melt_data_metadata_2df(compartment_df: pd.DataFrame,
                            metadata_co_df: pd.DataFrame) -> pd.DataFrame:

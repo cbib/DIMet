@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 cs = ConfigStore.instance()
 
+matplotlib.rcParams['svg.fonttype'] = 'none'
 
 def pile_up_abundance(df: pd.DataFrame,
                       metada_sel: pd.DataFrame) -> pd.DataFrame:
@@ -69,6 +70,9 @@ def plot_one_metabolite(df: pd.DataFrame,
     )
     if do_stripplot:
         np.random.seed(123)  # to force the jitter not to randomly change
+        dodge_bool = True
+        if axisx_var == hue_var:
+            dodge_bool = False
         try:
             sns.stripplot(
                 ax=curr_ax,
@@ -77,7 +81,7 @@ def plot_one_metabolite(df: pd.DataFrame,
                 hue=str(hue_var),
                 data=df,
                 palette=palette_choice,
-                dodge=True,
+                dodge=dodge_bool,
                 edgecolor="black",
                 linewidth=1.5,
                 alpha=1,
@@ -132,7 +136,10 @@ def plot_abundance_bars_no_grid(
         axs_k = apply_advanced_param_custom_x_labs(cfg, axs_k)
         if k == 0:  # collect the legend, which is same for any plot
             thehandles, thelabels = axs_k.get_legend_handles_labels()
-        axs_k.legend_.remove()
+        try:
+            axs_k.legend_.remove()
+        except AttributeError:
+            pass  #  no legend is generated when xaxis and barcolor are equal
         plt.tight_layout(pad=0.01, w_pad=-2, h_pad=0.1)
         plt.savefig(output_path_k,
                     bbox_inches="tight",
@@ -141,6 +148,8 @@ def plot_abundance_bars_no_grid(
 
     plt.legend(handles=thehandles, labels=thelabels, loc="upper right")
     plt.axis("off")
+    if hue_var == axisx_var:
+        plt.figtext(0.1, 0.7, "No legend:\n xaxis equal to barcolor")
     plt.savefig(os.path.join(
         output_directory,
         f"legend.{cfg.analysis.method.figure_format}"),
@@ -198,7 +207,10 @@ def plot_as_grid_of_bars(
 
     thehandles, thelabels = axs[-1].get_legend_handles_labels()
     for i in range(len(selected_metabolites)):
-        axs[i].legend_.remove()
+        try:
+            axs[i].legend_.remove()
+        except AttributeError:
+            pass #  no legend is generated when xaxis and barcolor are equal
 
     plt.subplots_adjust(left=0.2, top=0.76, bottom=0.2,
                         hspace=corrector_factor)
@@ -211,7 +223,10 @@ def plot_as_grid_of_bars(
     plt.close()
 
     plt.legend(handles=thehandles, labels=thelabels, loc="upper right")
+    if hue_var == axisx_var:
+        plt.figtext(0.1, 0.7, "No legend:\n xaxis equal to barcolor")
     plt.axis("off")
+
     plt.savefig(os.path.join(
         output_directory,
         f"legend.{cfg.analysis.method.figure_format}"),

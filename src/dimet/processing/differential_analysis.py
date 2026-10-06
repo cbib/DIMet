@@ -40,9 +40,13 @@ def compute_span_incomparison(df: pd.DataFrame, groups: List) -> pd.DataFrame:
          the computed differences.
     """
     for i in df.index.values:
-        all_values = list(df.loc[i, groups[0]]) + list(df.loc[i, groups[1]])
+        group1_values = df.loc[i, groups[0]].to_numpy()
+        group2_values = df.loc[i, groups[1]].to_numpy()
 
-        interval = max(all_values) - min(all_values)
+        all_values = np.concatenate([group1_values, group2_values])
+
+        interval = np.nanmax(all_values) - np.nanmin(all_values)
+
         df.loc[i, "span_allsamples"] = interval
 
     return df

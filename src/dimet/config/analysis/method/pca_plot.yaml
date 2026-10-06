@@ -20,3 +20,6 @@ impute_values: # how to impute zeroes
   mean_enrichment: "min"
   isotopologues: "min"
   isotopologue_proportions: "min"
+
+width: !!float 6.2
+height: !!float 4.0
